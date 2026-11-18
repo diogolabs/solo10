@@ -33,6 +33,10 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
       rolarInteracaoPersonagem: Solo10OracleApp.#onRolarInteracaoPersonagem,
       rolarTabelaSetor: Solo10OracleApp.#onRolarTabelaSetor,
       deslocarSetor: Solo10OracleApp.#onDeslocarSetor,
+      adicionarSetorCustom: Solo10OracleApp.#onAdicionarSetorCustom,
+      removerSetorCustom: Solo10OracleApp.#onRemoverSetorCustom,
+      restaurarSetoresPadrao: Solo10OracleApp.#onRestaurarSetoresPadrao,
+      salvarSetorLabel: Solo10OracleApp.#onSalvarSetorLabel,
       visitarLocalAcontecimento: Solo10OracleApp.#onVisitarLocalAcontecimento,
       vencerAreaAcontecimento: Solo10OracleApp.#onVencerAreaAcontecimento,
       calcularCombateMassa: Solo10OracleApp.#onCalcularCombateMassa
@@ -54,9 +58,14 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const actor = game.actors?.get(this.selectedActorId) ?? null;
     const rollTables = (game.tables ?? []).map((t) => ({ id: t.id, name: t.name }));
     const theme = game.settings?.get("solo10", "theme") || "system";
+    const setorLabel = game.settings?.get("solo10", "setorLabel") || "Setor";
+    const customSetores = game.settings?.get("solo10", "customSetores");
+    const setores = Array.isArray(customSetores) && customSetores.length ? customSetores : SOLO10.SETORES;
 
     return {
       theme,
+      setorLabel,
+      isGM: Boolean(game.user?.isGM),
       activeTab: this.activeTab,
       personagens: personagens.map((p) => ({
         id: p.id,
@@ -64,7 +73,7 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
         selected: p.id === this.selectedActorId
       })),
       actor,
-      setores: SOLO10.SETORES,
+      setores,
       oraculoTabela: SOLO10.ORACULO_TABELA,
       unidadesExercito: SOLO10.UNIDADES_EXERCITO,
       fortificacoesVeiculos: SOLO10.FORTIFICACOES_VEICULOS,
@@ -77,6 +86,7 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   _onRender(context, options) {
     super._onRender(context, options);
+    game.solo10?.applyThemeToElement?.(this.element);
     const actorSelect = this.element.querySelector('[name="selectedActorId"]');
     if (actorSelect) {
       actorSelect.addEventListener("change", (ev) => {
@@ -303,16 +313,65 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
           <div class="solo10-card-effect">
             Tempo gasto no deslocamento: <strong>${tempo}</strong> (${meio === "veiculo" ? "usando veículo" : "a pé"}).
             <hr/>
-            <strong>Passos ao entrar no novo setor:</strong>
+            <strong>Passos ao entrar no novo local:</strong>
             <ol>
               <li>Escolha uma ação a realizar;</li>
-              <li>Role um evento na tabela do setor específico;</li>
+              <li>Role um evento na tabela específica;</li>
               <li>Caso queira realizar outras ações, pague o custo em tempo para cada uma.</li>
             </ol>
           </div>
         </div>
       `
     });
+    this.render();
+  }
+
+  static async #onSalvarSetorLabel(event, target) {
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Apenas o GM/Mediador pode alterar as configurações globais de Setor/Zona.");
+      return;
+    }
+    const label = this.element.querySelector('[name="novoSetorLabel"]')?.value?.trim() || "Setor";
+    await game.settings.set("solo10", "setorLabel", label);
+    ui.notifications.info(`Nomenclatura atualizada para "${label}".`);
+    this.render();
+  }
+
+  static async #onAdicionarSetorCustom(event, target) {
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Apenas o GM/Mediador pode cadastrar novos locais na listagem do mundo.");
+      return;
+    }
+    const root = this.element;
+    const nome = root.querySelector('[name="cadSetorNome"]')?.value?.trim();
+    const descricao = root.querySelector('[name="cadSetorDesc"]')?.value?.trim() || "";
+    const tableId = root.querySelector('[name="cadSetorTableId"]')?.value || "";
+
+    if (!nome) {
+      ui.notifications.warn("Informe um nome para o local (Setor / Bairro / Distrito / Zona).");
+      return;
+    }
+
+    const atuais = foundry.utils.deepClone(game.settings.get("solo10", "customSetores") || SOLO10.SETORES);
+    atuais.push({ nome, descricao, tableId });
+    await game.settings.set("solo10", "customSetores", atuais);
+    this.render();
+  }
+
+  static async #onRemoverSetorCustom(event, target) {
+    if (!game.user?.isGM) return;
+    const idx = Number(target.dataset.index);
+    const atuais = foundry.utils.deepClone(game.settings.get("solo10", "customSetores") || SOLO10.SETORES);
+    if (idx >= 0 && idx < atuais.length) {
+      atuais.splice(idx, 1);
+      await game.settings.set("solo10", "customSetores", atuais);
+      this.render();
+    }
+  }
+
+  static async #onRestaurarSetoresPadrao(event, target) {
+    if (!game.user?.isGM) return;
+    await game.settings.set("solo10", "customSetores", SOLO10.SETORES);
     this.render();
   }
 

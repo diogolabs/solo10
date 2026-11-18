@@ -6,9 +6,11 @@
     <div class="solo10-header-main">
       <div class="solo10-title-row">
         <input type="text" class="solo10-charname" name="name" value="{{actor.name}}" placeholder="Nome do Adversário" />
-        <button type="button" class="solo10-btn solo10-btn-ghost" data-action="cycleTheme" title="Alternar tema">
-          <i class="fas fa-adjust"></i> {{themeLabel}}
-        </button>
+        <div class="solo10-theme-Segment" title="Tema da Ficha">
+          <button type="button" class="solo10-theme-opt {{#if (eq theme 'light')}}active{{/if}}" data-action="setTheme" data-theme="light">Claro</button>
+          <button type="button" class="solo10-theme-opt {{#if (eq theme 'dark')}}active{{/if}}" data-action="setTheme" data-theme="dark">Escuro</button>
+          <button type="button" class="solo10-theme-opt {{#if (eq theme 'system')}}active{{/if}}" data-action="setTheme" data-theme="system">Sistema</button>
+        </div>
         <div class="solo10-meta-field" style="width: 90px;">
           <label>Perigo (Máx 15)</label>
           <input type="number" name="system.perigo" value="{{system.perigo}}" min="0" max="15" />

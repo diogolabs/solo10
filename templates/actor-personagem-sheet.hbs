@@ -8,9 +8,11 @@
     <div class="solo10-header-main">
       <div class="solo10-title-row">
         <input type="text" class="solo10-charname" name="name" value="{{actor.name}}" placeholder="Nome da Personagem" />
-        <button type="button" class="solo10-btn solo10-btn-ghost" data-action="cycleTheme" title="Alternar tema: Padrão do Sistema, Claro ou Escuro">
-          <i class="fas fa-adjust"></i> {{themeLabel}}
-        </button>
+        <div class="solo10-theme-Segment" title="Tema da Ficha">
+          <button type="button" class="solo10-theme-opt {{#if (eq theme 'light')}}active{{/if}}" data-action="setTheme" data-theme="light">Claro</button>
+          <button type="button" class="solo10-theme-opt {{#if (eq theme 'dark')}}active{{/if}}" data-action="setTheme" data-theme="dark">Escuro</button>
+          <button type="button" class="solo10-theme-opt {{#if (eq theme 'system')}}active{{/if}}" data-action="setTheme" data-theme="system">Sistema</button>
+        </div>
         <button type="button" class="solo10-btn" data-action="abrirOraculo" data-tab="cenario">
           <i class="fas fa-eye"></i> Oráculo
         </button>
@@ -29,11 +31,16 @@
           <input type="text" name="system.moradaInicial" value="{{system.moradaInicial}}" placeholder="Local..." />
         </div>
         <div class="solo10-meta-field">
-          <label>Setor Atual</label>
-          <input type="text" name="system.setorAtual" value="{{system.setorAtual}}" list="solo10-setores-list" placeholder="Setor..." />
+          <label>{{setorLabel}} Atual</label>
+          <div class="solo10-inline-input">
+            <input type="text" name="system.setorAtual" value="{{system.setorAtual}}" list="solo10-setores-list" placeholder="{{setorLabel}}..." />
+            <button type="button" class="solo10-icon-btn" data-action="abrirOraculo" data-tab="setores" title="Gerenciar {{setorLabel}}s / Bairros / Zonas">
+              <i class="fas fa-map-marked-alt"></i>
+            </button>
+          </div>
           <datalist id="solo10-setores-list">
             {{#each setores}}
-              <option value="{{this.nome}}"></option>
+              <option value="{{this.nome}}">{{this.descricao}}</option>
             {{/each}}
           </datalist>
         </div>
@@ -580,7 +587,7 @@
     {{#if (eq activeTab 'jogando')}}
       <div class="solo10-panel">
         <div class="solo10-panel-header">
-          <h3>Ações no Setor ({{system.setorAtual}})</h3>
+          <h3>Ações — {{setorLabel}}: {{system.setorAtual}}</h3>
           <label class="solo10-checkbox">
             <input type="checkbox" name="system.investigadoCrime" {{#if system.investigadoCrime}}checked{{/if}} />
             <span>Investigado por Crime</span>

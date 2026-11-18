@@ -27,6 +27,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     },
     actions: {
       changeTab: Solo10PersonagemSheet.#onChangeTab,
+      setTheme: Solo10PersonagemSheet.#onSetTheme,
       cycleTheme: Solo10PersonagemSheet.#onCycleTheme,
       editImage: Solo10PersonagemSheet.#onEditImage,
       rollAtributo: Solo10PersonagemSheet.#onRollAtributo,
@@ -70,6 +71,9 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const actor = this.document;
     const sys = actor.system;
     const theme = game.settings?.get("solo10", "theme") || "system";
+    const setorLabel = game.settings?.get("solo10", "setorLabel") || "Setor";
+    const customSetores = game.settings?.get("solo10", "customSetores");
+    const setores = Array.isArray(customSetores) && customSetores.length ? customSetores : SOLO10.SETORES;
 
     const pericias = actor.items.filter((i) => i.type === "pericia");
     const qualidades = actor.items.filter((i) => i.type === "qualidade");
@@ -93,9 +97,10 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       system: sys,
       theme,
       themeLabel: themeLabels[theme] || "Sistema",
+      setorLabel,
       activeTab: this.activeTab,
       atributosConfig: SOLO10.ATRIBUTOS,
-      setores: SOLO10.SETORES,
+      setores,
       efeitosArmadilha: SOLO10.EFEITOS_ARMADILHA,
       pericias,
       maxPericiasIniciais,
@@ -110,52 +115,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
 
   _onRender(context, options) {
     super._onRender(context, options);
-
-    // Garantir suporte completo a Drag & Drop de Itens (de Compêndios ou Diretório) em v13 e v14
-    const root = this.element;
-    if (!root || root.dataset.solo10DropBound) return;
-    root.dataset.solo10DropBound = "true";
-
-    root.addEventListener("dragover", (ev) => {
-      ev.preventDefault();
-    });
-
-    root.addEventListener("drop", async (ev) => {
-      if (ev._solo10DropHandled) return;
-      ev._solo10DropHandled = true;
-
-      const TextEditorImpl = foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor;
-      const data = TextEditorImpl.getDragEventData(ev);
-      if (!data || data.type !== "Item") return;
-
-      ev.preventDefault();
-      ev.stopPropagation();
-
-      const itemDoc = await Item.implementation.fromDropData(data);
-      if (!itemDoc) return;
-
-      // Se o item já pertence a este ator, ignorar
-      if (itemDoc.parent?.id === this.document.id) return;
-
-      const itemData = itemDoc.toObject();
-      await this._handleCreatedItemBonus(itemData);
-      await Item.create(itemData, { parent: this.document });
-    });
-  }
-
-  async _handleCreatedItemBonus(itemData) {
-    if (itemData.type === "qualidade") {
-      const bS = Number(itemData.system?.bonusSaude || 0);
-      const bP = Number(itemData.system?.bonusPostura || 0);
-      const bV = Number(itemData.system?.bonusVontade || 0);
-      const updates = {};
-      if (bS) updates["system.saude.value"] = Number(this.document.system.saude.value || 0) + bS;
-      if (bP) updates["system.postura.value"] = Number(this.document.system.postura.value || 0) + bP;
-      if (bV) updates["system.vontade.value"] = Number(this.document.system.vontade.value || 0) + bV;
-      if (Object.keys(updates).length > 0) {
-        await this.document.update(updates);
-      }
-    }
+    game.solo10?.applyThemeToElement?.(this.element);
   }
 
   static #onChangeTab(event, target) {
@@ -166,12 +126,18 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     }
   }
 
+  static async #onSetTheme(event, target) {
+    const novo = target.dataset.theme || "system";
+    game.solo10?.applyThemeToElement?.(this.element, novo);
+    await game.settings?.set("solo10", "theme", novo);
+  }
+
   static async #onCycleTheme(event, target) {
     const ordem = ["system", "light", "dark"];
     const atual = game.settings?.get("solo10", "theme") || "system";
     const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
+    game.solo10?.applyThemeToElement?.(this.element, proximo);
     await game.settings?.set("solo10", "theme", proximo);
-    this.render();
   }
 
   static async #onEditImage(event, target) {
@@ -587,6 +553,7 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
       closeOnSubmit: false
     },
     actions: {
+      setTheme: Solo10AdversarioSheet.#onSetTheme,
       cycleTheme: Solo10AdversarioSheet.#onCycleTheme,
       editImage: Solo10AdversarioSheet.#onEditImage,
       dispararReacao: Solo10AdversarioSheet.#onDispararReacao
@@ -613,12 +580,23 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
     };
   }
 
+  _onRender(context, options) {
+    super._onRender(context, options);
+    game.solo10?.applyThemeToElement?.(this.element);
+  }
+
+  static async #onSetTheme(event, target) {
+    const novo = target.dataset.theme || "system";
+    game.solo10?.applyThemeToElement?.(this.element, novo);
+    await game.settings?.set("solo10", "theme", novo);
+  }
+
   static async #onCycleTheme(event, target) {
     const ordem = ["system", "light", "dark"];
     const atual = game.settings?.get("solo10", "theme") || "system";
     const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
+    game.solo10?.applyThemeToElement?.(this.element, proximo);
     await game.settings?.set("solo10", "theme", proximo);
-    this.render();
   }
 
   static async #onEditImage(event, target) {

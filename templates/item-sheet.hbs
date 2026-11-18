@@ -2,9 +2,11 @@
   <header class="solo10-sheet-header">
     <div class="solo10-title-row" style="width:100%;">
       <input type="text" class="solo10-charname" name="name" value="{{item.name}}" placeholder="Nome" />
-      <button type="button" class="solo10-btn solo10-btn-ghost solo10-btn-sm" data-action="cycleTheme" title="Alternar tema">
-        <i class="fas fa-adjust"></i> {{themeLabel}}
-      </button>
+      <div class="solo10-theme-Segment" title="Tema da Ficha">
+        <button type="button" class="solo10-theme-opt {{#if (eq theme 'light')}}active{{/if}}" data-action="setTheme" data-theme="light">Claro</button>
+        <button type="button" class="solo10-theme-opt {{#if (eq theme 'dark')}}active{{/if}}" data-action="setTheme" data-theme="dark">Escuro</button>
+        <button type="button" class="solo10-theme-opt {{#if (eq theme 'system')}}active{{/if}}" data-action="setTheme" data-theme="system">Sistema</button>
+      </div>
       <button type="button" class="solo10-btn solo10-btn-sm" data-action="postToChat">
         <i class="fas fa-comment"></i> Chat
       </button>

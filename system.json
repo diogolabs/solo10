@@ -2,7 +2,7 @@
   "id": "solo10",
   "title": "Solo 10 - Licença Aberta 2.0",
   "description": "Sistema de RPG Solo 10 (Licença Aberta 2.0 - 101 Games) modular com fichas minimalistas (Claro/Escuro/Sistema), compêndios de Perícias e Qualidades, rolagens e Oráculo integrado.",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "compatibility": {
     "minimum": "13",
     "verified": "14",

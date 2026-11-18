@@ -144,19 +144,19 @@
 
     {{#if (eq activeTab 'setores')}}
       <div class="solo10-panel">
-        <h3>Setor & Deslocamento</h3>
-        <p class="solo10-hint">Deslocar-se para um setor adjacente leva 1 hora a pé ou meia hora usando um veículo.</p>
+        <h3>{{setorLabel}} Atual & Deslocamento</h3>
+        <p class="solo10-hint">Deslocar-se para um {{setorLabel}} adjacente leva 1 hora a pé ou meia hora usando um veículo.</p>
         <div class="solo10-form-group">
-          <label>Escolher Setor de Destino</label>
+          <label>Escolher {{setorLabel}} de Destino</label>
           <select name="novoSetor">
             {{#each setores}}
               <option value="{{this.nome}}" {{#if (eq ../actor.system.setorAtual this.nome)}}selected{{/if}}>
-                {{this.nome}} — {{this.descricao}}
+                {{this.nome}}{{#if this.descricao}} — {{this.descricao}}{{/if}}
               </option>
             {{/each}}
           </select>
         </div>
-        <div class="solo10-grid-2">
+        <div class="solo10-grid-2" style="margin-top: 8px;">
           <button type="button" class="solo10-btn" data-action="deslocarSetor" data-meio="pe">
             <i class="fas fa-walking"></i> Ir a Pé (1 hora)
           </button>
@@ -165,6 +165,65 @@
           </button>
         </div>
       </div>
+
+      {{#if isGM}}
+        <div class="solo10-panel">
+          <div class="solo10-panel-header">
+            <h3>Gerenciar {{setorLabel}}s / Bairros / Distritos / Zonas</h3>
+            <button type="button" class="solo10-btn solo10-btn-xs" data-action="restaurarSetoresPadrao" title="Restaurar os 5 setores de exemplo da Licença Aberta">
+              Restaurar Padrão
+            </button>
+          </div>
+
+          <div class="solo10-form-group" style="margin-bottom: 8px;">
+            <label>Nomenclatura usada no Jogo (Ex: Setor, Bairro, Distrito, Zona, Região)</label>
+            <div class="solo10-inline-input">
+              <input type="text" name="novoSetorLabel" value="{{setorLabel}}" list="solo10-labels-sugeridos" style="flex:1;" />
+              <datalist id="solo10-labels-sugeridos">
+                <option value="Setor"></option>
+                <option value="Bairro"></option>
+                <option value="Distrito"></option>
+                <option value="Zona"></option>
+                <option value="Região"></option>
+                <option value="Hexágono"></option>
+              </datalist>
+              <button type="button" class="solo10-btn solo10-btn-sm" data-action="salvarSetorLabel">
+                Salvar Nome
+              </button>
+            </div>
+          </div>
+
+          <div class="solo10-grid-2" style="margin-bottom: 8px;">
+            <div class="solo10-form-group">
+              <label>Novo {{setorLabel}} (Nome)</label>
+              <input type="text" name="cadSetorNome" placeholder="Ex: Distrito Comercial, Subúrbio..." />
+            </div>
+            <div class="solo10-form-group">
+              <label>Descrição / Características</label>
+              <input type="text" name="cadSetorDesc" placeholder="Características do local..." />
+            </div>
+          </div>
+          <button type="button" class="solo10-btn solo10-btn-sm solo10-btn-primary" data-action="adicionarSetorCustom" style="margin-bottom: 10px;">
+            <i class="fas fa-plus"></i> Adicionar {{setorLabel}} à Listagem
+          </button>
+
+          <div class="solo10-item-list">
+            {{#each setores}}
+              <div class="solo10-item-row">
+                <div class="item-main">
+                  <span class="item-title">{{this.nome}}</span>
+                  {{#if this.descricao}}<p class="item-sub">{{this.descricao}}</p>{{/if}}
+                </div>
+                <div class="item-controls">
+                  <button type="button" class="solo10-icon-btn" data-action="removerSetorCustom" data-index="{{@index}}" title="Remover da listagem">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
 
       <div class="solo10-panel">
         <h3>Gerador de Eventos, Encontros e Personagens Importantes</h3>

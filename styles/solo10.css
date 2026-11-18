@@ -4,7 +4,8 @@
 
 /* TEMA ESCURO MINIMALISTA (Base e .solo10-theme-dark) */
 .solo10,
-.solo10-theme-dark,
+.solo10.solo10-theme-dark,
+.solo10 .solo10-theme-dark,
 body.theme-dark .solo10-theme-system {
   --s10-bg: #141417;
   --s10-surface: #1c1c21;
@@ -20,25 +21,63 @@ body.theme-dark .solo10-theme-system {
   --s10-tag-fg: #d4d4d8;
   --s10-danger: #dc2626;
   --s10-success: #16a34a;
+  color: #f4f4f5;
 }
 
 /* TEMA CLARO MINIMALISTA (.solo10-theme-light e Padrão do Sistema em modo Claro) */
-.solo10-theme-light,
+.solo10.solo10-theme-light,
+.solo10 .solo10-theme-light,
+.solo10.theme-light,
 body.theme-light .solo10-theme-system {
   --s10-bg: #f8fafc;
   --s10-surface: #ffffff;
   --s10-surface-alt: #f1f5f9;
-  --s10-border: #e2e8f0;
+  --s10-border: #cbd5e1;
   --s10-text: #0f172a;
-  --s10-muted: #64748b;
+  --s10-muted: #475569;
   --s10-accent: #1e293b;
   --s10-accent-fg: #ffffff;
   --s10-primary: #991b1b;
   --s10-primary-fg: #ffffff;
   --s10-tag-bg: #e2e8f0;
-  --s10-tag-fg: #334155;
+  --s10-tag-fg: #1e293b;
   --s10-danger: #b91c1c;
   --s10-success: #15803d;
+  color: #0f172a;
+}
+
+.application.solo10 .window-content {
+  padding: 0;
+  background: var(--s10-bg);
+  color: var(--s10-text);
+}
+
+/* SELETOR SEGMENTADO DE TEMA (CLARO | ESCURO | SISTEMA) */
+.solo10-theme-Segment {
+  display: inline-flex;
+  background: var(--s10-surface-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 1px;
+}
+
+.solo10-theme-opt {
+  background: transparent !important;
+  color: var(--s10-muted) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 3px 7px !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  line-height: 1.2;
+  box-shadow: none !important;
+}
+
+.solo10-theme-opt.active {
+  background: var(--s10-primary) !important;
+  color: var(--s10-primary-fg) !important;
 }
 
 .solo10-sheet-container,
@@ -153,9 +192,9 @@ body.theme-light .solo10-theme-system {
 .solo10-oracle-container input[type="number"],
 .solo10-oracle-container select,
 .solo10-oracle-container textarea {
-  background: var(--s10-surface-alt);
-  color: var(--s10-text);
-  border: 1px solid var(--s10-border);
+  background: var(--s10-surface-alt) !important;
+  color: var(--s10-text) !important;
+  border: 1px solid var(--s10-border) !important;
   border-radius: 5px;
   padding: 4px 8px;
   font-size: 0.86rem;
@@ -439,9 +478,9 @@ body.theme-light .solo10-theme-system {
 
 /* BOTÕES MINIMALISTAS */
 .solo10-btn {
-  background: var(--s10-surface-alt);
-  color: var(--s10-text);
-  border: 1px solid var(--s10-border);
+  background: var(--s10-surface-alt) !important;
+  color: var(--s10-text) !important;
+  border: 1px solid var(--s10-border) !important;
   border-radius: 5px;
   padding: 5px 10px;
   font-size: 0.82rem;
@@ -452,16 +491,17 @@ body.theme-light .solo10-theme-system {
   justify-content: center;
   gap: 5px;
   transition: background 0.12s ease, border-color 0.12s ease;
+  box-shadow: none !important;
 }
 
 .solo10-btn:hover {
-  border-color: var(--s10-muted);
+  border-color: var(--s10-muted) !important;
 }
 
 .solo10-btn-primary {
-  background: var(--s10-primary);
-  border-color: var(--s10-primary);
-  color: var(--s10-primary-fg);
+  background: var(--s10-primary) !important;
+  border-color: var(--s10-primary) !important;
+  color: var(--s10-primary-fg) !important;
 }
 
 .solo10-btn-primary:hover {

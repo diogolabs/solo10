@@ -18,6 +18,7 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       closeOnSubmit: false
     },
     actions: {
+      setTheme: Solo10ItemSheet.#onSetTheme,
       cycleTheme: Solo10ItemSheet.#onCycleTheme,
       postToChat: Solo10ItemSheet.#onPostToChat
     }
@@ -44,12 +45,23 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     };
   }
 
+  _onRender(context, options) {
+    super._onRender(context, options);
+    game.solo10?.applyThemeToElement?.(this.element);
+  }
+
+  static async #onSetTheme(event, target) {
+    const novo = target.dataset.theme || "system";
+    game.solo10?.applyThemeToElement?.(this.element, novo);
+    await game.settings?.set("solo10", "theme", novo);
+  }
+
   static async #onCycleTheme(event, target) {
     const ordem = ["system", "light", "dark"];
     const atual = game.settings?.get("solo10", "theme") || "system";
     const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
+    game.solo10?.applyThemeToElement?.(this.element, proximo);
     await game.settings?.set("solo10", "theme", proximo);
-    this.render();
   }
 
   static async #onPostToChat(event, target) {
