@@ -1,0 +1,76 @@
+{
+  "id": "solo10",
+  "title": "Solo 10 - Licença Aberta 2.0",
+  "description": "Sistema de RPG Solo 10 (Licença Aberta 2.0 - 101 Games) completo com ficha de personagem, adversários, rolagens automatizadas, combate em massa e Oráculo integrado.",
+  "version": "2.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14",
+    "maximum": "14"
+  },
+  "authors": [
+    {
+      "name": "Diogo Rodrigues (diogolabs)"
+    },
+    {
+      "name": "101 GAMES (Sistema Solo 10 2.0 - CC BY)"
+    }
+  ],
+  "url": "https://github.com/diogolabs/solo10",
+  "manifest": "https://raw.githubusercontent.com/diogolabs/solo10/main/system.json",
+  "download": "https://github.com/diogolabs/solo10/archive/refs/heads/main.zip",
+  "esmodules": [
+    "module/solo10.mjs"
+  ],
+  "styles": [
+    "styles/solo10.css"
+  ],
+  "languages": [
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    },
+    {
+      "lang": "en",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "personagem": {
+        "htmlFields": ["biografia", "notas"]
+      },
+      "adversario": {
+        "htmlFields": ["descricao", "outrasCaracteristicas"]
+      }
+    },
+    "Item": {
+      "qualidade": {
+        "htmlFields": ["descricao"]
+      },
+      "arma": {
+        "htmlFields": ["descricao"]
+      },
+      "armadura": {
+        "htmlFields": ["descricao"]
+      },
+      "equipamento": {
+        "htmlFields": ["descricao"]
+      },
+      "armadilha": {
+        "htmlFields": ["descricao"]
+      },
+      "meta": {
+        "htmlFields": ["descricao"]
+      }
+    }
+  },
+  "grid": {
+    "distance": 1,
+    "units": "setor"
+  },
+  "primaryTokenAttribute": "saude",
+  "secondaryTokenAttribute": "postura"
+}

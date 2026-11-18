@@ -1,0 +1,49 @@
+{
+  "SOLO10": {
+    "SystemTitle": "Solo 10 - Licença Aberta 2.0",
+    "SheetPersonagem": "Ficha de Personagem (Solo 10)",
+    "SheetAdversario": "Ficha de Adversário (Solo 10)",
+    "SheetItem": "Ficha de Item (Solo 10)",
+    "Atributos": {
+      "corpo": "Corpo",
+      "espirito": "Espírito",
+      "mente": "Mente"
+    },
+    "Reservas": {
+      "saude": "Saúde",
+      "postura": "Postura",
+      "vontade": "Vontade"
+    },
+    "Pericias": {
+      "artes": "Artes",
+      "atletismo": "Atletismo",
+      "combateDistancia": "Combate a Distância",
+      "combateCorporal": "Combate Corporal",
+      "conducao": "Condução",
+      "conhecimento": "Conhecimento",
+      "idiomas": "Idiomas",
+      "investigacao": "Investigação",
+      "manipulacao": "Manipulação",
+      "sobrevivencia": "Sobrevivência",
+      "subterfugio": "Subterfúgio",
+      "oficios": "Ofícios",
+      "tecnologia": "Tecnologia"
+    },
+    "Oraculo": "Oráculo Solo 10",
+    "CombateMassa": "Combate em Massa"
+  },
+  "TYPES": {
+    "Actor": {
+      "personagem": "Personagem",
+      "adversario": "Adversário"
+    },
+    "Item": {
+      "qualidade": "Qualidade",
+      "arma": "Arma",
+      "armadura": "Armadura / Escudo",
+      "equipamento": "Equipamento / Ofício",
+      "armadilha": "Armadilha",
+      "meta": "Meta / Campanha"
+    }
+  }
+}

@@ -1,0 +1,308 @@
+<div class="solo10-oracle-container">
+  <div class="solo10-oracle-top">
+    <label>Personagem Ativo:</label>
+    <select name="selectedActorId">
+      <option value="">— Nenhum Personagem Selecionado —</option>
+      {{#each personagens}}
+        <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <nav class="solo10-tabs">
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'cenario')}}active{{/if}}" data-action="changeTab" data-tab="cenario">
+      <i class="fas fa-question-circle"></i> Oráculo: Cenário & Medidor
+    </button>
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'personagens')}}active{{/if}}" data-action="changeTab" data-tab="personagens">
+      <i class="fas fa-comments"></i> Oráculo: Personagens
+    </button>
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'setores')}}active{{/if}}" data-action="changeTab" data-tab="setores">
+      <i class="fas fa-map"></i> Setores & Eventos
+    </button>
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'exercito')}}active{{/if}}" data-action="changeTab" data-tab="exercito">
+      <i class="fas fa-chess-rook"></i> Combate em Massa
+    </button>
+  </nav>
+
+  <section class="solo10-oracle-content">
+    {{#if (eq activeTab 'cenario')}}
+      <div class="solo10-panel">
+        <h3>Interação com o Cenário (1D10)</h3>
+        <p class="solo10-hint">Faça uma pergunta que possa ser respondida com Sim/Não ou escolhas opostas e role 1D10 (1-5 vs 6-0).</p>
+
+        <div class="solo10-form-group">
+          <label>Sua Pergunta ao Cenário</label>
+          <input type="text" name="oraculoPergunta" placeholder="Ex: A porta dos fundos está destrancada?" />
+        </div>
+
+        <div class="solo10-form-group">
+          <label>Tipo de Resposta Oposta</label>
+          <select name="oraculoProposta">
+            {{#each oraculoTabela}}
+              <option value="{{this.key}}">{{this.label}} ({{this.baixo}} vs {{this.alto}})</option>
+            {{/each}}
+            <option value="custom">Proposta Personalizada (Definir abaixo)</option>
+          </select>
+        </div>
+
+        <div class="solo10-grid-2">
+          <div class="solo10-form-group">
+            <label>Proposta Personalizada (1 a 5)</label>
+            <input type="text" name="customBaixo" placeholder="Ex: Não / Negativo" />
+          </div>
+          <div class="solo10-form-group">
+            <label>Proposta Personalizada (6 a 0)</label>
+            <input type="text" name="customAlto" placeholder="Ex: Sim / Positivo" />
+          </div>
+        </div>
+
+        <table class="solo10-table">
+          <thead>
+            <tr>
+              <th>1-5</th>
+              <th>6-0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Não/Negativo</td>
+              <td>Sim/Positivo</td>
+            </tr>
+            <tr>
+              <td>Para Esquerda/Para Baixo</td>
+              <td>Para Direita/Para Cima</td>
+            </tr>
+            <tr>
+              <td>Fechado/Quebrado</td>
+              <td>Aberto/Funcionando</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button type="button" class="solo10-btn solo10-btn-primary" data-action="rolarOraculoCenario">
+          <i class="fas fa-dice-d10"></i> Consultar Oráculo (1D10)
+        </button>
+      </div>
+
+      <div class="solo10-panel">
+        <h3>Elemento de Medida (1D10)</h3>
+        <p class="solo10-hint">Use o D10 como elemento de medida: um número baixo significa que são poucos, enquanto um alto representa problemas!</p>
+        <div class="solo10-form-group">
+          <label>O que você quer medir?</label>
+          <input type="text" name="medidorQuestao" placeholder="Ex: Quantos adversários estão no galpão?" />
+        </div>
+        <button type="button" class="solo10-btn" data-action="rolarMedidorD10">
+          <i class="fas fa-tachometer-alt"></i> Rolar Medidor 1D10
+        </button>
+      </div>
+    {{/if}}
+
+    {{#if (eq activeTab 'personagens')}}
+      <div class="solo10-panel">
+        <h3>Interação com Personagens do Cenário</h3>
+        <p class="solo10-hint">
+          Rola um teste de <strong>Espírito (Manipulação)</strong> contra o valor de Perigo do personagem do cenário. Em caso de sucesso, seu Aventureiro consegue o que quer e reduz a Postura do alvo em <strong>Espírito + Bônus de Poder</strong>. Caso a Postura chegue a 0, ele estará desmoralizado e sujeito a todas as suas vontades.
+        </p>
+
+        <div class="solo10-form-group">
+          <label>Nome do Personagem do Cenário / Alvo</label>
+          <input type="text" name="nomeAlvo" value="{{nomeAlvo}}" />
+        </div>
+
+        <div class="solo10-grid-2">
+          <div class="solo10-form-group">
+            <label>Perigo do Alvo (Padrão 10)</label>
+            <input type="number" name="perigoAlvo" value="{{perigoAlvo}}" min="0" max="15" />
+          </div>
+          <div class="solo10-form-group">
+            <label>Postura Atual do Alvo</label>
+            <input type="number" name="posturaAlvo" value="{{posturaAlvo}}" min="0" />
+          </div>
+        </div>
+
+        <div class="solo10-form-group">
+          <label>Vantagem / Desvantagem na Interação</label>
+          <select name="modoDadosSocial">
+            <option value="normal">Normal (1D10)</option>
+            <option value="vantagem">Vantagem (2D10 - Alma Iluminada / Ameaçador / Golpista / Boa Vida / Rede de Contatos)</option>
+            <option value="desvantagem">Desvantagem (2D10 - Menor)</option>
+          </select>
+        </div>
+
+        <div class="solo10-form-group">
+          <label class="solo10-checkbox">
+            <input type="checkbox" name="bonusHonrado" />
+            <span>Aplicar Qualidade <strong>Honrado (+2)</strong> (o alvo conhece sua fama)</span>
+          </label>
+        </div>
+
+        <button type="button" class="solo10-btn solo10-btn-primary" data-action="rolarInteracaoPersonagem">
+          <i class="fas fa-comments"></i> Rolar Espírito (Manipulação)
+        </button>
+      </div>
+    {{/if}}
+
+    {{#if (eq activeTab 'setores')}}
+      <div class="solo10-panel">
+        <h3>Setor & Deslocamento</h3>
+        <p class="solo10-hint">Deslocar-se para um setor adjacente leva 1 hora a pé ou meia hora usando um veículo.</p>
+        <div class="solo10-form-group">
+          <label>Escolher Setor de Destino</label>
+          <select name="novoSetor">
+            {{#each setores}}
+              <option value="{{this.nome}}" {{#if (eq ../actor.system.setorAtual this.nome)}}selected{{/if}}>
+                {{this.nome}} — {{this.descricao}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="solo10-grid-2">
+          <button type="button" class="solo10-btn" data-action="deslocarSetor" data-meio="pe">
+            <i class="fas fa-walking"></i> Ir a Pé (1 hora)
+          </button>
+          <button type="button" class="solo10-btn" data-action="deslocarSetor" data-meio="veiculo">
+            <i class="fas fa-car"></i> Ir com Veículo (Meia hora)
+          </button>
+        </div>
+      </div>
+
+      <div class="solo10-panel">
+        <h3>Gerador de Eventos, Encontros e Personagens Importantes</h3>
+        <div class="solo10-grid-2">
+          <div class="solo10-form-group">
+            <label>Dado da Tabela</label>
+            <select name="dadoTabelaSetor">
+              <option value="1d10">1D10 (Padrão 10 itens)</option>
+              <option value="1d20">1D20 (Setor com 20 eventos)</option>
+              <option value="2d10">2D10</option>
+            </select>
+          </div>
+          <div class="solo10-form-group">
+            <label>Tabela RollTable do Mundo (Opcional)</label>
+            <select name="rollTableId">
+              <option value="">— Rolar apenas os dados —</option>
+              {{#each rollTables}}
+                <option value="{{this.id}}">{{this.name}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+
+        <div class="solo10-grid-2">
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="rolarTabelaSetor" data-tipo="Evento do Setor">
+            <i class="fas fa-calendar-day"></i> Rolar Evento do Setor
+          </button>
+          <button type="button" class="solo10-btn" data-action="rolarTabelaSetor" data-tipo="Encontro Neutro">
+            <i class="fas fa-handshake"></i> Rolar Encontro Neutro
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-danger" data-action="rolarTabelaSetor" data-tipo="Encontro Violento">
+            <i class="fas fa-skull-crossbones"></i> Rolar Encontro Violento
+          </button>
+          <button type="button" class="solo10-btn" data-action="rolarTabelaSetor" data-tipo="Personagem Importante">
+            <i class="fas fa-user-tag"></i> Gerar Personagem Importante
+          </button>
+        </div>
+      </div>
+
+      {{#if actor}}
+        <div class="solo10-panel">
+          <h3>Acontecimento Importante ({{actor.name}})</h3>
+          <p class="solo10-hint">
+            Locais visitados: <strong>{{actor.system.acontecimento.locaisVisitados}} / 5</strong>.
+            Se você for a 4 locais e não encontrar a Ameaça Principal, ela sempre estará no 5º local!
+          </p>
+          <div class="solo10-grid-2">
+            <button type="button" class="solo10-btn" data-action="visitarLocalAcontecimento">
+              <i class="fas fa-map-pin"></i> Registrar Local Visitado (+1)
+            </button>
+            <button type="button" class="solo10-btn solo10-btn-primary" data-action="vencerAreaAcontecimento">
+              <i class="fas fa-trophy"></i> Área Vencida (+1 XP Extra)
+            </button>
+          </div>
+        </div>
+      {{/if}}
+    {{/if}}
+
+    {{#if (eq activeTab 'exercito')}}
+      <div class="solo10-panel">
+        <h3>Calculadora de Combate em Massa</h3>
+        <p class="solo10-hint">
+          <strong>Poder do Exército = Poder das Unidades + Poder dos Veículos e Fortificações</strong>.<br/>
+          *Unidades usadas para atender a Guarnição/Tripulação Mínima são descontadas automaticamente.
+        </p>
+
+        <div class="solo10-grid-2">
+          <!-- TROPA ALIADA -->
+          <div class="solo10-army-col">
+            <h4>Tropa 1 (Aliada)</h4>
+            <div class="solo10-form-group">
+              <label>Nome da Tropa</label>
+              <input type="text" name="aliadoNome" value="Exército Aliado" />
+            </div>
+            <div class="solo10-form-group">
+              <label>Poder dos Personagens (Soma de Atributos*)</label>
+              <input type="number" name="aliadoPoderPersonagens" value="{{#if actor}}{{actor.system.poderCombateMassa}}{{else}}0{{/if}}" min="0" />
+            </div>
+            <div class="solo10-form-group">
+              <label>Fortificação ou Veículo</label>
+              <select name="aliadoFortificacao">
+                {{#each fortificacoesVeiculos}}
+                  <option value="{{this.key}}">{{this.nome}} (Poder {{this.poder}} | Guarn. {{this.guarnicao}})</option>
+                {{/each}}
+              </select>
+            </div>
+            <label class="solo10-checkbox"><input type="checkbox" name="aliadoPalicada" /> <span>Paliçada*** (+50% Poder da Fortificação)</span></label>
+            <label class="solo10-checkbox"><input type="checkbox" name="aliadoTerreno" /> <span>Terreno Vantajoso (x 1,5)</span></label>
+            <label class="solo10-checkbox"><input type="checkbox" name="aliadoMoral" /> <span>Moral Elevada (x 1,5)</span></label>
+            <hr/>
+            <div class="solo10-units-list">
+              {{#each unidadesExercito}}
+                <div class="solo10-unit-row">
+                  <span>{{this.nome}} ({{this.poder}})</span>
+                  <input type="number" name="aliado_unit_{{this.key}}" value="0" min="0" />
+                </div>
+              {{/each}}
+            </div>
+          </div>
+
+          <!-- TROPA INIMIGA -->
+          <div class="solo10-army-col">
+            <h4>Tropa 2 (Inimiga)</h4>
+            <div class="solo10-form-group">
+              <label>Nome da Tropa</label>
+              <input type="text" name="inimigoNome" value="Exército Inimigo" />
+            </div>
+            <div class="solo10-form-group">
+              <label>Poder dos Personagens Inimigos</label>
+              <input type="number" name="inimigoPoderPersonagens" value="0" min="0" />
+            </div>
+            <div class="solo10-form-group">
+              <label>Fortificação ou Veículo</label>
+              <select name="inimigoFortificacao">
+                {{#each fortificacoesVeiculos}}
+                  <option value="{{this.key}}">{{this.nome}} (Poder {{this.poder}} | Guarn. {{this.guarnicao}})</option>
+                {{/each}}
+              </select>
+            </div>
+            <label class="solo10-checkbox"><input type="checkbox" name="inimigoPalicada" /> <span>Paliçada*** (+50% Poder da Fortificação)</span></label>
+            <label class="solo10-checkbox"><input type="checkbox" name="inimigoTerreno" /> <span>Terreno Vantajoso (x 1,5)</span></label>
+            <label class="solo10-checkbox"><input type="checkbox" name="inimigoMoral" /> <span>Moral Elevada (x 1,5)</span></label>
+            <hr/>
+            <div class="solo10-units-list">
+              {{#each unidadesExercito}}
+                <div class="solo10-unit-row">
+                  <span>{{this.nome}} ({{this.poder}})</span>
+                  <input type="number" name="inimigo_unit_{{this.key}}" value="0" min="0" />
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="solo10-btn solo10-btn-primary" data-action="calcularCombateMassa">
+          <i class="fas fa-calculator"></i> Calcular e Publicar Combate em Massa no Chat
+        </button>
+      </div>
+    {{/if}}
+  </section>
+</div>

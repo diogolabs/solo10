@@ -1,0 +1,847 @@
+/* ==========================================================================
+   SOLO 10 - LICENÇA ABERTA 2.0 — ESTILOS FOUNDRY VTT (v13 & v14)
+   ========================================================================== */
+
+.solo10 {
+  --s10-bg: #18181b;
+  --s10-panel: #232329;
+  --s10-panel-alt: #2c2c35;
+  --s10-border: #3f3f4e;
+  --s10-accent: #b91c1c;
+  --s10-accent-hover: #dc2626;
+  --s10-gold: #d97706;
+  --s10-success: #15803d;
+  --s10-danger: #991b1b;
+  --s10-text: #f4f4f5;
+  --s10-muted: #a1a1aa;
+  font-family: "Signika", "Segoe UI", sans-serif;
+}
+
+.solo10-sheet-container,
+.solo10-oracle-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+  color: var(--s10-text);
+  background: var(--s10-bg);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.solo10-sheet-body,
+.solo10-oracle-content,
+.solo10-item-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+/* CABEÇALHO */
+.solo10-sheet-header {
+  display: flex;
+  gap: 12px;
+  background: var(--s10-panel);
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+  padding: 10px;
+  align-items: flex-start;
+}
+
+.solo10-profile-img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border: 2px solid var(--s10-accent);
+  border-radius: 6px;
+  cursor: pointer;
+  background: #111;
+}
+
+.solo10-header-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.solo10-title-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.solo10-charname {
+  flex: 1;
+  font-size: 1.35rem;
+  font-weight: 700;
+  background: var(--s10-panel-alt);
+  color: var(--s10-text);
+  border: 1px solid var(--s10-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  height: 36px;
+}
+
+.solo10-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.solo10-meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.solo10-meta-field label,
+.solo10-form-group label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--s10-muted);
+  font-weight: 600;
+}
+
+.solo10 input[type="text"],
+.solo10 input[type="number"],
+.solo10 select,
+.solo10 textarea {
+  background: var(--s10-panel-alt);
+  color: var(--s10-text);
+  border: 1px solid var(--s10-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+}
+
+.solo10-inline-input {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* RESERVAS */
+.solo10-reservas-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.solo10-adversario-sheet .solo10-reservas-bar {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.solo10-reserva-box {
+  background: var(--s10-panel-alt);
+  border: 1px solid var(--s10-border);
+  border-left: 4px solid var(--s10-accent);
+  border-radius: 5px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.solo10-reserva-box.alerta-zero {
+  border-color: #ef4444;
+  background: rgba(153, 27, 27, 0.28);
+}
+
+.reserva-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.reserva-title small {
+  font-size: 0.68rem;
+  color: var(--s10-muted);
+  font-weight: 400;
+}
+
+.reserva-inputs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.reserva-inputs input {
+  width: 54px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.reserva-inputs .max {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--s10-muted);
+}
+
+.estado-tag {
+  display: inline-block;
+  margin-top: 4px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+.solo10-reserva-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+
+/* ABAS */
+.solo10-tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 2px solid var(--s10-border);
+  padding-bottom: 6px;
+}
+
+.solo10-tab-btn {
+  flex: 1;
+  background: var(--s10-panel);
+  color: var(--s10-muted);
+  border: 1px solid var(--s10-border);
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.solo10-tab-btn:hover,
+.solo10-tab-btn.active {
+  background: var(--s10-accent);
+  color: #fff;
+  border-color: var(--s10-accent-hover);
+}
+
+/* PAINÉIS */
+.solo10-panel {
+  background: var(--s10-panel);
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.solo10-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--s10-border);
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.solo10-panel h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.solo10-header-tools {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.solo10-hint {
+  font-size: 0.8rem;
+  color: var(--s10-muted);
+  margin: 0 0 8px;
+}
+
+/* ATRIBUTOS */
+.solo10-atributos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.solo10-atributo-card {
+  background: var(--s10-panel-alt);
+  border: 1px solid var(--s10-border);
+  border-top: 3px solid var(--s10-accent);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.attr-header h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.attr-total {
+  background: var(--s10-accent);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attr-desc {
+  font-size: 0.75rem;
+  color: var(--s10-muted);
+  margin: 0;
+  min-height: 28px;
+}
+
+.attr-fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.attr-fields label {
+  font-size: 0.68rem;
+  color: var(--s10-muted);
+  display: block;
+}
+
+.attr-fields input {
+  width: 100%;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* PERÍCIAS */
+.solo10-pericias-table {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solo10-pericia-row {
+  display: grid;
+  grid-template-columns: 190px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 5px 8px;
+  background: var(--s10-panel-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 4px;
+}
+
+.solo10-pericia-row.treinada {
+  border-left: 4px solid var(--s10-gold);
+  background: rgba(217, 119, 6, 0.12);
+}
+
+.pericia-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pericia-desc {
+  font-size: 0.76rem;
+  color: var(--s10-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pericia-roll-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.solo10-tag-plus {
+  background: var(--s10-gold);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* BOTÕES */
+.solo10-btn {
+  background: var(--s10-panel-alt);
+  color: var(--s10-text);
+  border: 1px solid var(--s10-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.solo10-btn:hover {
+  border-color: var(--s10-accent);
+  background: #343440;
+}
+
+.solo10-btn-primary {
+  background: var(--s10-accent);
+  border-color: var(--s10-accent-hover);
+  color: #fff;
+}
+
+.solo10-btn-primary:hover {
+  background: var(--s10-accent-hover);
+}
+
+.solo10-btn-oraculo {
+  background: #6d28d9;
+  border-color: #7c3aed;
+  color: #fff;
+}
+
+.solo10-btn-warning {
+  background: #b45309;
+  border-color: #d97706;
+  color: #fff;
+}
+
+.solo10-btn-danger {
+  background: var(--s10-danger);
+  border-color: #dc2626;
+  color: #fff;
+}
+
+.solo10-btn-sm {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.solo10-btn-xs {
+  padding: 2px 6px;
+  font-size: 0.74rem;
+}
+
+.solo10-btn-xs.sugerido {
+  border-color: var(--s10-gold);
+  color: #fde68a;
+}
+
+.solo10-icon-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--s10-muted);
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+.solo10-icon-btn:hover {
+  color: #fff;
+  border-color: var(--s10-border);
+}
+
+/* TABELAS & QUALIDADES */
+.solo10-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.solo10-table th,
+.solo10-table td {
+  border: 1px solid var(--s10-border);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.solo10-table th {
+  background: #141418;
+  color: #fff;
+  font-weight: 700;
+}
+
+.solo10-table-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.solo10-qualidades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.solo10-qualidade-card {
+  background: var(--s10-panel-alt);
+  border: 1px solid var(--s10-border);
+  border-left: 4px solid var(--s10-gold);
+  border-radius: 5px;
+  padding: 8px 10px;
+}
+
+.qual-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.qual-desc {
+  font-size: 0.82rem;
+  color: #d4d4d8;
+  line-height: 1.35;
+}
+
+.solo10-mini-tag {
+  background: #3f3f46;
+  color: #e4e4e7;
+  font-size: 0.68rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: 4px;
+}
+
+.solo10-mini-tag.warn {
+  background: #991b1b;
+  color: #fecaca;
+}
+
+.solo10-badge {
+  background: #312e81;
+  color: #e0e7ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* GRIDS & FORMULÁRIOS */
+.solo10-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.solo10-combat-quickbar,
+.solo10-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 6px;
+}
+
+.solo10-diverse-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--s10-border);
+  font-size: 0.82rem;
+}
+
+.solo10-trap-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.solo10-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.84rem;
+}
+
+.solo10-metas-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solo10-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--s10-panel-alt);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.solo10-meta-item.concluida .meta-name {
+  text-decoration: line-through;
+  color: var(--s10-muted);
+}
+
+.solo10-meta-item .meta-name {
+  flex: 1;
+}
+
+/* ORÁCULO & COMBATE EM MASSA */
+.solo10-oracle-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--s10-panel);
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--s10-border);
+}
+
+.solo10-oracle-top select {
+  flex: 1;
+}
+
+.solo10-army-col {
+  background: var(--s10-panel-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 5px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.solo10-units-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.solo10-unit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.solo10-unit-row input {
+  width: 55px;
+  text-align: center;
+}
+
+/* CARDS DE CHAT */
+.solo10-chat-card {
+  background: #1e1e24;
+  color: #f4f4f5;
+  border: 1px solid #3f3f4e;
+  border-left: 4px solid #b91c1c;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: "Signika", sans-serif;
+}
+
+.solo10-oraculo-card {
+  border-left-color: #7c3aed;
+}
+
+.solo10-card-header {
+  border-bottom: 1px solid #3f3f4e;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.solo10-card-header h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.solo10-card-breakdown {
+  font-size: 0.8rem;
+  color: #d4d4d8;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.solo10-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.solo10-dice-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.solo10-die {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  font-weight: 800;
+  background: #27272a;
+  border: 1px solid #52525b;
+}
+
+.solo10-die.active {
+  background: #b91c1c;
+  color: #fff;
+  border-color: #ef4444;
+}
+
+.solo10-die.discarded {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.solo10-roll-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin: 6px 0;
+}
+
+.solo10-roll-total.sucesso {
+  background: rgba(21, 128, 61, 0.25);
+  border: 1px solid #22c55e;
+}
+
+.solo10-roll-total.falha {
+  background: rgba(153, 27, 27, 0.28);
+  border: 1px solid #ef4444;
+}
+
+.solo10-total-number .value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 4px;
+}
+
+.solo10-status-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.solo10-status-banner .bonus-poder {
+  font-size: 0.78rem;
+  color: #fde047;
+  font-weight: 700;
+}
+
+.solo10-card-effect {
+  background: #272730;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 0.84rem;
+  margin-top: 4px;
+}
+
+.solo10-card-notes {
+  margin-top: 4px;
+  color: #a1a1aa;
+  display: flex;
+  flex-direction: column;
+}
+
+.solo10-card-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solo10-chat-btn {
+  width: 100%;
+  background: #272730;
+  color: #fff;
+  border: 1px solid #52525b;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.solo10-chat-btn:hover {
+  background: #b91c1c;
+  border-color: #ef4444;
+}
+
+.solo10-chat-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 4px 6px;
+  flex-wrap: wrap;
+}
+
+/* DIÁLOGO DE ROLAGEM */
+.solo10-roll-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.solo10-dialog-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.solo10-dialog-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.solo10-dialog-notes {
+  background: rgba(217, 119, 6, 0.15);
+  border: 1px solid #d97706;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.8rem;
+}
+
+.solo10-dialog-notes ul {
+  margin: 4px 0 0 16px;
+  padding: 0;
+}

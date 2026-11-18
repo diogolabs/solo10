@@ -1,0 +1,114 @@
+<div class="solo10-sheet-container solo10-item-sheet">
+  <header class="solo10-sheet-header">
+    <div class="solo10-title-row" style="width:100%;">
+      <input type="text" class="solo10-charname" name="name" value="{{item.name}}" placeholder="Nome do Item" />
+      <button type="button" class="solo10-btn solo10-btn-sm" data-action="postToChat">
+        <i class="fas fa-comment"></i> Enviar ao Chat
+      </button>
+    </div>
+  </header>
+
+  <section class="solo10-item-body">
+    {{#if (eq item.type 'qualidade')}}
+      <div class="solo10-form-group">
+        <label>Tipo de Qualidade</label>
+        <select name="system.tipo">
+          <option value="passiva" {{#if (eq system.tipo 'passiva')}}selected{{/if}}>Passiva (Bônus Automático)</option>
+          <option value="ativa" {{#if (eq system.tipo 'ativa')}}selected{{/if}}>Ativa (Requer Rolagem de Atributo + Perícia)</option>
+        </select>
+      </div>
+      <div class="solo10-form-group">
+        <label>Identificador Interno (Slug)</label>
+        <input type="text" name="system.slug" value="{{system.slug}}" />
+      </div>
+    {{/if}}
+
+    {{#if (eq item.type 'arma')}}
+      <div class="solo10-grid-2">
+        <div class="solo10-form-group">
+          <label>Alcance</label>
+          <select name="system.alcance">
+            <option value="corporal" {{#if (eq system.alcance 'corporal')}}selected{{/if}}>Combate Corporal</option>
+            <option value="distancia" {{#if (eq system.alcance 'distancia')}}selected{{/if}}>Combate a Distância</option>
+          </select>
+        </div>
+        <div class="solo10-form-group">
+          <label>Tipo de Dano</label>
+          <select name="system.tipoDano">
+            <option value="corpo" {{#if (eq system.tipoDano 'corpo')}}selected{{/if}}>Atributo Corpo + Bônus</option>
+            <option value="fixo" {{#if (eq system.tipoDano 'fixo')}}selected{{/if}}>Dano Fixo (Granadas / Explosivos)</option>
+          </select>
+        </div>
+      </div>
+      <div class="solo10-grid-2">
+        <div class="solo10-form-group">
+          <label>Bônus de Dano (+1, +2, +3)</label>
+          <input type="number" name="system.bonusDano" value="{{system.bonusDano}}" />
+        </div>
+        <div class="solo10-form-group">
+          <label>Dano Fixo (se aplicável)</label>
+          <input type="number" name="system.danoFixo" value="{{system.danoFixo}}" />
+        </div>
+      </div>
+      <div class="solo10-form-group">
+        <label class="solo10-checkbox"><input type="checkbox" name="system.leve" {{#if system.leve}}checked{{/if}} /> <span>Arma Leve (Lutador Veloz)</span></label>
+        <label class="solo10-checkbox"><input type="checkbox" name="system.pesada" {{#if system.pesada}}checked{{/if}} /> <span>Arma Pesada (Homem de Armas / Restrição Ambidestria)</span></label>
+        <label class="solo10-checkbox"><input type="checkbox" name="system.duasMaos" {{#if system.duasMaos}}checked{{/if}} /> <span>Arma de Duas Mãos (Homem de Armas)</span></label>
+      </div>
+    {{/if}}
+
+    {{#if (eq item.type 'armadura')}}
+      <div class="solo10-grid-2">
+        <div class="solo10-form-group">
+          <label>Resistência a Dano (RD)</label>
+          <input type="number" name="system.resistenciaDano" value="{{system.resistenciaDano}}" min="0" />
+        </div>
+        <div class="solo10-form-group">
+          <label>Custo ($)</label>
+          <input type="number" name="system.custo" value="{{system.custo}}" min="0" />
+        </div>
+      </div>
+      <div class="solo10-form-group">
+        <label class="solo10-checkbox"><input type="checkbox" name="system.equipada" {{#if system.equipada}}checked{{/if}} /> <span>Equipada</span></label>
+        <label class="solo10-checkbox"><input type="checkbox" name="system.penalidadeAgilidade" {{#if system.penalidadeAgilidade}}checked{{/if}} /> <span>*Impõe Desvantagem em testes de Corpo (destreza e agilidade)</span></label>
+        <label class="solo10-checkbox"><input type="checkbox" name="system.leve" {{#if system.leve}}checked{{/if}} /> <span>Armadura Leve (Lutador Veloz)</span></label>
+        <label class="solo10-checkbox"><input type="checkbox" name="system.escudo" {{#if system.escudo}}checked{{/if}} /> <span>É um Escudo</span></label>
+      </div>
+    {{/if}}
+
+    {{#if (eq item.type 'equipamento')}}
+      <div class="solo10-grid-2">
+        <div class="solo10-form-group">
+          <label>Quantidade</label>
+          <input type="number" name="system.quantidade" value="{{system.quantidade}}" min="0" />
+        </div>
+        <div class="solo10-form-group">
+          <label>Custo de Mercado ($)</label>
+          <input type="number" name="system.custo" value="{{system.custo}}" min="0" />
+        </div>
+      </div>
+    {{/if}}
+
+    {{#if (eq item.type 'armadilha')}}
+      <div class="solo10-grid-2">
+        <div class="solo10-form-group">
+          <label>Efeito Principal</label>
+          <select name="system.efeito">
+            {{#each efeitosArmadilha}}
+              <option value="{{@key}}" {{#if (eq ../system.efeito @key)}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="solo10-form-group">
+          <label>Bônus de Poder Obtido</label>
+          <input type="number" name="system.bonusPoder" value="{{system.bonusPoder}}" min="0" />
+        </div>
+      </div>
+    {{/if}}
+
+    <div class="solo10-form-group">
+      <label>Descrição / Regras</label>
+      <textarea name="system.descricao" rows="5">{{system.descricao}}</textarea>
+    </div>
+  </section>
+</div>

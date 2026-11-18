@@ -1,0 +1,6 @@
+# Ignorar arquivos pesados/locais de referência
+Hex Peças.zip
+PDFs e Docs/*.pdf
+Screenshots/
+.DS_Store
+node_modules/

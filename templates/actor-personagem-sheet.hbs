@@ -1,0 +1,714 @@
+<div class="solo10-sheet-container">
+  <!-- CABEÇALHO DO PERSONAGEM -->
+  <header class="solo10-sheet-header">
+    <div class="solo10-header-left">
+      <img class="solo10-profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img" title="Clique para alterar a imagem" />
+    </div>
+
+    <div class="solo10-header-main">
+      <div class="solo10-title-row">
+        <input type="text" class="solo10-charname" name="name" value="{{actor.name}}" placeholder="Nome da Personagem" />
+        <button type="button" class="solo10-btn solo10-btn-oraculo" data-action="abrirOraculo" data-tab="cenario">
+          <i class="fas fa-eye"></i> Oráculo
+        </button>
+        <button type="button" class="solo10-btn solo10-btn-primary" data-action="rollLivre">
+          <i class="fas fa-dice-d10"></i> Rolar 1D10
+        </button>
+      </div>
+
+      <div class="solo10-meta-grid">
+        <div class="solo10-meta-field">
+          <label>Espécie / Tipo</label>
+          <input type="text" name="system.especieTipo" value="{{system.especieTipo}}" placeholder="Humano, etc." />
+        </div>
+        <div class="solo10-meta-field">
+          <label>Morada Inicial</label>
+          <input type="text" name="system.moradaInicial" value="{{system.moradaInicial}}" placeholder="Ex: Apartamento Centro" />
+        </div>
+        <div class="solo10-meta-field">
+          <label>Setor Atual</label>
+          <select name="system.setorAtual">
+            {{#each setores}}
+              <option value="{{this.nome}}" {{#if (eq ../system.setorAtual this.nome)}}selected{{/if}}>{{this.nome}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="solo10-meta-field">
+          <label>Dinheiro ($)</label>
+          <div class="solo10-inline-input">
+            <input type="number" name="system.dinheiro" value="{{system.dinheiro}}" />
+            <button type="button" class="solo10-icon-btn" data-action="calcularDinheiroInicial" title="Aplicar Dinheiro Inicial (Mente x $ 1.000 = $ {{system.dinheiroInicialSugerido}})">
+              <i class="fas fa-coins"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESERVAS: SAÚDE, POSTURA, VONTADE -->
+      <div class="solo10-reservas-bar">
+        <div class="solo10-reserva-box {{#if system.inconsciente}}alerta-zero{{/if}}">
+          <div class="reserva-title">
+            <span><i class="fas fa-heartbeat"></i> Saúde</span>
+            <small>5 + Corpo{{#if (gt system.saude.max (add 5 system.atributos.corpo.total))}} + Bônus{{/if}}</small>
+          </div>
+          <div class="reserva-inputs">
+            <input type="number" name="system.saude.value" value="{{system.saude.value}}" min="0" />
+            <span class="sep">/</span>
+            <span class="max">{{system.saude.max}}</span>
+          </div>
+          {{#if system.inconsciente}}<span class="estado-tag">INCONSCIENTE</span>{{/if}}
+        </div>
+
+        <div class="solo10-reserva-box {{#if system.desmoralizado}}alerta-zero{{/if}}">
+          <div class="reserva-title">
+            <span><i class="fas fa-crown"></i> Postura</span>
+            <small>5 + Espírito{{#if (gt system.postura.max (add 5 system.atributos.espirito.total))}} + Bônus{{/if}}</small>
+          </div>
+          <div class="reserva-inputs">
+            <input type="number" name="system.postura.value" value="{{system.postura.value}}" min="0" />
+            <span class="sep">/</span>
+            <span class="max">{{system.postura.max}}</span>
+          </div>
+          {{#if system.desmoralizado}}<span class="estado-tag">DESMORALIZADO</span>{{/if}}
+        </div>
+
+        <div class="solo10-reserva-box {{#if system.desmotivado}}alerta-zero{{/if}}">
+          <div class="reserva-title">
+            <span><i class="fas fa-fire-alt"></i> Vontade</span>
+            <small>5 + Mente (1 pt = Rerolar D10)</small>
+          </div>
+          <div class="reserva-inputs">
+            <input type="number" name="system.vontade.value" value="{{system.vontade.value}}" min="0" />
+            <span class="sep">/</span>
+            <span class="max">{{system.vontade.max}}</span>
+          </div>
+          {{#if system.desmotivado}}<span class="estado-tag">DESMOTIVADO</span>{{/if}}
+        </div>
+
+        <div class="solo10-reserva-actions">
+          <button type="button" class="solo10-btn solo10-btn-sm" data-action="descansar" title="Descanso de 8 horas em lugar tranquilo: recupera +1 de Saúde, Postura e Vontade">
+            <i class="fas fa-bed"></i> Descansar (+1)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-sm" data-action="tratamento" title="Tratamento adequado com medicamentos: recupera +2 de Saúde, Postura e Vontade">
+            <i class="fas fa-briefcase-medical"></i> Tratamento (+2)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-sm" data-action="distribuirAtributos" data-modo="resetReservas" title="Preencher Saúde, Postura e Vontade ao máximo">
+            <i class="fas fa-sync-alt"></i> Máximo
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVEGAÇÃO DE ABAS -->
+  <nav class="solo10-tabs">
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'atributos')}}active{{/if}}" data-action="changeTab" data-tab="atributos">
+      <i class="fas fa-user-shield"></i> Atributos & Perícias
+    </button>
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'combate')}}active{{/if}}" data-action="changeTab" data-tab="combate">
+      <i class="fas fa-crosshairs"></i> Combate & Equipamentos
+    </button>
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'qualidades')}}active{{/if}}" data-action="changeTab" data-tab="qualidades">
+      <i class="fas fa-star"></i> Qualidades & Armadilhas
+    </button>
+    <button type="button" class="solo10-tab-btn {{#if (eq activeTab 'jogando')}}active{{/if}}" data-action="changeTab" data-tab="jogando">
+      <i class="fas fa-compass"></i> Jogando, Evolução & Metas
+    </button>
+  </nav>
+
+  <!-- CORPO DA FICHA -->
+  <section class="solo10-sheet-body">
+    <!-- ABA 1: ATRIBUTOS & PERÍCIAS -->
+    {{#if (eq activeTab 'atributos')}}
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Atributos Principais</h3>
+          <div class="solo10-header-tools">
+            <span class="solo10-badge">Poder em Combate em Massa: {{system.poderCombateMassa}}</span>
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="distribuirAtributos" data-modo="333" title="Distribuir valores equilibrados 3, 3 e 3">
+              Equilibrar (3, 3, 3)
+            </button>
+          </div>
+        </div>
+        <p class="solo10-hint">Na criação, distribua os valores <strong>4, 3 e 2</strong> nos Atributos (ou <strong>3, 3 e 3</strong> para um personagem equilibrado).</p>
+
+        <div class="solo10-atributos-grid">
+          <!-- CORPO -->
+          <div class="solo10-atributo-card">
+            <div class="attr-header">
+              <h4>CORPO</h4>
+              <span class="attr-total">{{system.atributos.corpo.total}}</span>
+            </div>
+            <p class="attr-desc">Força, agilidade e resistência física. Base da Saúde (5 + Corpo).</p>
+            <div class="attr-fields">
+              <div>
+                <label>Base</label>
+                <input type="number" name="system.atributos.corpo.value" value="{{system.atributos.corpo.value}}" min="0" />
+              </div>
+              <div>
+                <label>Bônus</label>
+                <input type="number" name="system.atributos.corpo.bonus" value="{{system.atributos.corpo.bonus}}" />
+              </div>
+              <div>
+                <label>Bônus Saúde</label>
+                <input type="number" name="system.saude.bonus" value="{{system.saude.bonus}}" />
+              </div>
+            </div>
+            <button type="button" class="solo10-btn solo10-btn-primary" data-action="rollAtributo" data-atributo="corpo">
+              <i class="fas fa-dice-d10"></i> Testar Corpo
+            </button>
+          </div>
+
+          <!-- ESPÍRITO -->
+          <div class="solo10-atributo-card">
+            <div class="attr-header">
+              <h4>ESPÍRITO</h4>
+              <span class="attr-total">{{system.atributos.espirito.total}}</span>
+            </div>
+            <p class="attr-desc">Aparência, manipulação e carisma social. Base da Postura (5 + Espírito).</p>
+            <div class="attr-fields">
+              <div>
+                <label>Base</label>
+                <input type="number" name="system.atributos.espirito.value" value="{{system.atributos.espirito.value}}" min="0" />
+              </div>
+              <div>
+                <label>Bônus</label>
+                <input type="number" name="system.atributos.espirito.bonus" value="{{system.atributos.espirito.bonus}}" />
+              </div>
+              <div>
+                <label>Bônus Postura</label>
+                <input type="number" name="system.postura.bonus" value="{{system.postura.bonus}}" />
+              </div>
+            </div>
+            <button type="button" class="solo10-btn solo10-btn-primary" data-action="rollAtributo" data-atributo="espirito">
+              <i class="fas fa-dice-d10"></i> Testar Espírito
+            </button>
+          </div>
+
+          <!-- MENTE -->
+          <div class="solo10-atributo-card">
+            <div class="attr-header">
+              <h4>MENTE</h4>
+              <span class="attr-total">{{system.atributos.mente.total}}</span>
+            </div>
+            <p class="attr-desc">Inteligência, raciocínio e determinação. Base da Vontade (5 + Mente).</p>
+            <div class="attr-fields">
+              <div>
+                <label>Base</label>
+                <input type="number" name="system.atributos.mente.value" value="{{system.atributos.mente.value}}" min="0" />
+              </div>
+              <div>
+                <label>Bônus</label>
+                <input type="number" name="system.atributos.mente.bonus" value="{{system.atributos.mente.bonus}}" />
+              </div>
+              <div>
+                <label>Bônus Vontade</label>
+                <input type="number" name="system.vontade.bonus" value="{{system.vontade.bonus}}" />
+              </div>
+            </div>
+            <button type="button" class="solo10-btn solo10-btn-primary" data-action="rollAtributo" data-atributo="mente">
+              <i class="fas fa-dice-d10"></i> Testar Mente
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERÍCIAS -->
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Perícias (+2 nos Testes)</h3>
+          <span class="solo10-badge">Selecionadas: {{totalPericiasTreinadas}} (Iniciais: {{maxPericiasIniciais}})</span>
+        </div>
+        <p class="solo10-hint">
+          Escolha três Perícias iniciais (ou 4 com a Qualidade <em>Perito</em>). Cada Perícia concede <strong>+2</strong> na rolagem e pode ser somada a <strong>qualquer Atributo</strong> conforme o que será testado.
+        </p>
+
+        <div class="solo10-pericias-table">
+          {{#each periciasList}}
+            <div class="solo10-pericia-row {{#if this.treinada}}treinada{{/if}}">
+              <label class="pericia-check">
+                <input type="checkbox" name="system.pericias.{{this.key}}.treinada" {{#if this.treinada}}checked{{/if}} />
+                <span class="pericia-nome">{{this.label}}</span>
+                {{#if this.treinada}}<span class="solo10-tag-plus">+2</span>{{/if}}
+              </label>
+              <span class="pericia-desc" title="{{this.descricao}}">{{this.descricao}}</span>
+              <div class="pericia-roll-btns">
+                <button type="button" class="solo10-btn solo10-btn-xs {{#if (eq this.atributoSugerido 'corpo')}}sugerido{{/if}}" data-action="rollPericia" data-pericia="{{this.key}}" data-atributo="corpo" title="Rolar {{this.label}} com Corpo">
+                  Corpo
+                </button>
+                <button type="button" class="solo10-btn solo10-btn-xs {{#if (eq this.atributoSugerido 'espirito')}}sugerido{{/if}}" data-action="rollPericia" data-pericia="{{this.key}}" data-atributo="espirito" title="Rolar {{this.label}} com Espírito">
+                  Espírito
+                </button>
+                <button type="button" class="solo10-btn solo10-btn-xs {{#if (eq this.atributoSugerido 'mente')}}sugerido{{/if}}" data-action="rollPericia" data-pericia="{{this.key}}" data-atributo="mente" title="Rolar {{this.label}} com Mente">
+                  Mente
+                </button>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+
+        <div class="solo10-grid-2" style="margin-top: 10px;">
+          <div class="solo10-form-group">
+            <label>Idiomas Dominados (5 com Idiomas / +5 com Poliglota)</label>
+            <input type="text" name="system.idiomasLista" value="{{system.idiomasLista}}" placeholder="Liste os idiomas conhecidos..." />
+          </div>
+          <div class="solo10-form-group">
+            <label>Bônus de Poder Mental Acumulado (Para teste futuro sobre o mesmo assunto)</label>
+            <input type="number" name="system.bonusMentalFuturo" value="{{system.bonusMentalFuturo}}" />
+          </div>
+        </div>
+      </div>
+    {{/if}}
+
+    <!-- ABA 2: COMBATE, ARMAS, ARMADURAS E DANOS DIVERSOS -->
+    {{#if (eq activeTab 'combate')}}
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Ações Rápidas de Combate, Reação e Fuga</h3>
+          <span class="solo10-badge">Resistência a Dano Total (RD): {{system.resistenciaDanoTotal}}</span>
+        </div>
+        <div class="solo10-combat-quickbar">
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="atacarArma" data-alcance="corporal">
+            <i class="fas fa-fist-raised"></i> Ataque Corporal
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="atacarArma" data-alcance="distancia">
+            <i class="fas fa-bullseye"></i> Ataque a Distância
+          </button>
+          <button type="button" class="solo10-btn" data-action="defenderFisico" data-pericia="combateCorporal">
+            <i class="fas fa-shield-alt"></i> Defender (Corporal)
+          </button>
+          <button type="button" class="solo10-btn" data-action="defenderFisico" data-pericia="combateDistancia">
+            <i class="fas fa-shield-virus"></i> Defender (Distância)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-warning" data-action="fugirCombate">
+            <i class="fas fa-running"></i> Fugir (Corpo + Atletismo)
+          </button>
+        </div>
+      </div>
+
+      <!-- ARMAS -->
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Armas</h3>
+          <div class="solo10-header-tools">
+            <select data-field="armaPadraoIdx">
+              {{#each armasPadrao}}
+                <option value="{{@index}}">{{this.nome}}</option>
+              {{/each}}
+            </select>
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="addArmaPadrao">
+              <i class="fas fa-plus"></i> Adicionar da Tabela
+            </button>
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="createItem" data-type="arma">
+              <i class="fas fa-hammer"></i> Arma Personalizada
+            </button>
+          </div>
+        </div>
+
+        <table class="solo10-table">
+          <thead>
+            <tr>
+              <th>Arma</th>
+              <th>Alcance</th>
+              <th>Dano Base</th>
+              <th>Propriedades</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each armas}}
+              <tr>
+                <td><strong>{{this.name}}</strong></td>
+                <td>{{#if (eq this.system.alcance 'distancia')}}Combate a Distância{{else}}Combate Corporal{{/if}}</td>
+                <td>
+                  {{#if (eq this.system.tipoDano 'fixo')}}
+                    {{this.system.danoFixo}} (Fixo)
+                  {{else}}
+                    Corpo + {{this.system.bonusDano}} (Total: {{add ../system.atributos.corpo.total this.system.bonusDano}})
+                  {{/if}}
+                </td>
+                <td>
+                  {{#if this.system.leve}}<span class="solo10-mini-tag">Leve</span>{{/if}}
+                  {{#if this.system.pesada}}<span class="solo10-mini-tag">Pesada</span>{{/if}}
+                  {{#if this.system.duasMaos}}<span class="solo10-mini-tag">2 Mãos</span>{{/if}}
+                </td>
+                <td class="solo10-table-actions">
+                  <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-primary" data-action="atacarArma" data-item-id="{{this.id}}">
+                    <i class="fas fa-dice-d10"></i> Atacar
+                  </button>
+                  <button type="button" class="solo10-icon-btn" data-action="postItem" data-item-id="{{this.id}}" title="Enviar para o Chat"><i class="fas fa-comment"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="editItem" data-item-id="{{this.id}}" title="Editar"><i class="fas fa-edit"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="deleteItem" data-item-id="{{this.id}}" title="Excluir"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            {{else}}
+              <tr><td colspan="5" class="solo10-empty">Nenhuma arma adicionada. Selecione uma arma da tabela acima para adicionar.</td></tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ARMADURAS E ESCUDOS -->
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Armaduras & Escudos</h3>
+          <div class="solo10-header-tools">
+            <select data-field="armaduraPadraoIdx">
+              {{#each armadurasPadrao}}
+                <option value="{{@index}}">{{this.nome}} (RD {{this.resistenciaDano}})</option>
+              {{/each}}
+            </select>
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="addArmaduraPadrao">
+              <i class="fas fa-plus"></i> Adicionar da Tabela
+            </button>
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="createItem" data-type="armadura">
+              <i class="fas fa-shield-alt"></i> Personalizada
+            </button>
+          </div>
+        </div>
+
+        <table class="solo10-table">
+          <thead>
+            <tr>
+              <th>Equipada</th>
+              <th>Armadura / Escudo</th>
+              <th>Resistência a Dano</th>
+              <th>Observações</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each armaduras}}
+              <tr>
+                <td>
+                  <input type="checkbox" {{#if this.system.equipada}}checked{{/if}} data-action="toggleEquipItem" data-item-id="{{this.id}}" />
+                </td>
+                <td><strong>{{this.name}}</strong></td>
+                <td>Reduz {{this.system.resistenciaDano}} de dano</td>
+                <td>
+                  {{#if this.system.penalidadeAgilidade}}<span class="solo10-mini-tag warn">*Desvantagem em Destreza/Agilidade</span>{{/if}}
+                  {{#if this.system.leve}}<span class="solo10-mini-tag">Leve</span>{{/if}}
+                  {{#if this.system.escudo}}<span class="solo10-mini-tag">Escudo</span>{{/if}}
+                </td>
+                <td class="solo10-table-actions">
+                  <button type="button" class="solo10-icon-btn" data-action="editItem" data-item-id="{{this.id}}"><i class="fas fa-edit"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="deleteItem" data-item-id="{{this.id}}"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            {{else}}
+              <tr><td colspan="5" class="solo10-empty">Nenhuma armadura adicionada.</td></tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DANOS DIVERSOS & OFÍCIOS -->
+      <div class="solo10-grid-2">
+        <div class="solo10-panel">
+          <h3>Danos Diversos (Queda, Fogo/Ácido, Veneno)</h3>
+          <div class="solo10-diverse-row">
+            <span><strong>Queda</strong> (Altura - 3, s/ armadura):</span>
+            <input type="number" data-field="alturaQueda" value="5" min="0" style="width:60px;" />
+            <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-danger" data-action="aplicarDanoDiverso" data-fonte="queda">Aplicar Queda</button>
+          </div>
+          <div class="solo10-diverse-row">
+            <span><strong>Fogo e Ácido</strong> (3 a 10):</span>
+            <input type="number" data-field="danoFogoAcido" value="3" min="3" max="10" style="width:60px;" />
+            <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-danger" data-action="aplicarDanoDiverso" data-fonte="fogo">Aplicar Fogo/Ácido</button>
+          </div>
+          <div class="solo10-diverse-row">
+            <span><strong>Veneno</strong> (2 Fraco a 8 Forte):</span>
+            <input type="number" data-field="danoVeneno" value="2" min="2" max="8" style="width:60px;" />
+            <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-danger" data-action="aplicarDanoDiverso" data-fonte="veneno">Aplicar Veneno</button>
+          </div>
+        </div>
+
+        <div class="solo10-panel">
+          <h3>Riquezas e Ofícios (Criar / Melhorar Itens)</h3>
+          <p class="solo10-hint">1 dia de trabalho para cada $ 100 de custo + Matéria Prima igual ao valor de mercado + Ferramentas.</p>
+          <div class="solo10-form-group">
+            <label>Custo de Mercado do Item / Melhoria ($)</label>
+            <input type="number" data-field="custoOficio" value="100" min="100" step="100" />
+          </div>
+          <div class="solo10-grid-2">
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="testarOficio" data-tipo="oficios">
+              <i class="fas fa-tools"></i> Armas/Armaduras/Fort. — Mente (Ofícios)
+            </button>
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="testarOficio" data-tipo="veiculos">
+              <i class="fas fa-truck-pickup"></i> Veículos — Mente (Condução)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- EQUIPAMENTOS GERAIS -->
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Equipamentos & Pertences</h3>
+          <button type="button" class="solo10-btn solo10-btn-sm" data-action="createItem" data-type="equipamento">
+            <i class="fas fa-plus"></i> Novo Equipamento
+          </button>
+        </div>
+        <table class="solo10-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qtd</th>
+              <th>Custo ($)</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each equipamentos}}
+              <tr>
+                <td><strong>{{this.name}}</strong></td>
+                <td>{{this.system.quantidade}}</td>
+                <td>$ {{this.system.custo}}</td>
+                <td class="solo10-table-actions">
+                  <button type="button" class="solo10-icon-btn" data-action="postItem" data-item-id="{{this.id}}"><i class="fas fa-comment"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="editItem" data-item-id="{{this.id}}"><i class="fas fa-edit"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="deleteItem" data-item-id="{{this.id}}"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            {{else}}
+              <tr><td colspan="4" class="solo10-empty">Nenhum equipamento registrado.</td></tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    {{/if}}
+
+    <!-- ABA 3: QUALIDADES & ARMADILHAS -->
+    {{#if (eq activeTab 'qualidades')}}
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Qualidades da Personagem ({{qualidades.length}} — Escolha 3 iniciais)</h3>
+          <div class="solo10-header-tools">
+            <select data-field="qualidadeCatalogoSlug">
+              {{#each catalogoQualidades}}
+                <option value="{{this.slug}}">{{this.nome}} ({{#if (eq this.tipo 'ativa')}}Ativa{{else}}Passiva{{/if}})</option>
+              {{/each}}
+            </select>
+            <button type="button" class="solo10-btn solo10-btn-sm solo10-btn-primary" data-action="addQualidadeCatalogo">
+              <i class="fas fa-plus"></i> Adicionar Qualidade
+            </button>
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="createItem" data-type="qualidade">
+              Personalizada
+            </button>
+          </div>
+        </div>
+
+        <div class="solo10-qualidades-list">
+          {{#each qualidades}}
+            <div class="solo10-qualidade-card">
+              <div class="qual-header">
+                <div>
+                  <strong>{{this.name}}</strong>
+                  <span class="solo10-mini-tag">{{#if (eq this.system.tipo 'ativa')}}Ativa{{else}}Passiva{{/if}}</span>
+                </div>
+                <div class="qual-actions">
+                  {{#if (eq this.system.tipo 'ativa')}}
+                    <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-primary" data-action="usarQualidadeAtiva" data-item-id="{{this.id}}">
+                      <i class="fas fa-dice-d10"></i> Testar / Ativar
+                    </button>
+                  {{/if}}
+                  <button type="button" class="solo10-icon-btn" data-action="postItem" data-item-id="{{this.id}}" title="Enviar ao Chat"><i class="fas fa-comment"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="editItem" data-item-id="{{this.id}}" title="Editar"><i class="fas fa-edit"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="deleteItem" data-item-id="{{this.id}}" title="Remover"><i class="fas fa-trash"></i></button>
+                </div>
+              </div>
+              <div class="qual-desc">{{{this.system.descricao}}}</div>
+            </div>
+          {{else}}
+            <p class="solo10-empty">Nenhuma Qualidade selecionada. Escolha 3 Qualidades no seletor acima.</p>
+          {{/each}}
+        </div>
+      </div>
+
+      <!-- ARMADILHAS -->
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Armadilhas (Qualidade Armadilheiro)</h3>
+        </div>
+        <p class="solo10-hint">
+          Requer a Qualidade <strong>Armadilheiro</strong>. Faça um teste de <strong>Mente (Sobrevivência)</strong> para montar uma armadilha com um dos efeitos abaixo, potencializado pelo Bônus de Poder.
+        </p>
+
+        <div class="solo10-trap-builder">
+          <select data-field="efeitoNovaArmadilha">
+            {{#each efeitosArmadilha}}
+              <option value="{{@key}}">{{this.label}} — {{this.descricao}}</option>
+            {{/each}}
+          </select>
+          <label class="solo10-checkbox">
+            <input type="checkbox" data-field="perigoSecArmadilha" />
+            <span>Incluir Perigo Secundário (10 + Bônus de Poder, máx 15)</span>
+          </label>
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="montarArmadilha">
+            <i class="fas fa-skull"></i> Rolar Mente (Sobrevivência) e Montar Armadilha
+          </button>
+        </div>
+
+        <table class="solo10-table" style="margin-top: 8px;">
+          <thead>
+            <tr>
+              <th>Armadilha</th>
+              <th>Bônus de Poder</th>
+              <th>Efeito Calculado</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each armadilhas}}
+              <tr>
+                <td><strong>{{this.name}}</strong></td>
+                <td>+{{this.system.bonusPoder}}</td>
+                <td>{{{this.system.descricao}}}</td>
+                <td class="solo10-table-actions">
+                  <button type="button" class="solo10-icon-btn" data-action="postItem" data-item-id="{{this.id}}"><i class="fas fa-comment"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="deleteItem" data-item-id="{{this.id}}"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            {{else}}
+              <tr><td colspan="4" class="solo10-empty">Nenhuma armadilha ativa no momento.</td></tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    {{/if}}
+
+    <!-- ABA 4: JOGANDO, AÇÕES DE SETOR, EVOLUÇÃO, METAS & CAMPANHA -->
+    {{#if (eq activeTab 'jogando')}}
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Exemplo de Ações no Setor ({{system.setorAtual}})</h3>
+          <label class="solo10-checkbox">
+            <input type="checkbox" name="system.investigadoCrime" {{#if system.investigadoCrime}}checked{{/if}} />
+            <span class="alerta-crime"><i class="fas fa-Exclamation-triangle"></i> Investigado por Crime</span>
+          </label>
+        </div>
+        <p class="solo10-hint">
+          Ao entrar em um novo setor: <strong>1) Escolha uma ação a realizar; 2) Role um evento na tabela do setor específico; 3) Pague o custo em tempo para outras ações.</strong>
+        </p>
+
+        <div class="solo10-actions-grid">
+          <button type="button" class="solo10-btn" data-action="acaoSetor" data-acao="abrigo">
+            <i class="fas fa-campground"></i> Procurar Abrigo/Comida — Mente (Investigação)
+          </button>
+          <button type="button" class="solo10-btn" data-action="acaoSetor" data-acao="comprar">
+            <i class="fas fa-shopping-bag"></i> Comprar Algo / Barganhar — Espírito (Manipulação)
+          </button>
+          <button type="button" class="solo10-btn" data-action="acaoSetor" data-acao="encontrarPessoa">
+            <i class="fas fa-search"></i> Encontrar uma Pessoa — Mente (Investigação)
+          </button>
+          <button type="button" class="solo10-btn" data-action="acaoSetor" data-acao="interagirPersonagem">
+            <i class="fas fa-comments"></i> Interagir com Personagem (Oráculo)
+          </button>
+        </div>
+
+        <h4 style="margin: 10px 0 6px;">Conseguir Dinheiro (Por Hora)</h4>
+        <div class="solo10-actions-grid">
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="acaoSetor" data-acao="trabalharHonesto">
+            <i class="fas fa-briefcase"></i> Trabalho Honesto (+$ 25/h)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-danger" data-action="acaoSetor" data-acao="roubarEspancar">
+            <i class="fas fa-fist-raised"></i> Roubar após Espancar ($ 20 + 1D10/h)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-warning" data-action="acaoSetor" data-acao="convencerLudibriar">
+            <i class="fas fa-Theater-masks"></i> Convencer/Ludibriar ($ 20 + 1D10/h)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-warning" data-action="acaoSetor" data-acao="baterCarteiras">
+            <i class="fas fa-hand-paper"></i> Bater Carteiras/Roubar ($ 30 + 1D10/h)
+          </button>
+          <button type="button" class="solo10-btn" data-action="acaoSetor" data-acao="informatica">
+            <i class="fas fa-laptop-code"></i> Informática — Mente (Tecnologia) ($ 30 + 1D10/h)
+          </button>
+        </div>
+      </div>
+
+      <!-- EVOLUINDO (EXPERIÊNCIA) -->
+      <div class="solo10-panel">
+        <div class="solo10-panel-header">
+          <h3>Evoluindo (Experiência)</h3>
+          <div class="solo10-header-tools">
+            <span>Dias Vividos: <input type="number" name="system.diasVividos" value="{{system.diasVividos}}" style="width:55px;" /></span>
+            <span>XP Disponível: <input type="number" name="system.experiencia.value" value="{{system.experiencia.value}}" style="width:55px;" /></span>
+            <span>XP Total: <input type="number" name="system.experiencia.total" value="{{system.experiencia.total}}" style="width:55px;" /></span>
+          </div>
+        </div>
+        <div class="solo10-grid-2" style="margin-bottom: 8px;">
+          <button type="button" class="solo10-btn solo10-btn-sm" data-action="addDiaVivido">
+            <i class="fas fa-sun"></i> +1 Dia que Passa (+1 XP)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-sm" data-action="addAreaVencida">
+            <i class="fas fa-trophy"></i> +1 Área Vencida em Acontecimento Importante (+1 XP)
+          </button>
+        </div>
+        <div class="solo10-atributos-grid">
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="gastarXp" data-tipo="atributo">
+            Aumentar Atributo em +1 (20 XP)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="gastarXp" data-tipo="pericia">
+            Aprender Nova Perícia (15 XP)
+          </button>
+          <button type="button" class="solo10-btn solo10-btn-primary" data-action="gastarXp" data-tipo="qualidade">
+            Aprender Nova Qualidade (20 XP)
+          </button>
+        </div>
+      </div>
+
+      <!-- ACONTECIMENTO IMPORTANTE, METAS E CAMPANHA -->
+      <div class="solo10-grid-2">
+        <div class="solo10-panel">
+          <div class="solo10-panel-header">
+            <h3>Metas Pessoais</h3>
+            <button type="button" class="solo10-btn solo10-btn-xs" data-action="createItem" data-type="meta">
+              <i class="fas fa-plus"></i> Nova Meta
+            </button>
+          </div>
+          <p class="solo10-hint">Objetivos pessoais do seu personagem, direcionando suas ações noite após noite até resolvê-lo.</p>
+          <ul class="solo10-metas-list">
+            {{#each metas}}
+              <li class="solo10-meta-item {{#if this.system.concluida}}concluida{{/if}}">
+                <input type="checkbox" {{#if this.system.concluida}}checked{{/if}} data-action="toggleMetaConcluida" data-item-id="{{this.id}}" />
+                <span class="meta-name">{{this.name}}</span>
+                <div class="meta-btns">
+                  <button type="button" class="solo10-icon-btn" data-action="editItem" data-item-id="{{this.id}}"><i class="fas fa-edit"></i></button>
+                  <button type="button" class="solo10-icon-btn" data-action="deleteItem" data-item-id="{{this.id}}"><i class="fas fa-trash"></i></button>
+                </div>
+              </li>
+            {{else}}
+              <li class="solo10-empty">Nenhuma meta cadastrada.</li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <div class="solo10-panel">
+          <h3>Acontecimento Importante & Campanha</h3>
+          <div class="solo10-form-group">
+            <label>Acontecimento Importante Atual (Enredo)</label>
+            <input type="text" name="system.acontecimento.titulo" value="{{system.acontecimento.titulo}}" placeholder="Enredo do Acontecimento..." />
+          </div>
+          <div class="solo10-form-group">
+            <label>Locais Visitados (Ameaça Principal sempre no 5º local se não encontrada nos 4 primeiros)</label>
+            <input type="number" name="system.acontecimento.locaisVisitados" value="{{system.acontecimento.locaisVisitados}}" min="0" max="5" />
+          </div>
+          <hr/>
+          <div class="solo10-form-group">
+            <label>Campanha — Ideia Central</label>
+            <input type="text" name="system.campanha.ideiaCentral" value="{{system.campanha.ideiaCentral}}" placeholder="Ideia central da campanha..." />
+          </div>
+          <div class="solo10-form-group">
+            <label>Falhas Acumuladas na Campanha</label>
+            <input type="number" name="system.campanha.falhas" value="{{system.campanha.falhas}}" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="solo10-panel">
+        <h3>Notas e Diário de Aventura</h3>
+        <textarea name="system.notas" rows="5" placeholder="Registre os eventos, Personagens Importantes encontrados e acontecimentos...">{{system.notas}}</textarea>
+      </div>
+    {{/if}}
+  </section>
+</div>

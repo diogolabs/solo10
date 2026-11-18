@@ -1,0 +1,105 @@
+{
+  "Actor": {
+    "types": ["personagem", "adversario"],
+    "personagem": {
+      "atributos": {
+        "corpo": { "value": 3, "bonus": 0 },
+        "espirito": { "value": 3, "bonus": 0 },
+        "mente": { "value": 3, "bonus": 0 }
+      },
+      "saude": { "value": 8, "max": 8, "bonus": 0 },
+      "postura": { "value": 8, "max": 8, "bonus": 0 },
+      "vontade": { "value": 8, "max": 8, "bonus": 0 },
+      "pericias": {
+        "artes": { "treinada": false },
+        "atletismo": { "treinada": false },
+        "combateDistancia": { "treinada": false },
+        "combateCorporal": { "treinada": false },
+        "conducao": { "treinada": false },
+        "conhecimento": { "treinada": false },
+        "idiomas": { "treinada": false },
+        "investigacao": { "treinada": false },
+        "manipulacao": { "treinada": false },
+        "sobrevivencia": { "treinada": false },
+        "subterfugio": { "treinada": false },
+        "oficios": { "treinada": false },
+        "tecnologia": { "treinada": false }
+      },
+      "idiomasLista": "",
+      "especieTipo": "",
+      "moradaInicial": "",
+      "setorAtual": "Cidade Nova",
+      "dinheiro": 3000,
+      "experiencia": { "value": 0, "total": 0 },
+      "diasVividos": 0,
+      "investigadoCrime": false,
+      "acontecimento": {
+        "titulo": "",
+        "locaisVisitados": 0,
+        "ameacaEncontrada": false
+      },
+      "campanha": {
+        "ideiaCentral": "",
+        "falhas": 0,
+        "notas": ""
+      },
+      "biografia": "",
+      "notas": ""
+    },
+    "adversario": {
+      "saude": { "value": 10, "max": 10 },
+      "postura": { "value": 10, "max": 10 },
+      "vontade": { "value": 10, "max": 10 },
+      "perigo": 10,
+      "danoReacao": 3,
+      "ataqueReacao": "Caso o alvo falhe em um teste de Corpo (Combate Corporal), o Adversário causa X de dano a sua Saúde.",
+      "outrasCaracteristicas": "",
+      "descricao": ""
+    }
+  },
+  "Item": {
+    "types": ["qualidade", "arma", "armadura", "equipamento", "armadilha", "meta"],
+    "qualidade": {
+      "slug": "",
+      "tipo": "passiva",
+      "descricao": ""
+    },
+    "arma": {
+      "alcance": "corporal",
+      "tipoDano": "corpo",
+      "bonusDano": 1,
+      "danoFixo": 0,
+      "pesada": false,
+      "duasMaos": false,
+      "leve": false,
+      "equipada": true,
+      "custo": 0,
+      "descricao": ""
+    },
+    "armadura": {
+      "resistenciaDano": 1,
+      "penalidadeAgilidade": false,
+      "escudo": false,
+      "leve": false,
+      "equipada": true,
+      "custo": 0,
+      "descricao": ""
+    },
+    "equipamento": {
+      "quantidade": 1,
+      "custo": 0,
+      "descricao": ""
+    },
+    "armadilha": {
+      "efeito": "dano",
+      "bonusPoder": 0,
+      "perigoSecundario": false,
+      "descricao": ""
+    },
+    "meta": {
+      "tipo": "meta",
+      "concluida": false,
+      "descricao": ""
+    }
+  }
+}

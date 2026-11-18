@@ -1,0 +1,96 @@
+<div class="solo10-chat-card" data-actor-id="{{actorId}}">
+  <header class="solo10-card-header">
+    <h3>{{titulo}}</h3>
+    {{#if isRerollVontade}}
+      <span class="solo10-badge solo10-badge-vontade"><i class="fas fa-fire"></i> Rerolagem por Vontade (-1 Vontade)</span>
+    {{/if}}
+  </header>
+
+  <div class="solo10-card-breakdown">
+    <div class="solo10-breakdown-row">
+      <span><strong>Atributo ({{atributoLabel}}):</strong> +{{valorAtributo}}</span>
+      {{#if periciaLabel}}
+        <span><strong>Perícia ({{periciaLabel}}):</strong> {{#if usarPericia}}+{{bonusPericia}}{{else}}+0{{/if}}</span>
+      {{/if}}
+    </div>
+    <div class="solo10-breakdown-row">
+      <span><strong>Modo:</strong> {{modoDadosLabel}}</span>
+      <span><strong>Dificuldade / Perigo:</strong> {{dificuldade}}</span>
+    </div>
+    {{#if bonusQualidades}}
+      <div class="solo10-breakdown-row">
+        <span><strong>Bônus de Qualidades:</strong> +{{bonusQualidades}}</span>
+      </div>
+    {{/if}}
+    {{#if bonusSelvagem}}
+      <div class="solo10-breakdown-row">
+        <span><strong>Ataque Selvagem:</strong> +{{bonusSelvagem}}</span>
+      </div>
+    {{/if}}
+    {{#if modificadorExtra}}
+      <div class="solo10-breakdown-row">
+        <span><strong>Modificador Extra:</strong> {{modificadorExtra}}</span>
+      </div>
+    {{/if}}
+  </div>
+
+  <div class="solo10-dice-strip">
+    <span class="solo10-dice-label">Dado(s) D10:</span>
+    {{#each dadosRolados}}
+      <span class="solo10-die {{#if this.discarded}}discarded{{else}}active{{/if}}">{{this.result}}</span>
+    {{/each}}
+  </div>
+
+  <div class="solo10-roll-total {{#if sucesso}}sucesso{{else}}falha{{/if}}">
+    <div class="solo10-total-number">
+      <span class="label">Total:</span>
+      <span class="value">{{total}}</span>
+      <span class="vs">vs {{dificuldade}}</span>
+    </div>
+    <div class="solo10-status-banner">
+      {{#if sucesso}}
+        <strong>SUCESSO!</strong>
+        <span class="bonus-poder">Bônus de Poder: +{{bonusPoder}}</span>
+      {{else}}
+        <strong>FALHA</strong>
+      {{/if}}
+    </div>
+  </div>
+
+  {{#if efeitoTexto}}
+    <div class="solo10-card-effect">
+      {{efeitoTexto}}
+    </div>
+  {{/if}}
+
+  {{#if notasModificadores.length}}
+    <div class="solo10-card-notes">
+      {{#each notasModificadores}}
+        <small>• {{this}}</small>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  <footer class="solo10-card-actions">
+    {{#if podeGastarVontade}}
+      <button type="button" class="solo10-chat-btn" data-action="rerollVontade">
+        <i class="fas fa-redo"></i> Gastar 1 Vontade para Rerolar D10
+      </button>
+    {{/if}}
+    {{#if bonusMentalGerado}}
+      <button type="button" class="solo10-chat-btn" data-action="salvarBonusMental" data-bonus="{{bonusMentalGerado}}">
+        <i class="fas fa-brain"></i> Guardar +{{bonusMentalGerado}} para Teste Futuro
+      </button>
+    {{/if}}
+    {{#if curaGerada}}
+      <button type="button" class="solo10-chat-btn" data-action="aplicarCura" data-cura="{{curaGerada}}">
+        <i class="fas fa-heart"></i> Recuperar +{{curaGerada}} Saúde
+      </button>
+    {{/if}}
+    {{#if danoSofridoDefesa}}
+      <button type="button" class="solo10-chat-btn solo10-btn-danger" data-action="sofrerDano" data-dano="{{danoSofridoDefesa}}">
+        <i class="fas fa-heart-broken"></i> Descontar {{danoSofridoDefesa}} de Saúde
+      </button>
+    {{/if}}
+  </footer>
+</div>
