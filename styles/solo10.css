@@ -1,20 +1,44 @@
 /* ==========================================================================
-   SOLO 10 - LICENÇA ABERTA 2.0 — ESTILOS FOUNDRY VTT (v13 & v14)
+   SOLO 10 - LICENÇA ABERTA 2.0 — DESIGN MINIMALISTA (CLARO / ESCURO / SISTEMA)
    ========================================================================== */
 
-.solo10 {
-  --s10-bg: #18181b;
-  --s10-panel: #232329;
-  --s10-panel-alt: #2c2c35;
-  --s10-border: #3f3f4e;
-  --s10-accent: #b91c1c;
-  --s10-accent-hover: #dc2626;
-  --s10-gold: #d97706;
-  --s10-success: #15803d;
-  --s10-danger: #991b1b;
+/* TEMA ESCURO MINIMALISTA (Base e .solo10-theme-dark) */
+.solo10,
+.solo10-theme-dark,
+body.theme-dark .solo10-theme-system {
+  --s10-bg: #141417;
+  --s10-surface: #1c1c21;
+  --s10-surface-alt: #24242b;
+  --s10-border: #2e2e38;
   --s10-text: #f4f4f5;
-  --s10-muted: #a1a1aa;
-  font-family: "Signika", "Segoe UI", sans-serif;
+  --s10-muted: #9ca3af;
+  --s10-accent: #e4e4e7;
+  --s10-accent-fg: #141417;
+  --s10-primary: #b91c1c;
+  --s10-primary-fg: #ffffff;
+  --s10-tag-bg: #27272f;
+  --s10-tag-fg: #d4d4d8;
+  --s10-danger: #dc2626;
+  --s10-success: #16a34a;
+}
+
+/* TEMA CLARO MINIMALISTA (.solo10-theme-light e Padrão do Sistema em modo Claro) */
+.solo10-theme-light,
+body.theme-light .solo10-theme-system {
+  --s10-bg: #f8fafc;
+  --s10-surface: #ffffff;
+  --s10-surface-alt: #f1f5f9;
+  --s10-border: #e2e8f0;
+  --s10-text: #0f172a;
+  --s10-muted: #64748b;
+  --s10-accent: #1e293b;
+  --s10-accent-fg: #ffffff;
+  --s10-primary: #991b1b;
+  --s10-primary-fg: #ffffff;
+  --s10-tag-bg: #e2e8f0;
+  --s10-tag-fg: #334155;
+  --s10-danger: #b91c1c;
+  --s10-success: #15803d;
 }
 
 .solo10-sheet-container,
@@ -22,11 +46,12 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 8px;
+  gap: 10px;
   color: var(--s10-text);
   background: var(--s10-bg);
-  padding: 8px;
+  padding: 12px;
   box-sizing: border-box;
+  font-family: "Inter", "Signika", system-ui, -apple-system, sans-serif;
 }
 
 .solo10-sheet-body,
@@ -40,25 +65,30 @@
   padding-right: 4px;
 }
 
-/* CABEÇALHO */
+.solo10-muted {
+  color: var(--s10-muted);
+  font-size: 0.78rem;
+}
+
+/* CABEÇALHO MINIMALISTA */
 .solo10-sheet-header {
   display: flex;
-  gap: 12px;
-  background: var(--s10-panel);
+  gap: 14px;
+  background: var(--s10-surface);
   border: 1px solid var(--s10-border);
-  border-radius: 6px;
-  padding: 10px;
+  border-radius: 8px;
+  padding: 12px;
   align-items: flex-start;
 }
 
 .solo10-profile-img {
-  width: 96px;
-  height: 96px;
+  width: 84px;
+  height: 84px;
   object-fit: cover;
-  border: 2px solid var(--s10-accent);
+  border: 1px solid var(--s10-border);
   border-radius: 6px;
   cursor: pointer;
-  background: #111;
+  background: var(--s10-surface-alt);
 }
 
 .solo10-header-main {
@@ -70,20 +100,28 @@
 
 .solo10-title-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
 .solo10-charname {
   flex: 1;
-  font-size: 1.35rem;
-  font-weight: 700;
-  background: var(--s10-panel-alt);
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: transparent;
   color: var(--s10-text);
-  border: 1px solid var(--s10-border);
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--s10-border);
+  border-radius: 0;
+  padding: 2px 6px;
+  height: 32px;
+}
+
+.solo10-charname:focus {
+  border-color: var(--s10-primary);
+  background: var(--s10-surface-alt);
   border-radius: 4px;
-  padding: 4px 10px;
-  height: 36px;
+  outline: none;
 }
 
 .solo10-meta-grid {
@@ -100,23 +138,27 @@
 
 .solo10-meta-field label,
 .solo10-form-group label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--s10-muted);
   font-weight: 600;
 }
 
-.solo10 input[type="text"],
-.solo10 input[type="number"],
-.solo10 select,
-.solo10 textarea {
-  background: var(--s10-panel-alt);
+.solo10-sheet-container input[type="text"],
+.solo10-sheet-container input[type="number"],
+.solo10-sheet-container select,
+.solo10-sheet-container textarea,
+.solo10-oracle-container input[type="text"],
+.solo10-oracle-container input[type="number"],
+.solo10-oracle-container select,
+.solo10-oracle-container textarea {
+  background: var(--s10-surface-alt);
   color: var(--s10-text);
   border: 1px solid var(--s10-border);
-  border-radius: 4px;
+  border-radius: 5px;
   padding: 4px 8px;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
 }
 
 .solo10-inline-input {
@@ -138,27 +180,25 @@
 }
 
 .solo10-reserva-box {
-  background: var(--s10-panel-alt);
+  background: var(--s10-surface-alt);
   border: 1px solid var(--s10-border);
-  border-left: 4px solid var(--s10-accent);
-  border-radius: 5px;
-  padding: 6px 8px;
+  border-radius: 6px;
+  padding: 6px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .solo10-reserva-box.alerta-zero {
-  border-color: #ef4444;
-  background: rgba(153, 27, 27, 0.28);
+  border-color: var(--s10-danger);
 }
 
 .reserva-title {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-weight: 700;
-  font-size: 0.85rem;
+  font-weight: 600;
+  font-size: 0.8rem;
 }
 
 .reserva-title small {
@@ -170,30 +210,30 @@
 .reserva-inputs {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 4px;
+  margin-top: 2px;
 }
 
 .reserva-inputs input {
-  width: 54px;
+  width: 48px;
   text-align: center;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .reserva-inputs .max {
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
   color: var(--s10-muted);
 }
 
 .estado-tag {
   display: inline-block;
-  margin-top: 4px;
-  background: #dc2626;
+  margin-top: 3px;
+  background: var(--s10-danger);
   color: #fff;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.65rem;
+  font-weight: 600;
   text-align: center;
   border-radius: 3px;
   padding: 1px 4px;
@@ -202,43 +242,47 @@
 .solo10-reserva-actions {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   justify-content: center;
 }
 
-/* ABAS */
+/* ABAS MINIMALISTAS */
 .solo10-tabs {
   display: flex;
-  gap: 6px;
-  border-bottom: 2px solid var(--s10-border);
-  padding-bottom: 6px;
+  gap: 4px;
+  border-bottom: 1px solid var(--s10-border);
+  padding-bottom: 0;
 }
 
 .solo10-tab-btn {
   flex: 1;
-  background: var(--s10-panel);
+  background: transparent;
   color: var(--s10-muted);
-  border: 1px solid var(--s10-border);
-  border-radius: 5px;
-  padding: 6px 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 7px 10px;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.solo10-tab-btn:hover,
+.solo10-tab-btn:hover {
+  color: var(--s10-text);
+}
+
 .solo10-tab-btn.active {
-  background: var(--s10-accent);
-  color: #fff;
-  border-color: var(--s10-accent-hover);
+  color: var(--s10-text);
+  border-bottom-color: var(--s10-primary);
 }
 
 /* PAINÉIS */
 .solo10-panel {
-  background: var(--s10-panel);
+  background: var(--s10-surface);
   border: 1px solid var(--s10-border);
-  border-radius: 6px;
-  padding: 10px;
+  border-radius: 8px;
+  padding: 12px;
 }
 
 .solo10-panel-header {
@@ -247,16 +291,23 @@
   align-items: center;
   border-bottom: 1px solid var(--s10-border);
   padding-bottom: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .solo10-panel h3 {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--s10-text);
+  letter-spacing: 0.02em;
+}
+
+.solo10-subhead {
+  margin: 10px 0 6px;
+  font-size: 0.8rem;
+  color: var(--s10-muted);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .solo10-header-tools {
@@ -279,9 +330,8 @@
 }
 
 .solo10-atributo-card {
-  background: var(--s10-panel-alt);
+  background: var(--s10-surface-alt);
   border: 1px solid var(--s10-border);
-  border-top: 3px solid var(--s10-accent);
   border-radius: 6px;
   padding: 10px;
   display: flex;
@@ -297,28 +347,28 @@
 
 .attr-header h4 {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 600;
 }
 
 .attr-total {
-  background: var(--s10-accent);
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: 800;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  background: var(--s10-surface);
+  color: var(--s10-text);
+  border: 1px solid var(--s10-border);
+  font-size: 1.05rem;
+  font-weight: 700;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .attr-desc {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--s10-muted);
   margin: 0;
-  min-height: 28px;
 }
 
 .attr-fields {
@@ -329,7 +379,7 @@
 }
 
 .attr-fields label {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   color: var(--s10-muted);
   display: block;
 }
@@ -337,122 +387,105 @@
 .attr-fields input {
   width: 100%;
   text-align: center;
-  font-weight: 700;
+  font-weight: 600;
 }
 
-/* PERÍCIAS */
-.solo10-pericias-table {
+/* LISTA MODULAR DE ITENS (PERÍCIAS, QUALIDADES, ARMADILHAS) */
+.solo10-item-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.solo10-pericia-row {
-  display: grid;
-  grid-template-columns: 190px 1fr auto;
-  gap: 8px;
-  align-items: center;
-  padding: 5px 8px;
-  background: var(--s10-panel-alt);
-  border: 1px solid var(--s10-border);
-  border-radius: 4px;
-}
-
-.solo10-pericia-row.treinada {
-  border-left: 4px solid var(--s10-gold);
-  background: rgba(217, 119, 6, 0.12);
-}
-
-.pericia-check {
-  display: flex;
-  align-items: center;
   gap: 6px;
-  font-weight: 700;
-  cursor: pointer;
 }
 
-.pericia-desc {
-  font-size: 0.76rem;
-  color: var(--s10-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pericia-roll-btns {
+.solo10-item-row {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--s10-surface-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+}
+
+.item-main {
+  flex: 1;
+}
+
+.item-title-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
-.solo10-tag-plus {
-  background: var(--s10-gold);
-  color: #fff;
-  font-size: 0.7rem;
-  padding: 1px 5px;
-  border-radius: 3px;
+.item-title {
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-/* BOTÕES */
+.item-sub {
+  margin: 3px 0 0;
+  font-size: 0.78rem;
+  color: var(--s10-muted);
+  line-height: 1.35;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* BOTÕES MINIMALISTAS */
 .solo10-btn {
-  background: var(--s10-panel-alt);
+  background: var(--s10-surface-alt);
   color: var(--s10-text);
   border: 1px solid var(--s10-border);
-  border-radius: 4px;
-  padding: 6px 10px;
-  font-weight: 600;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.82rem;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
+  transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .solo10-btn:hover {
-  border-color: var(--s10-accent);
-  background: #343440;
+  border-color: var(--s10-muted);
 }
 
 .solo10-btn-primary {
-  background: var(--s10-accent);
-  border-color: var(--s10-accent-hover);
-  color: #fff;
+  background: var(--s10-primary);
+  border-color: var(--s10-primary);
+  color: var(--s10-primary-fg);
 }
 
 .solo10-btn-primary:hover {
-  background: var(--s10-accent-hover);
+  opacity: 0.92;
 }
 
-.solo10-btn-oraculo {
-  background: #6d28d9;
-  border-color: #7c3aed;
-  color: #fff;
+.solo10-btn-ghost {
+  background: transparent;
+  border-color: var(--s10-border);
+  color: var(--s10-muted);
 }
 
-.solo10-btn-warning {
-  background: #b45309;
-  border-color: #d97706;
-  color: #fff;
-}
-
-.solo10-btn-danger {
-  background: var(--s10-danger);
-  border-color: #dc2626;
-  color: #fff;
+.solo10-btn-ghost:hover {
+  color: var(--s10-text);
 }
 
 .solo10-btn-sm {
   padding: 4px 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 .solo10-btn-xs {
-  padding: 2px 6px;
-  font-size: 0.74rem;
-}
-
-.solo10-btn-xs.sugerido {
-  border-color: var(--s10-gold);
-  color: #fde68a;
+  padding: 2px 7px;
+  font-size: 0.72rem;
 }
 
 .solo10-icon-btn {
@@ -461,32 +494,34 @@
   color: var(--s10-muted);
   cursor: pointer;
   padding: 3px 5px;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .solo10-icon-btn:hover {
-  color: #fff;
+  color: var(--s10-text);
+  background: var(--s10-surface);
   border-color: var(--s10-border);
 }
 
-/* TABELAS & QUALIDADES */
+/* TABELAS */
 .solo10-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .solo10-table th,
 .solo10-table td {
-  border: 1px solid var(--s10-border);
+  border-bottom: 1px solid var(--s10-border);
   padding: 6px 8px;
   text-align: left;
 }
 
 .solo10-table th {
-  background: #141418;
-  color: #fff;
-  font-weight: 700;
+  color: var(--s10-muted);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
 }
 
 .solo10-table-actions {
@@ -495,54 +530,35 @@
   align-items: center;
 }
 
-.solo10-qualidades-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.solo10-qualidade-card {
-  background: var(--s10-panel-alt);
-  border: 1px solid var(--s10-border);
-  border-left: 4px solid var(--s10-gold);
-  border-radius: 5px;
-  padding: 8px 10px;
-}
-
-.qual-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
-}
-
-.qual-desc {
-  font-size: 0.82rem;
-  color: #d4d4d8;
-  line-height: 1.35;
-}
-
 .solo10-mini-tag {
-  background: #3f3f46;
-  color: #e4e4e7;
+  background: var(--s10-tag-bg);
+  color: var(--s10-tag-fg);
   font-size: 0.68rem;
-  padding: 1px 5px;
-  border-radius: 3px;
-  margin-left: 4px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
 }
 
 .solo10-mini-tag.warn {
-  background: #991b1b;
-  color: #fecaca;
+  background: rgba(185, 28, 28, 0.15);
+  color: var(--s10-danger);
 }
 
 .solo10-badge {
-  background: #312e81;
-  color: #e0e7ff;
-  font-size: 0.75rem;
-  font-weight: 700;
+  background: var(--s10-surface-alt);
+  color: var(--s10-text);
+  border: 1px solid var(--s10-border);
+  font-size: 0.72rem;
+  font-weight: 600;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: 999px;
+}
+
+.solo10-empty {
+  color: var(--s10-muted);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 12px;
 }
 
 /* GRIDS & FORMULÁRIOS */
@@ -552,10 +568,16 @@
   gap: 10px;
 }
 
+.solo10-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
 .solo10-combat-quickbar,
 .solo10-actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 6px;
 }
 
@@ -565,8 +587,8 @@
   align-items: center;
   gap: 6px;
   padding: 4px 0;
-  border-bottom: 1px dashed var(--s10-border);
-  font-size: 0.82rem;
+  border-bottom: 1px solid var(--s10-border);
+  font-size: 0.8rem;
 }
 
 .solo10-trap-builder {
@@ -580,7 +602,7 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  font-size: 0.84rem;
+  font-size: 0.8rem;
 }
 
 .solo10-metas-list {
@@ -596,9 +618,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--s10-panel-alt);
+  background: var(--s10-surface-alt);
   padding: 4px 8px;
   border-radius: 4px;
+  font-size: 0.82rem;
 }
 
 .solo10-meta-item.concluida .meta-name {
@@ -615,9 +638,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--s10-panel);
-  padding: 6px 10px;
-  border-radius: 5px;
+  background: var(--s10-surface);
+  padding: 8px 10px;
+  border-radius: 6px;
   border: 1px solid var(--s10-border);
 }
 
@@ -626,9 +649,9 @@
 }
 
 .solo10-army-col {
-  background: var(--s10-panel-alt);
+  background: var(--s10-surface-alt);
   border: 1px solid var(--s10-border);
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -647,31 +670,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 .solo10-unit-row input {
-  width: 55px;
+  width: 52px;
   text-align: center;
 }
 
-/* CARDS DE CHAT */
+/* CARDS DE CHAT MINIMALISTAS */
 .solo10-chat-card {
-  background: #1e1e24;
-  color: #f4f4f5;
-  border: 1px solid #3f3f4e;
-  border-left: 4px solid #b91c1c;
+  background: var(--s10-surface, #1c1c21);
+  color: var(--s10-text, #f4f4f5);
+  border: 1px solid var(--s10-border, #2e2e38);
   border-radius: 6px;
   padding: 8px 10px;
-  font-family: "Signika", sans-serif;
-}
-
-.solo10-oraculo-card {
-  border-left-color: #7c3aed;
 }
 
 .solo10-card-header {
-  border-bottom: 1px solid #3f3f4e;
+  border-bottom: 1px solid var(--s10-border, #2e2e38);
   padding-bottom: 4px;
   margin-bottom: 6px;
   display: flex;
@@ -682,14 +699,13 @@
 
 .solo10-card-header h3 {
   margin: 0;
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
 }
 
 .solo10-card-breakdown {
-  font-size: 0.8rem;
-  color: #d4d4d8;
+  font-size: 0.78rem;
+  color: var(--s10-muted, #9ca3af);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -712,22 +728,21 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 4px;
-  font-weight: 800;
-  background: #27272a;
-  border: 1px solid #52525b;
+  font-weight: 700;
+  border: 1px solid var(--s10-border, #3f3f46);
 }
 
 .solo10-die.active {
-  background: #b91c1c;
+  background: #991b1b;
   color: #fff;
-  border-color: #ef4444;
+  border-color: #b91c1c;
 }
 
 .solo10-die.discarded {
-  opacity: 0.45;
+  opacity: 0.4;
   text-decoration: line-through;
 }
 
@@ -741,18 +756,18 @@
 }
 
 .solo10-roll-total.sucesso {
-  background: rgba(21, 128, 61, 0.25);
-  border: 1px solid #22c55e;
+  background: rgba(21, 128, 61, 0.15);
+  border: 1px solid #16a34a;
 }
 
 .solo10-roll-total.falha {
-  background: rgba(153, 27, 27, 0.28);
-  border: 1px solid #ef4444;
+  background: rgba(185, 28, 28, 0.15);
+  border: 1px solid #dc2626;
 }
 
 .solo10-total-number .value {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 700;
   margin: 0 4px;
 }
 
@@ -763,22 +778,22 @@
 }
 
 .solo10-status-banner .bonus-poder {
-  font-size: 0.78rem;
-  color: #fde047;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 600;
 }
 
 .solo10-card-effect {
-  background: #272730;
+  background: rgba(128, 128, 128, 0.08);
   padding: 6px 8px;
   border-radius: 4px;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   margin-top: 4px;
 }
 
 .solo10-card-notes {
   margin-top: 4px;
-  color: #a1a1aa;
+  font-size: 0.75rem;
+  opacity: 0.8;
   display: flex;
   flex-direction: column;
 }
@@ -792,19 +807,18 @@
 
 .solo10-chat-btn {
   width: 100%;
-  background: #272730;
-  color: #fff;
-  border: 1px solid #52525b;
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(128, 128, 128, 0.35);
   border-radius: 4px;
-  padding: 5px 8px;
-  font-size: 0.8rem;
+  padding: 4px 8px;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
 }
 
 .solo10-chat-btn:hover {
-  background: #b91c1c;
-  border-color: #ef4444;
+  border-color: #b91c1c;
 }
 
 .solo10-chat-toolbar {
@@ -834,11 +848,10 @@
 }
 
 .solo10-dialog-notes {
-  background: rgba(217, 119, 6, 0.15);
-  border: 1px solid #d97706;
+  border: 1px solid rgba(128, 128, 128, 0.35);
   border-radius: 4px;
   padding: 6px 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 .solo10-dialog-notes ul {

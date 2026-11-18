@@ -1,4 +1,4 @@
-<div class="solo10-sheet-container solo10-adversario-sheet">
+<div class="solo10-sheet-container solo10-adversario-sheet solo10-theme-{{theme}}">
   <header class="solo10-sheet-header">
     <div class="solo10-header-left">
       <img class="solo10-profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img" />
@@ -6,13 +6,15 @@
     <div class="solo10-header-main">
       <div class="solo10-title-row">
         <input type="text" class="solo10-charname" name="name" value="{{actor.name}}" placeholder="Nome do Adversário" />
-        <div class="solo10-perigo-box">
+        <button type="button" class="solo10-btn solo10-btn-ghost" data-action="cycleTheme" title="Alternar tema">
+          <i class="fas fa-adjust"></i> {{themeLabel}}
+        </button>
+        <div class="solo10-meta-field" style="width: 90px;">
           <label>Perigo (Máx 15)</label>
           <input type="number" name="system.perigo" value="{{system.perigo}}" min="0" max="15" />
         </div>
       </div>
 
-      <!-- TABELA OFICIAL DE ADVERSÁRIO DO LIVRO -->
       <div class="solo10-reservas-bar">
         <div class="solo10-reserva-box {{#if system.derrotadoSaude}}alerta-zero{{/if}}">
           <div class="reserva-title"><span>Saúde</span></div>
@@ -48,13 +50,13 @@
     <div class="solo10-panel">
       <div class="solo10-panel-header">
         <h3>Ataque (Reação) & Características</h3>
-        <button type="button" class="solo10-btn solo10-btn-danger" data-action="dispararReacao">
-          <i class="fas fa-bolt"></i> Disparar Ataque (Reação) no Chat
+        <button type="button" class="solo10-btn solo10-btn-primary solo10-btn-sm" data-action="dispararReacao">
+          <i class="fas fa-bolt"></i> Disparar Reação no Chat
         </button>
       </div>
 
       <div class="solo10-form-group">
-        <label>Dano da Reação (X de dano à Saúde quando o alvo falha no teste)</label>
+        <label>Dano da Reação (X de dano à Saúde quando o alvo falha)</label>
         <input type="number" name="system.danoReacao" value="{{system.danoReacao}}" min="0" />
       </div>
 
@@ -64,13 +66,13 @@
       </div>
 
       <div class="solo10-form-group">
-        <label>Outras Características (Habilidades Passivas / Reações Extras)</label>
+        <label>Outras Características</label>
         <textarea name="system.outrasCaracteristicas" rows="3">{{system.outrasCaracteristicas}}</textarea>
       </div>
 
       <div class="solo10-form-group">
         <label>Descrição do Adversário</label>
-        <textarea name="system.descricao" rows="4">{{system.descricao}}</textarea>
+        <textarea name="system.descricao" rows="3">{{system.descricao}}</textarea>
       </div>
     </div>
   </section>

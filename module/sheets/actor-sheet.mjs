@@ -1,6 +1,7 @@
 import { SOLO10 } from "../constants.mjs";
 import { executeSolo10Roll, promptSolo10RollDialog } from "../dice/rolls.mjs";
 import { Solo10OracleApp } from "../apps/oracle-dialog.mjs";
+import { abrirCompendioSistema } from "../compendiums.mjs";
 
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -8,14 +9,14 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   constructor(options = {}) {
     super(options);
-    this.activeTab = "atributos";
+    this.activeTab = "principal";
   }
 
   static DEFAULT_OPTIONS = {
     classes: ["solo10", "sheet", "actor", "personagem"],
     position: {
-      width: 860,
-      height: 800
+      width: 820,
+      height: 780
     },
     window: {
       resizable: true
@@ -26,19 +27,18 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     },
     actions: {
       changeTab: Solo10PersonagemSheet.#onChangeTab,
+      cycleTheme: Solo10PersonagemSheet.#onCycleTheme,
       editImage: Solo10PersonagemSheet.#onEditImage,
       rollAtributo: Solo10PersonagemSheet.#onRollAtributo,
       rollPericia: Solo10PersonagemSheet.#onRollPericia,
       rollLivre: Solo10PersonagemSheet.#onRollLivre,
       abrirOraculo: Solo10PersonagemSheet.#onAbrirOraculo,
+      abrirCompendio: Solo10PersonagemSheet.#onAbrirCompendio,
       descansar: Solo10PersonagemSheet.#onDescansar,
       tratamento: Solo10PersonagemSheet.#onTratamento,
       calcularDinheiroInicial: Solo10PersonagemSheet.#onCalcularDinheiroInicial,
       distribuirAtributos: Solo10PersonagemSheet.#onDistribuirAtributos,
-      addQualidadeCatalogo: Solo10PersonagemSheet.#onAddQualidadeCatalogo,
       usarQualidadeAtiva: Solo10PersonagemSheet.#onUsarQualidadeAtiva,
-      addArmaPadrao: Solo10PersonagemSheet.#onAddArmaPadrao,
-      addArmaduraPadrao: Solo10PersonagemSheet.#onAddArmaduraPadrao,
       createItem: Solo10PersonagemSheet.#onCreateItem,
       editItem: Solo10PersonagemSheet.#onEditItem,
       deleteItem: Solo10PersonagemSheet.#onDeleteItem,
@@ -69,14 +69,9 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const context = await super._prepareContext(options);
     const actor = this.document;
     const sys = actor.system;
+    const theme = game.settings?.get("solo10", "theme") || "system";
 
-    const periciasList = Object.values(SOLO10.PERICIAS).map((p) => ({
-      ...p,
-      treinada: Boolean(sys.pericias?.[p.key]?.treinada)
-    }));
-    const totalPericiasTreinadas = periciasList.filter((p) => p.treinada).length;
-    const maxPericiasIniciais = actor.hasQualidade("perito", "Perito") ? 4 : 3;
-
+    const pericias = actor.items.filter((i) => i.type === "pericia");
     const qualidades = actor.items.filter((i) => i.type === "qualidade");
     const armas = actor.items.filter((i) => i.type === "arma");
     const armaduras = actor.items.filter((i) => i.type === "armadura");
@@ -84,20 +79,26 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const armadilhas = actor.items.filter((i) => i.type === "armadilha");
     const metas = actor.items.filter((i) => i.type === "meta");
 
+    const maxPericiasIniciais = actor.hasQualidade("perito", "Perito") ? 4 : 3;
+
+    const themeLabels = {
+      system: "Sistema",
+      light: "Claro",
+      dark: "Escuro"
+    };
+
     return {
       ...context,
       actor,
       system: sys,
+      theme,
+      themeLabel: themeLabels[theme] || "Sistema",
       activeTab: this.activeTab,
       atributosConfig: SOLO10.ATRIBUTOS,
-      periciasList,
-      totalPericiasTreinadas,
-      maxPericiasIniciais,
-      catalogoQualidades: SOLO10.QUALIDADES,
-      armasPadrao: SOLO10.ARMAS_PADRAO,
-      armadurasPadrao: SOLO10.ARMADURAS_PADRAO,
       setores: SOLO10.SETORES,
       efeitosArmadilha: SOLO10.EFEITOS_ARMADILHA,
+      pericias,
+      maxPericiasIniciais,
       qualidades,
       armas,
       armaduras,
@@ -107,12 +108,70 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     };
   }
 
+  _onRender(context, options) {
+    super._onRender(context, options);
+
+    // Garantir suporte completo a Drag & Drop de Itens (de Compêndios ou Diretório) em v13 e v14
+    const root = this.element;
+    if (!root || root.dataset.solo10DropBound) return;
+    root.dataset.solo10DropBound = "true";
+
+    root.addEventListener("dragover", (ev) => {
+      ev.preventDefault();
+    });
+
+    root.addEventListener("drop", async (ev) => {
+      if (ev._solo10DropHandled) return;
+      ev._solo10DropHandled = true;
+
+      const TextEditorImpl = foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const data = TextEditorImpl.getDragEventData(ev);
+      if (!data || data.type !== "Item") return;
+
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      const itemDoc = await Item.implementation.fromDropData(data);
+      if (!itemDoc) return;
+
+      // Se o item já pertence a este ator, ignorar
+      if (itemDoc.parent?.id === this.document.id) return;
+
+      const itemData = itemDoc.toObject();
+      await this._handleCreatedItemBonus(itemData);
+      await Item.create(itemData, { parent: this.document });
+    });
+  }
+
+  async _handleCreatedItemBonus(itemData) {
+    if (itemData.type === "qualidade") {
+      const bS = Number(itemData.system?.bonusSaude || 0);
+      const bP = Number(itemData.system?.bonusPostura || 0);
+      const bV = Number(itemData.system?.bonusVontade || 0);
+      const updates = {};
+      if (bS) updates["system.saude.value"] = Number(this.document.system.saude.value || 0) + bS;
+      if (bP) updates["system.postura.value"] = Number(this.document.system.postura.value || 0) + bP;
+      if (bV) updates["system.vontade.value"] = Number(this.document.system.vontade.value || 0) + bV;
+      if (Object.keys(updates).length > 0) {
+        await this.document.update(updates);
+      }
+    }
+  }
+
   static #onChangeTab(event, target) {
     const tab = target.dataset.tab;
     if (tab) {
       this.activeTab = tab;
       this.render();
     }
+  }
+
+  static async #onCycleTheme(event, target) {
+    const ordem = ["system", "light", "dark"];
+    const atual = game.settings?.get("solo10", "theme") || "system";
+    const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
+    await game.settings?.set("solo10", "theme", proximo);
+    this.render();
   }
 
   static async #onEditImage(event, target) {
@@ -140,15 +199,15 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
   }
 
   static async #onRollPericia(event, target) {
-    const pericia = target.dataset.pericia || "";
-    const atributo = target.dataset.atributo || SOLO10.PERICIAS[pericia]?.atributoSugerido || "corpo";
-    const pLabel = SOLO10.PERICIAS[pericia]?.label || pericia;
-    const aLabel = SOLO10.ATRIBUTOS[atributo]?.label || atributo;
+    const itemId = target.dataset.itemId;
+    const item = this.document.items.get(itemId);
+    const nomePericia = item?.name || target.dataset.pericia || "";
     return promptSolo10RollDialog({
       actor: this.document,
-      titulo: `Teste de ${aLabel} (${pLabel})`,
-      atributo,
-      pericia
+      titulo: `Teste com Perícia: ${nomePericia}`,
+      atributo: "corpo",
+      pericia: nomePericia,
+      usarPericia: true
     });
   }
 
@@ -164,6 +223,11 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const tab = target.dataset.tab || "cenario";
     const app = new Solo10OracleApp({ actorId: this.document.id, tab });
     return app.render(true);
+  }
+
+  static async #onAbrirCompendio(event, target) {
+    const pack = target.dataset.pack || "pericias";
+    return abrirCompendioSistema(pack);
   }
 
   static async #onDescansar(event, target) {
@@ -186,10 +250,12 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       await this.document.update({
         "system.atributos.corpo.value": 3,
         "system.atributos.espirito.value": 3,
-        "system.atributos.mente.value": 3,
-        "system.saude.value": 8 + (this.document.hasQualidade("vigoroso", "Vigoroso") ? 4 : 0),
-        "system.postura.value": 8 + (this.document.hasQualidade("aristocrata", "Aristocrata") ? 4 : 0),
-        "system.vontade.value": 8 + (this.document.hasQualidade("perseverante", "Perseverante") ? 4 : 0)
+        "system.atributos.mente.value": 3
+      });
+      await this.document.update({
+        "system.saude.value": this.document.system.saude.max,
+        "system.postura.value": this.document.system.postura.max,
+        "system.vontade.value": this.document.system.vontade.max
       });
     } else if (modo === "resetReservas") {
       await this.document.update({
@@ -200,160 +266,81 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     }
   }
 
-  static async #onAddQualidadeCatalogo(event, target) {
-    const select = this.element.querySelector('[data-field="qualidadeCatalogoSlug"]');
-    const slug = select?.value;
-    if (!slug) return;
-    const q = SOLO10.QUALIDADES.find((x) => x.slug === slug);
-    if (!q) return;
-
-    if (this.document.hasQualidade(q.slug, q.nome)) {
-      ui.notifications.warn(`O personagem já possui a Qualidade "${q.nome}".`);
-      return;
-    }
-
-    await Item.create(
-      {
-        name: q.nome,
-        type: "qualidade",
-        system: {
-          slug: q.slug,
-          tipo: q.tipo,
-          descricao: q.descricao
-        }
-      },
-      { parent: this.document }
-    );
-
-    // Se for Vigoroso, Aristocrata ou Perseverante, ajustar reserva atual em +4 também
-    if (q.slug === "vigoroso") {
-      await this.document.update({ "system.saude.value": this.document.system.saude.value + 4 });
-    } else if (q.slug === "aristocrata") {
-      await this.document.update({ "system.postura.value": this.document.system.postura.value + 4 });
-    } else if (q.slug === "perseverante") {
-      await this.document.update({ "system.vontade.value": this.document.system.vontade.value + 4 });
-    }
-  }
-
   static async #onUsarQualidadeAtiva(event, target) {
     const itemId = target.dataset.itemId;
     const item = this.document.items.get(itemId);
     if (!item) return;
-    const slug = item.system.slug || item.name.toLowerCase();
+    const slug = (item.system.slug || item.name || "").toLowerCase();
 
     if (slug.includes("abastado")) {
       return promptSolo10RollDialog({
         actor: this.document,
-        titulo: "Qualidade: Abastado (Obter Renda)",
+        titulo: `Qualidade: ${item.name}`,
         atributo: "espirito",
-        pericia: "manipulacao",
+        pericia: "Manipulação",
         tipoTeste: "abastado"
       });
     } else if (slug.includes("curandeiro")) {
       return promptSolo10RollDialog({
         actor: this.document,
-        titulo: "Qualidade: Curandeiro",
+        titulo: `Qualidade: ${item.name}`,
         atributo: "mente",
-        pericia: "conhecimento",
+        pericia: "Conhecimento",
         tipoTeste: "curandeiro"
       });
     } else if (slug.includes("armadilheiro")) {
       return promptSolo10RollDialog({
         actor: this.document,
-        titulo: "Qualidade: Armadilheiro (Montar Armadilha)",
+        titulo: `Qualidade: ${item.name}`,
         atributo: "mente",
-        pericia: "sobrevivencia",
+        pericia: "Sobrevivência",
         tipoTeste: "armadilha"
       });
     } else if (slug.includes("camaleao") || slug.includes("camaleão")) {
       return promptSolo10RollDialog({
         actor: this.document,
-        titulo: "Qualidade: Camaleão (Disfarçar-se)",
+        titulo: `Qualidade: ${item.name}`,
         atributo: "mente",
-        pericia: "subterfugio",
+        pericia: "Subterfúgio",
         tipoTeste: "padrao"
       });
     } else if (slug.includes("ataqueemarco") || slug.includes("ataque em arco")) {
       return promptSolo10RollDialog({
         actor: this.document,
-        titulo: "Qualidade: Ataque em Arco",
+        titulo: `Qualidade: ${item.name}`,
         atributo: "corpo",
-        pericia: "combateCorporal",
+        pericia: "Combate Corporal",
         tipoTeste: "ataque"
       });
     } else if (slug.includes("desarme")) {
       return promptSolo10RollDialog({
         actor: this.document,
-        titulo: "Qualidade: Desarme",
+        titulo: `Qualidade: ${item.name}`,
         atributo: "corpo",
-        pericia: "combateCorporal",
+        pericia: "Combate Corporal",
         tipoTeste: "ataque"
       });
     } else if (slug.includes("falsificador")) {
       return promptSolo10RollDialog({
         actor: this.document,
-        titulo: "Qualidade: Falsificador (+2 Ofícios)",
+        titulo: `Qualidade: ${item.name}`,
         atributo: "mente",
-        pericia: "oficios",
+        pericia: "Ofícios",
         tipoTeste: "padrao"
       });
     } else {
-      return item.postToChat();
+      return promptSolo10RollDialog({
+        actor: this.document,
+        titulo: `Qualidade: ${item.name}`,
+        atributo: "corpo"
+      });
     }
-  }
-
-  static async #onAddArmaPadrao(event, target) {
-    const select = this.element.querySelector('[data-field="armaPadraoIdx"]');
-    const idx = Number(select?.value ?? 0);
-    const a = SOLO10.ARMAS_PADRAO[idx];
-    if (!a) return;
-
-    await Item.create(
-      {
-        name: a.nome,
-        type: "arma",
-        system: {
-          alcance: a.alcance,
-          tipoDano: a.tipoDano,
-          bonusDano: a.bonusDano,
-          danoFixo: a.danoFixo,
-          leve: a.leve,
-          pesada: a.pesada,
-          duasMaos: a.duasMaos,
-          equipada: true,
-          descricao: a.descricao
-        }
-      },
-      { parent: this.document }
-    );
-  }
-
-  static async #onAddArmaduraPadrao(event, target) {
-    const select = this.element.querySelector('[data-field="armaduraPadraoIdx"]');
-    const idx = Number(select?.value ?? 0);
-    const arm = SOLO10.ARMADURAS_PADRAO[idx];
-    if (!arm) return;
-
-    await Item.create(
-      {
-        name: arm.nome,
-        type: "armadura",
-        system: {
-          resistenciaDano: arm.resistenciaDano,
-          penalidadeAgilidade: arm.penalidadeAgilidade,
-          escudo: arm.escudo,
-          leve: arm.leve,
-          equipada: true,
-          descricao: arm.descricao
-        }
-      },
-      { parent: this.document }
-    );
   }
 
   static async #onCreateItem(event, target) {
     const type = target.dataset.type || "equipamento";
     const nomes = {
+      pericia: "Nova Perícia",
       qualidade: "Nova Qualidade",
       arma: "Nova Arma",
       armadura: "Nova Armadura",
@@ -409,8 +396,8 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const itemId = target.dataset.itemId;
     const arma = itemId ? this.document.items.get(itemId) : null;
     const alcance = arma?.system?.alcance || target.dataset.alcance || "corporal";
-    const pericia = alcance === "distancia" ? "combateDistancia" : "combateCorporal";
-    const nomeAtaque = arma ? `Ataque: ${arma.name}` : `Ataque (${alcance === "distancia" ? "Combate a Distância" : "Combate Corporal"})`;
+    const pericia = alcance === "distancia" ? "Combate a Distância" : "Combate Corporal";
+    const nomeAtaque = arma ? `Ataque: ${arma.name}` : `Ataque (${pericia})`;
 
     return promptSolo10RollDialog({
       actor: this.document,
@@ -423,10 +410,10 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
   }
 
   static async #onDefenderFisico(event, target) {
-    const pericia = target.dataset.pericia || "combateCorporal";
+    const pericia = target.dataset.pericia || "Combate Corporal";
     return promptSolo10RollDialog({
       actor: this.document,
-      titulo: `Defesa (${SOLO10.PERICIAS[pericia]?.label || "Combate Corporal"})`,
+      titulo: `Defesa (${pericia})`,
       atributo: "corpo",
       pericia,
       tipoTeste: "defesa",
@@ -439,7 +426,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       actor: this.document,
       titulo: "Fugir do Combate — Corpo (Atletismo)",
       atributo: "corpo",
-      pericia: "atletismo",
+      pericia: "Atletismo",
       tipoTeste: "padrao"
     });
   }
@@ -469,7 +456,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const tipo = target.dataset.tipo || "oficios";
     const custo = Number(this.element.querySelector('[data-field="custoOficio"]')?.value ?? 100);
     const dias = Math.max(1, Math.ceil(custo / 100));
-    const pericia = tipo === "veiculos" ? "conducao" : "oficios";
+    const pericia = tipo === "veiculos" ? "Condução" : "Ofícios";
     const label = tipo === "veiculos" ? "Criar/Melhorar Veículo" : "Criar/Melhorar Item ou Fortificação";
 
     return promptSolo10RollDialog({
@@ -489,8 +476,8 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       actor: this.document,
       titulo: `Montar Armadilha (${SOLO10.EFEITOS_ARMADILHA[efeito]?.label || efeito})`,
       atributo: "mente",
-      pericia: "sobrevivencia",
-      usarPericia: Boolean(this.document.system.pericias?.sobrevivencia?.treinada),
+      pericia: "Sobrevivência",
+      usarPericia: this.document.hasPericia("sobrevivencia"),
       tipoTeste: "armadilha"
     });
 
@@ -589,8 +576,8 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
   static DEFAULT_OPTIONS = {
     classes: ["solo10", "sheet", "actor", "adversario"],
     position: {
-      width: 620,
-      height: 580
+      width: 580,
+      height: 540
     },
     window: {
       resizable: true
@@ -600,6 +587,7 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
       closeOnSubmit: false
     },
     actions: {
+      cycleTheme: Solo10AdversarioSheet.#onCycleTheme,
       editImage: Solo10AdversarioSheet.#onEditImage,
       dispararReacao: Solo10AdversarioSheet.#onDispararReacao
     }
@@ -614,11 +602,23 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    const theme = game.settings?.get("solo10", "theme") || "system";
+    const themeLabels = { system: "Sistema", light: "Claro", dark: "Escuro" };
     return {
       ...context,
+      theme,
+      themeLabel: themeLabels[theme] || "Sistema",
       actor: this.document,
       system: this.document.system
     };
+  }
+
+  static async #onCycleTheme(event, target) {
+    const ordem = ["system", "light", "dark"];
+    const atual = game.settings?.get("solo10", "theme") || "system";
+    const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
+    await game.settings?.set("solo10", "theme", proximo);
+    this.render();
   }
 
   static async #onEditImage(event, target) {

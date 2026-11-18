@@ -1,6 +1,14 @@
 import { SOLO10 } from "../constants.mjs";
 import { executeSolo10Roll, promptSolo10RollDialog } from "../dice/rolls.mjs";
 
+function normalizeStr(str = "") {
+  return String(str)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 export class Solo10Actor extends Actor {
   /** @override */
   prepareDerivedData() {
@@ -24,17 +32,28 @@ export class Solo10Actor extends Actor {
     sys.atributos.espirito.total = espiritoTotal;
     sys.atributos.mente.total = menteTotal;
 
-    const bonusVigoroso = this.hasQualidade("vigoroso", "Vigoroso") ? 4 : 0;
-    const bonusAristocrata = this.hasQualidade("aristocrata", "Aristocrata") ? 4 : 0;
-    const bonusPerseverante = this.hasQualidade("perseverante", "Perseverante") ? 4 : 0;
+    // Soma modular de bônus de Saúde, Postura e Vontade vindos de Itens do tipo Qualidade
+    let bonusQualSaude = 0;
+    let bonusQualPostura = 0;
+    let bonusQualVontade = 0;
+
+    for (const item of this.items ?? []) {
+      if (item.type !== "qualidade") continue;
+      const bS = Number(item.system?.bonusSaude || 0);
+      const bP = Number(item.system?.bonusPostura || 0);
+      const bV = Number(item.system?.bonusVontade || 0);
+      bonusQualSaude += bS;
+      bonusQualPostura += bP;
+      bonusQualVontade += bV;
+    }
 
     // Fórmulas oficiais:
-    // Saúde = 5 + Corpo (+4 Vigoroso)
-    // Postura = 5 + Espírito (+4 Aristocrata)
-    // Vontade = 5 + Mente (+4 Perseverante)
-    sys.saude.max = 5 + corpoTotal + bonusVigoroso + Number(sys.saude?.bonus ?? 0);
-    sys.postura.max = 5 + espiritoTotal + bonusAristocrata + Number(sys.postura?.bonus ?? 0);
-    sys.vontade.max = 5 + menteTotal + bonusPerseverante + Number(sys.vontade?.bonus ?? 0);
+    // Saúde = 5 + Corpo + bônus de Qualidades (ex: Vigoroso +4) + bônus extra
+    // Postura = 5 + Espírito + bônus de Qualidades (ex: Aristocrata +4) + bônus extra
+    // Vontade = 5 + Mente + bônus de Qualidades (ex: Perseverante +4) + bônus extra
+    sys.saude.max = 5 + corpoTotal + bonusQualSaude + Number(sys.saude?.bonus ?? 0);
+    sys.postura.max = 5 + espiritoTotal + bonusQualPostura + Number(sys.postura?.bonus ?? 0);
+    sys.vontade.max = 5 + menteTotal + bonusQualVontade + Number(sys.vontade?.bonus ?? 0);
 
     // Poder do Personagem em Combate em Massa = somatória de todos os pontos de Atributos
     sys.poderCombateMassa = corpoTotal + espiritoTotal + menteTotal;
@@ -60,16 +79,44 @@ export class Solo10Actor extends Actor {
   }
 
   /**
+   * Busca um Item de Perícia na ficha do personagem (por id, slug ou nome).
+   */
+  findPericiaItem(ref = "") {
+    if (!this.items || !ref) return null;
+    const direct = this.items.get(ref);
+    if (direct && direct.type === "pericia") return direct;
+
+    const target = normalizeStr(ref);
+    const labelRef = SOLO10.PERICIAS[ref]?.label ? normalizeStr(SOLO10.PERICIAS[ref].label) : "";
+
+    return (
+      this.items.find((i) => {
+        if (i.type !== "pericia") return false;
+        const iSlug = normalizeStr(i.system?.slug || "");
+        const iName = normalizeStr(i.name || "");
+        return iSlug === target || iName === target || (labelRef && iName === labelRef);
+      }) ?? null
+    );
+  }
+
+  /**
+   * Verifica se o personagem possui determinada Perícia como Item na ficha.
+   */
+  hasPericia(ref = "") {
+    return Boolean(this.findPericiaItem(ref));
+  }
+
+  /**
    * Verifica se o personagem possui determinada Qualidade (por slug ou nome).
    */
   hasQualidade(slug, nome = "") {
     if (!this.items) return false;
-    const targetSlug = (slug || "").toLowerCase();
-    const targetNome = (nome || "").toLowerCase();
+    const targetSlug = normalizeStr(slug || "");
+    const targetNome = normalizeStr(nome || "");
     return this.items.some((i) => {
       if (i.type !== "qualidade") return false;
-      const itemSlug = (i.system?.slug || "").toLowerCase();
-      const itemName = (i.name || "").toLowerCase();
+      const itemSlug = normalizeStr(i.system?.slug || "");
+      const itemName = normalizeStr(i.name || "");
       return (targetSlug && itemSlug === targetSlug) || (targetNome && itemName === targetNome);
     });
   }
@@ -98,7 +145,7 @@ export class Solo10Actor extends Actor {
   }
 
   /**
-   * Calcula a Resistência a Dano total (Armaduras equipadas + Escudo + Qualidades Defensor e Lutador Veloz).
+   * Calcula a Resistência a Dano total (Armaduras equipadas + Escudo + bônus de Qualidades como Defensor e Lutador Veloz).
    */
   getResistenciaDano() {
     if (this.type !== "personagem") return 0;
@@ -106,10 +153,9 @@ export class Solo10Actor extends Actor {
     for (const item of this.items) {
       if (item.type === "armadura" && item.system.equipada) {
         rd += Number(item.system.resistenciaDano || 0);
+      } else if (item.type === "qualidade") {
+        rd += Number(item.system?.bonusRD || 0);
       }
-    }
-    if (this.hasQualidade("defensor", "Defensor")) {
-      rd += 1;
     }
     if (this.hasQualidade("lutadorVeloz", "Lutador Veloz") && this.isUsandoEquipamentoLeveSemEscudo()) {
       rd += 1;
@@ -287,12 +333,13 @@ export class Solo10Actor extends Actor {
           }
         };
         const cfg = mapa[acao];
+        const periciaItem = this.findPericiaItem(cfg.pericia);
         const msg = await executeSolo10Roll({
           actor: this,
           titulo: cfg.titulo,
           atributo: cfg.atributo,
-          pericia: cfg.pericia,
-          usarPericia: Boolean(this.system.pericias?.[cfg.pericia]?.treinada),
+          pericia: periciaItem ? periciaItem.name : (SOLO10.PERICIAS[cfg.pericia]?.label || cfg.pericia),
+          usarPericia: Boolean(periciaItem),
           tipoTeste: "padrao"
         });
         const res = msg?.flags?.solo10?.resultado;

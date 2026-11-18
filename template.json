@@ -10,21 +10,6 @@
       "saude": { "value": 8, "max": 8, "bonus": 0 },
       "postura": { "value": 8, "max": 8, "bonus": 0 },
       "vontade": { "value": 8, "max": 8, "bonus": 0 },
-      "pericias": {
-        "artes": { "treinada": false },
-        "atletismo": { "treinada": false },
-        "combateDistancia": { "treinada": false },
-        "combateCorporal": { "treinada": false },
-        "conducao": { "treinada": false },
-        "conhecimento": { "treinada": false },
-        "idiomas": { "treinada": false },
-        "investigacao": { "treinada": false },
-        "manipulacao": { "treinada": false },
-        "sobrevivencia": { "treinada": false },
-        "subterfugio": { "treinada": false },
-        "oficios": { "treinada": false },
-        "tecnologia": { "treinada": false }
-      },
       "idiomasLista": "",
       "especieTipo": "",
       "moradaInicial": "",
@@ -33,6 +18,7 @@
       "experiencia": { "value": 0, "total": 0 },
       "diasVividos": 0,
       "investigadoCrime": false,
+      "bonusMentalFuturo": 0,
       "acontecimento": {
         "titulo": "",
         "locaisVisitados": 0,
@@ -58,10 +44,20 @@
     }
   },
   "Item": {
-    "types": ["qualidade", "arma", "armadura", "equipamento", "armadilha", "meta"],
+    "types": ["pericia", "qualidade", "arma", "armadura", "equipamento", "armadilha", "meta"],
+    "pericia": {
+      "slug": "",
+      "descricao": ""
+    },
     "qualidade": {
       "slug": "",
       "tipo": "passiva",
+      "bonusSaude": 0,
+      "bonusPostura": 0,
+      "bonusVontade": 0,
+      "bonusRD": 0,
+      "bonusTeste": 0,
+      "concedeVantagem": false,
       "descricao": ""
     },
     "arma": {

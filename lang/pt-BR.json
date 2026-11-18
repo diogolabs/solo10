@@ -14,23 +14,15 @@
       "postura": "Postura",
       "vontade": "Vontade"
     },
-    "Pericias": {
-      "artes": "Artes",
-      "atletismo": "Atletismo",
-      "combateDistancia": "Combate a Distância",
-      "combateCorporal": "Combate Corporal",
-      "conducao": "Condução",
-      "conhecimento": "Conhecimento",
-      "idiomas": "Idiomas",
-      "investigacao": "Investigação",
-      "manipulacao": "Manipulação",
-      "sobrevivencia": "Sobrevivência",
-      "subterfugio": "Subterfúgio",
-      "oficios": "Ofícios",
-      "tecnologia": "Tecnologia"
-    },
     "Oraculo": "Oráculo Solo 10",
-    "CombateMassa": "Combate em Massa"
+    "CombateMassa": "Combate em Massa",
+    "Settings": {
+      "ThemeName": "Tema Visual da Ficha",
+      "ThemeHint": "Escolha entre o tema Claro, Escuro ou seguir o Padrão do Sistema Foundry VTT.",
+      "ThemeSystem": "Padrão do Sistema",
+      "ThemeLight": "Claro (Minimalista)",
+      "ThemeDark": "Escuro (Minimalista)"
+    }
   },
   "TYPES": {
     "Actor": {
@@ -38,6 +30,7 @@
       "adversario": "Adversário"
     },
     "Item": {
+      "pericia": "Perícia",
       "qualidade": "Qualidade",
       "arma": "Arma",
       "armadura": "Armadura / Escudo",

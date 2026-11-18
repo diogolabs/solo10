@@ -2,6 +2,7 @@ import { SOLO10 } from "./constants.mjs";
 import {
   PersonagemDataModel,
   AdversarioDataModel,
+  PericiaDataModel,
   QualidadeDataModel,
   ArmaDataModel,
   ArmaduraDataModel,
@@ -15,11 +16,41 @@ import { Solo10PersonagemSheet, Solo10AdversarioSheet } from "./sheets/actor-she
 import { Solo10ItemSheet } from "./sheets/item-sheet.mjs";
 import { Solo10OracleApp } from "./apps/oracle-dialog.mjs";
 import { executeSolo10Roll, promptSolo10RollDialog } from "./dice/rolls.mjs";
+import { ensureSystemCompendiumsPopulated, abrirCompendioSistema } from "./compendiums.mjs";
+
+function reRenderOpenSolo10Windows() {
+  // ApplicationV2 instances (Foundry v13 & v14)
+  if (foundry.applications?.instances) {
+    for (const app of foundry.applications.instances.values()) {
+      if (app?.options?.classes?.includes("solo10")) {
+        app.render();
+      }
+    }
+  }
+}
 
 Hooks.once("init", () => {
   console.log("SOLO 10 | Inicializando o Sistema Solo 10 - Licença Aberta 2.0 (v13/v14)");
 
   CONFIG.SOLO10 = SOLO10;
+
+  // Configuração de Tema Visual (Claro, Escuro ou Padrão do Sistema)
+  game.settings.register("solo10", "theme", {
+    name: "SOLO10.Settings.ThemeName",
+    hint: "SOLO10.Settings.ThemeHint",
+    scope: "client",
+    config: true,
+    type: String,
+    choices: {
+      system: "SOLO10.Settings.ThemeSystem",
+      light: "SOLO10.Settings.ThemeLight",
+      dark: "SOLO10.Settings.ThemeDark"
+    },
+    default: "system",
+    onChange: () => {
+      reRenderOpenSolo10Windows();
+    }
+  });
 
   // Classes de Documento
   CONFIG.Actor.documentClass = Solo10Actor;
@@ -32,6 +63,7 @@ Hooks.once("init", () => {
   };
 
   CONFIG.Item.dataModels = {
+    pericia: PericiaDataModel,
     qualidade: QualidadeDataModel,
     arma: ArmaDataModel,
     armadura: ArmaduraDataModel,
@@ -68,7 +100,7 @@ Hooks.once("init", () => {
   });
 
   ItemsCollection.registerSheet("solo10", Solo10ItemSheet, {
-    types: ["qualidade", "arma", "armadura", "equipamento", "armadilha", "meta"],
+    types: ["pericia", "qualidade", "arma", "armadura", "equipamento", "armadilha", "meta"],
     makeDefault: true,
     label: "SOLO10.SheetItem"
   });
@@ -79,8 +111,13 @@ Hooks.once("init", () => {
     Solo10OracleApp,
     executeSolo10Roll,
     promptSolo10RollDialog,
+    abrirCompendioSistema,
     openOracle: (options = {}) => new Solo10OracleApp(options).render(true)
   };
+});
+
+Hooks.once("ready", async () => {
+  await ensureSystemCompendiumsPopulated();
 });
 
 /**
@@ -139,7 +176,7 @@ function bindChatCardListeners(message, htmlElement) {
           actor: defensor,
           titulo: `Defesa contra ${nomeInimigo}`,
           atributo: "corpo",
-          pericia: "combateCorporal",
+          pericia: "Combate Corporal",
           tipoTeste: "defesa",
           perigoInicial: perigo,
           danoReacaoInimigo: dano
@@ -154,7 +191,7 @@ Hooks.on("renderChatMessageHTML", (message, html) => {
 });
 
 /**
- * Adiciona botão de acesso rápido ao Oráculo e Combate em Massa na barra lateral do Chat
+ * Adiciona botões minimalistas de acesso rápido ao Oráculo e Compêndios na barra do Chat
  */
 Hooks.on("renderChatLog", (app, html) => {
   const root = html instanceof HTMLElement ? html : html[0];
@@ -163,14 +200,14 @@ Hooks.on("renderChatLog", (app, html) => {
   const toolbar = document.createElement("div");
   toolbar.className = "solo10-chat-toolbar";
   toolbar.innerHTML = `
-    <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-oraculo" data-tab="cenario">
-      <i class="fas fa-eye"></i> Oráculo Solo 10
+    <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-primary" data-tab="cenario">
+      <i class="fas fa-eye"></i> Oráculo
     </button>
     <button type="button" class="solo10-btn solo10-btn-xs" data-tab="setores">
-      <i class="fas fa-map"></i> Setores & Eventos
+      <i class="fas fa-map"></i> Setores
     </button>
     <button type="button" class="solo10-btn solo10-btn-xs" data-tab="exercito">
-      <i class="fas fa-chess-rook"></i> Combate em Massa
+      <i class="fas fa-chess-rook"></i> Exércitos
     </button>
   `;
 

@@ -1,8 +1,8 @@
 {
   "id": "solo10",
   "title": "Solo 10 - Licença Aberta 2.0",
-  "description": "Sistema de RPG Solo 10 (Licença Aberta 2.0 - 101 Games) completo com ficha de personagem, adversários, rolagens automatizadas, combate em massa e Oráculo integrado.",
-  "version": "2.0.0",
+  "description": "Sistema de RPG Solo 10 (Licença Aberta 2.0 - 101 Games) modular com fichas minimalistas (Claro/Escuro/Sistema), compêndios de Perícias e Qualidades, rolagens e Oráculo integrado.",
+  "version": "2.1.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14",
@@ -47,6 +47,9 @@
       }
     },
     "Item": {
+      "pericia": {
+        "htmlFields": ["descricao"]
+      },
       "qualidade": {
         "htmlFields": ["descricao"]
       },
@@ -67,6 +70,41 @@
       }
     }
   },
+  "packs": [
+    {
+      "name": "pericias",
+      "label": "Perícias (Solo 10)",
+      "system": "solo10",
+      "path": "packs/pericias",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "qualidades",
+      "label": "Qualidades (Solo 10)",
+      "system": "solo10",
+      "path": "packs/qualidades",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "equipamentos",
+      "label": "Armas e Armaduras (Solo 10)",
+      "system": "solo10",
+      "path": "packs/equipamentos",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
   "grid": {
     "distance": 1,
     "units": "setor"

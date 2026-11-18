@@ -7,7 +7,7 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   static DEFAULT_OPTIONS = {
     classes: ["solo10", "sheet", "item"],
     position: {
-      width: 520,
+      width: 500,
       height: 480
     },
     window: {
@@ -18,6 +18,7 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       closeOnSubmit: false
     },
     actions: {
+      cycleTheme: Solo10ItemSheet.#onCycleTheme,
       postToChat: Solo10ItemSheet.#onPostToChat
     }
   };
@@ -31,12 +32,24 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    const theme = game.settings?.get("solo10", "theme") || "system";
+    const themeLabels = { system: "Sistema", light: "Claro", dark: "Escuro" };
     return {
       ...context,
+      theme,
+      themeLabel: themeLabels[theme] || "Sistema",
       item: this.document,
       system: this.document.system,
       efeitosArmadilha: SOLO10.EFEITOS_ARMADILHA
     };
+  }
+
+  static async #onCycleTheme(event, target) {
+    const ordem = ["system", "light", "dark"];
+    const atual = game.settings?.get("solo10", "theme") || "system";
+    const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
+    await game.settings?.set("solo10", "theme", proximo);
+    this.render();
   }
 
   static async #onPostToChat(event, target) {

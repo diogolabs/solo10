@@ -3,27 +3,6 @@ const fields = foundry.data.fields;
 
 export class PersonagemDataModel extends TypeDataModel {
   static defineSchema() {
-    const periciasSchema = {};
-    for (const key of [
-      "artes",
-      "atletismo",
-      "combateDistancia",
-      "combateCorporal",
-      "conducao",
-      "conhecimento",
-      "idiomas",
-      "investigacao",
-      "manipulacao",
-      "sobrevivencia",
-      "subterfugio",
-      "oficios",
-      "tecnologia"
-    ]) {
-      periciasSchema[key] = new fields.SchemaField({
-        treinada: new fields.BooleanField({ initial: false })
-      });
-    }
-
     return {
       atributos: new fields.SchemaField({
         corpo: new fields.SchemaField({
@@ -54,7 +33,6 @@ export class PersonagemDataModel extends TypeDataModel {
         max: new fields.NumberField({ required: true, integer: true, initial: 8, min: 0 }),
         bonus: new fields.NumberField({ required: true, integer: true, initial: 0 })
       }),
-      pericias: new fields.SchemaField(periciasSchema),
       idiomasLista: new fields.StringField({ initial: "" }),
       especieTipo: new fields.StringField({ initial: "" }),
       moradaInicial: new fields.StringField({ initial: "" }),
@@ -109,11 +87,32 @@ export class AdversarioDataModel extends TypeDataModel {
   }
 }
 
+/**
+ * Perícia como Item modular independente de Atributo
+ */
+export class PericiaDataModel extends TypeDataModel {
+  static defineSchema() {
+    return {
+      slug: new fields.StringField({ initial: "" }),
+      descricao: new fields.HTMLField({ initial: "" })
+    };
+  }
+}
+
+/**
+ * Qualidade como Item modular com modificadores configuráveis
+ */
 export class QualidadeDataModel extends TypeDataModel {
   static defineSchema() {
     return {
       slug: new fields.StringField({ initial: "" }),
       tipo: new fields.StringField({ initial: "passiva" }),
+      bonusSaude: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+      bonusPostura: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+      bonusVontade: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+      bonusRD: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+      bonusTeste: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+      concedeVantagem: new fields.BooleanField({ initial: false }),
       descricao: new fields.HTMLField({ initial: "" })
     };
   }
@@ -144,7 +143,7 @@ export class ArmaduraDataModel extends TypeDataModel {
       escudo: new fields.BooleanField({ initial: false }),
       leve: new fields.BooleanField({ initial: false }),
       equipada: new fields.BooleanField({ initial: true }),
-      custo: new fields.NumberField({ required: true, initial: 0 }),
+      custo: new fields.NumberField({ required: true, integer: true, initial: 0 }),
       descricao: new fields.HTMLField({ initial: "" })
     };
   }

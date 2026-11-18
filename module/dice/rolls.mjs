@@ -3,6 +3,14 @@ import { SOLO10 } from "../constants.mjs";
 const renderTpl = (...args) =>
   (foundry.applications?.handlebars?.renderTemplate ?? renderTemplate)(...args);
 
+function norm(str = "") {
+  return String(str)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 /**
  * Calcula modificadores automáticos e sugestões de Vantagem/Desvantagem com base nas Qualidades e Equipamentos do Ator.
  */
@@ -16,22 +24,27 @@ export function getActorRollModifiers(actor, { atributo = "corpo", pericia = "",
     return { bonusQualidades, notasModificadores, sugereVantagem, sugereDesvantagem };
   }
 
+  const pNorm = norm(pericia);
   const hasQualidade = (slug, nome) => actor.hasQualidade(slug, nome);
 
   // Vantagens automáticas por Qualidade
-  if (atributo === "corpo" && pericia === "atletismo" && hasQualidade("agil", "Ágil")) {
+  if (atributo === "corpo" && (pNorm.includes("atletismo") || pNorm === "atletismo") && hasQualidade("agil", "Ágil")) {
     sugereVantagem = true;
-    notasModificadores.push("Qualidade Ágil (Vantagem em Corpo/Atletismo)");
+    notasModificadores.push("Qualidade Ágil (Vantagem em Corpo + Atletismo)");
   }
-  if (atributo === "mente" && (pericia === "conhecimento" || pericia === "idiomas") && hasQualidade("genial", "Genial")) {
+  if (
+    atributo === "mente" &&
+    (pNorm.includes("conhecimento") || pNorm.includes("idiomas")) &&
+    hasQualidade("genial", "Genial")
+  ) {
     sugereVantagem = true;
-    notasModificadores.push("Qualidade Genial (Vantagem em Mente/Conhecimento ou Idiomas)");
+    notasModificadores.push("Qualidade Genial (Vantagem em Mente + Conhecimento/Idiomas)");
   }
-  if (atributo === "mente" && pericia === "investigacao" && hasQualidade("sentidosAgucados", "Sentidos Aguçados")) {
+  if (atributo === "mente" && pNorm.includes("investigacao") && hasQualidade("sentidosAgucados", "Sentidos Aguçados")) {
     sugereVantagem = true;
-    notasModificadores.push("Qualidade Sentidos Aguçados (Vantagem em Mente/Investigação)");
+    notasModificadores.push("Qualidade Sentidos Aguçados (Vantagem em Mente + Investigação)");
   }
-  if (atributo === "corpo" && pericia === "subterfugio") {
+  if (atributo === "corpo" && pNorm.includes("subterfugio")) {
     if (hasQualidade("maosLeves", "Mãos Leves")) {
       sugereVantagem = true;
       notasModificadores.push("Qualidade Mãos Leves (Vantagem em fechaduras/cofres/carteiras)");
@@ -41,7 +54,7 @@ export function getActorRollModifiers(actor, { atributo = "corpo", pericia = "",
       notasModificadores.push("Qualidade Rastros Invisíveis (Vantagem em furtividade/esconder-se)");
     }
   }
-  if (atributo === "espirito" && pericia === "manipulacao") {
+  if (atributo === "espirito" && pNorm.includes("manipulacao")) {
     if (hasQualidade("almaIluminada", "Alma Iluminada")) {
       notasModificadores.push("Qualidade Alma Iluminada disponível (Vantagem em interação benéfica)");
     }
@@ -54,13 +67,17 @@ export function getActorRollModifiers(actor, { atributo = "corpo", pericia = "",
   }
 
   // Bônus numéricos por Qualidade
-  if (atributo === "corpo" && pericia === "combateDistancia" && hasQualidade("atiradorDeElite", "Atirador de Elite")) {
+  if (
+    atributo === "corpo" &&
+    (pNorm.includes("combate a distancia") || pNorm === "combatedistancia") &&
+    hasQualidade("atiradorDeElite", "Atirador de Elite")
+  ) {
     bonusQualidades += 2;
     notasModificadores.push("Atirador de Elite (+2)");
   }
 
-  if (atributo === "corpo" && pericia === "combateCorporal") {
-    const isDesarmado = arma ? arma.name.toLowerCase().includes("desarmado") : false;
+  if (atributo === "corpo" && (pNorm.includes("combate corporal") || pNorm === "combatecorporal")) {
+    const isDesarmado = arma ? norm(arma.name).includes("desarmado") : false;
     if (isDesarmado && hasQualidade("caoDeBriga", "Cão de Briga")) {
       bonusQualidades += 2;
       notasModificadores.push("Cão de Briga (+2 desarmado)");
@@ -81,7 +98,7 @@ export function getActorRollModifiers(actor, { atributo = "corpo", pericia = "",
   }
 
   // Penalidade de Armadura Tática/Batalha* ou Escudo* em destreza/agilidade
-  if (atributo === "corpo" && (pericia === "atletismo" || pericia === "subterfugio")) {
+  if (atributo === "corpo" && (pNorm.includes("atletismo") || pNorm.includes("subterfugio"))) {
     if (actor.temPenalidadeArmaduraAgilidade()) {
       sugereDesvantagem = true;
       notasModificadores.push("Armadura/Escudo* (Desvantagem em destreza/agilidade)");
@@ -108,7 +125,7 @@ export async function executeSolo10Roll({
   ataqueSelvagem = false,
   ataqueEmArco = false,
   desarme = false,
-  tipoTeste = "padrao", // "padrao" | "ataque" | "defesa" | "social" | "mental" | "curandeiro" | "armadilha" | "barganha" | "abastado"
+  tipoTeste = "padrao",
   armaData = null,
   danoReacaoInimigo = 0,
   isRerollVontade = false
@@ -118,12 +135,14 @@ export async function executeSolo10Roll({
     ? Number(actor.system.atributos?.[atributo]?.value ?? 0) + Number(actor.system.atributos?.[atributo]?.bonus ?? 0)
     : Number(perigoBase || 0);
 
-  const periciaObj = pericia ? SOLO10.PERICIAS[pericia] : null;
+  // Resolver nome amigável da Perícia (Item da ficha ou constante ou texto livre)
+  const periciaItem = actor?.findPericiaItem?.(pericia);
+  const periciaLabel = periciaItem?.name || SOLO10.PERICIAS[pericia]?.label || pericia || null;
   const bonusPericia = usarPericia ? 2 : 0;
 
   const { bonusQualidades, notasModificadores } = getActorRollModifiers(actor, {
     atributo,
-    pericia,
+    pericia: periciaLabel || pericia,
     tipoTeste,
     arma: armaData
   });
@@ -163,7 +182,6 @@ export async function executeSolo10Roll({
   const roll = new Roll(formula);
   await roll.evaluate();
 
-  // Extrair resultados individuais dos dados D10 rolados
   const dieTerm = roll.terms[0];
   const dadosRolados = (dieTerm?.results ?? []).map((r) => ({
     result: r.result,
@@ -272,7 +290,7 @@ export async function executeSolo10Roll({
     actorId: actor?.id ?? null,
     titulo,
     atributo,
-    pericia,
+    pericia: periciaLabel || pericia,
     usarPericia,
     modoDados,
     perigoBase,
@@ -294,7 +312,7 @@ export async function executeSolo10Roll({
     isRerollVontade,
     atributoLabel: attrObj.label,
     valorAtributo,
-    periciaLabel: periciaObj ? periciaObj.label : null,
+    periciaLabel,
     usarPericia,
     bonusPericia,
     bonusQualidades,
@@ -347,10 +365,11 @@ export async function executeSolo10Roll({
 
 /**
  * Abre um diálogo interativo para configurar o Teste de Atributo / Perícia / Combate antes de rolar.
+ * O Atributo é escolhido livremente pelo jogador/GM na hora do teste.
  */
 export async function promptSolo10RollDialog({
   actor,
-  titulo = "Teste de Atributo",
+  titulo = "Teste Solo 10",
   atributo = "corpo",
   pericia = "",
   usarPericia = null,
@@ -359,14 +378,15 @@ export async function promptSolo10RollDialog({
   perigoInicial = 10,
   danoReacaoInimigo = 0
 } = {}) {
-  const periciaTreinada = pericia && actor?.type === "personagem"
-    ? Boolean(actor.system.pericias?.[pericia]?.treinada)
-    : false;
-  const checkPericia = usarPericia !== null ? usarPericia : periciaTreinada;
+  const periciaEncontrada = pericia && actor?.type === "personagem"
+    ? actor.findPericiaItem(pericia)
+    : null;
+  const checkPericia = usarPericia !== null ? usarPericia : Boolean(periciaEncontrada);
+  const nomePericiaAlvo = periciaEncontrada?.name || SOLO10.PERICIAS[pericia]?.label || pericia || "";
 
-  const { bonusQualidades, notasModificadores, sugereVantagem, sugereDesvantagem } = getActorRollModifiers(actor, {
+  const { notasModificadores, sugereVantagem, sugereDesvantagem } = getActorRollModifiers(actor, {
     atributo,
-    pericia,
+    pericia: nomePericiaAlvo,
     tipoTeste,
     arma
   });
@@ -377,31 +397,43 @@ export async function promptSolo10RollDialog({
   else if (sugereDesvantagem) modoInicial = "desvantagem";
 
   const hasCuidadoso = actor?.type === "personagem" && actor.hasQualidade("cuidadoso", "Cuidadoso");
-  const hasAtaqueSelvagem = actor?.type === "personagem" && actor.hasQualidade("ataqueSelvagem", "Ataque Selvagem");
   const hasAtaqueEmArco = actor?.type === "personagem" && actor.hasQualidade("ataqueEmArco", "Ataque em Arco");
   const hasDesarme = actor?.type === "personagem" && actor.hasQualidade("desarme", "Desarme");
 
   const atributosOptions = Object.values(SOLO10.ATRIBUTOS)
-    .map((a) => `<option value="${a.key}" ${a.key === atributo ? "selected" : ""}>${a.label} (${(actor?.system?.atributos?.[a.key]?.value ?? 0) + (actor?.system?.atributos?.[a.key]?.bonus ?? 0)})</option>`)
+    .map(
+      (a) =>
+        `<option value="${a.key}" ${a.key === atributo ? "selected" : ""}>${a.label} (+${(actor?.system?.atributos?.[a.key]?.value ?? 0) + (actor?.system?.atributos?.[a.key]?.bonus ?? 0)})</option>`
+    )
     .join("");
 
-  const periciasOptions = [
-    `<option value="">— Nenhuma Perícia —</option>`,
-    ...Object.values(SOLO10.PERICIAS).map((p) => {
-      const isTr = actor?.system?.pericias?.[p.key]?.treinada;
-      return `<option value="${p.key}" ${p.key === pericia ? "selected" : ""}>${p.label}${isTr ? " (+2 Treinada)" : ""}</option>`;
+  // Listar as Perícias (Itens) que o personagem possui na ficha
+  const periciasItems = (actor?.items ?? []).filter((i) => i.type === "pericia");
+  const opcoesPericiaHtml = [
+    `<option value="" ${!periciaEncontrada && !nomePericiaAlvo ? "selected" : ""}>— Sem Perícia (+0) —</option>`,
+    ...periciasItems.map((item) => {
+      const isSelected = periciaEncontrada && periciaEncontrada.id === item.id;
+      return `<option value="${foundry.utils.escapeHTML(item.name)}" data-possui="true" ${isSelected ? "selected" : ""}>${foundry.utils.escapeHTML(item.name)} (+2 na Ficha)</option>`;
     })
-  ].join("");
+  ];
+
+  // Se o teste pediu uma perícia específica que o personagem ainda não tem na ficha, exibe-a como referência
+  if (nomePericiaAlvo && !periciaEncontrada) {
+    opcoesPericiaHtml.push(
+      `<option value="${foundry.utils.escapeHTML(nomePericiaAlvo)}" data-possui="false" selected>${foundry.utils.escapeHTML(nomePericiaAlvo)} (Não possui na ficha: +0)</option>`
+    );
+  }
 
   const notasHtml = notasModificadores.length
     ? `<div class="solo10-dialog-notes"><strong>Qualidades / Equipamento detectados:</strong><ul>${notasModificadores.map((n) => `<li>${n}</li>`).join("")}</ul></div>`
     : "";
 
-  const combateExtrasHtml = (tipoTeste === "ataque" || pericia === "combateCorporal")
-    ? `
+  const combateExtrasHtml =
+    tipoTeste === "ataque" || norm(nomePericiaAlvo).includes("combate corporal")
+      ? `
       <div class="solo10-dialog-group">
         <label class="solo10-checkbox">
-          <input type="checkbox" name="ataqueSelvagem" ${hasAtaqueSelvagem ? "" : ""} />
+          <input type="checkbox" name="ataqueSelvagem" />
           <span><strong>Ataque Selvagem (+5):</strong> Abdica de qualquer defesa neste turno (só RD da armadura).</span>
         </label>
         ${hasAtaqueEmArco ? `
@@ -416,32 +448,33 @@ export async function promptSolo10RollDialog({
         </label>` : ""}
       </div>
     `
-    : "";
+      : "";
 
-  const defesaExtrasHtml = tipoTeste === "defesa"
-    ? `
+  const defesaExtrasHtml =
+    tipoTeste === "defesa"
+      ? `
       <div class="solo10-dialog-row">
         <label>Dano da Reação do Adversário (se falhar)</label>
         <input type="number" name="danoReacaoInimigo" value="${danoReacaoInimigo}" min="0" />
       </div>
     `
-    : "";
+      : "";
 
   const content = `
     <div class="solo10-roll-dialog">
       ${notasHtml}
       <div class="solo10-dialog-row">
-        <label>Atributo Testado</label>
+        <label>Atributo do Teste (Escolhido livremente para a situação)</label>
         <select name="atributo">${atributosOptions}</select>
       </div>
       <div class="solo10-dialog-row">
-        <label>Perícia Relacionada</label>
-        <select name="pericia">${periciasOptions}</select>
+        <label>Perícia da Ficha</label>
+        <select name="pericia">${opcoesPericiaHtml.join("")}</select>
       </div>
       <div class="solo10-dialog-row">
         <label class="solo10-checkbox">
           <input type="checkbox" name="usarPericia" ${checkPericia ? "checked" : ""} />
-          <span>Possui / Aplicar Perícia (+2 na rolagem)</span>
+          <span>Aplicar Bônus de Perícia (+2 na rolagem)</span>
         </label>
       </div>
       <div class="solo10-dialog-row">
@@ -467,11 +500,11 @@ export async function promptSolo10RollDialog({
       <div class="solo10-dialog-row">
         <label class="solo10-checkbox">
           <input type="checkbox" name="ignorarPerigoCuidadoso" />
-          <span><strong>Qualidade Cuidadoso:</strong> Confrontando Armadilha ou Perigo Natural (Ignora Perigo -> Dificuldade 10)</span>
+          <span><strong>Qualidade Cuidadoso:</strong> Confrontando Armadilha ou Perigo Natural (Ignora Perigo &rarr; Dificuldade 10)</span>
         </label>
       </div>` : ""}
       <div class="solo10-dialog-row">
-        <label>Modificador Extra (Bônus Mental Futuro, Honrado +2, etc.)</label>
+        <label>Modificador Extra (Bônus Mental Futuro, Qualidades, etc.)</label>
         <input type="number" name="modificadorExtra" value="${atributo === "mente" ? Number(actor?.system?.bonusMentalFuturo || 0) : 0}" />
       </div>
       ${combateExtrasHtml}
@@ -484,6 +517,17 @@ export async function promptSolo10RollDialog({
     return DialogV2.wait({
       window: { title: `${titulo} — ${actor?.name ?? "Solo 10"}` },
       content,
+      render: (event, dialog) => {
+        const el = dialog.element;
+        const selPericia = el.querySelector('[name="pericia"]');
+        const chkPericia = el.querySelector('[name="usarPericia"]');
+        if (selPericia && chkPericia) {
+          selPericia.addEventListener("change", () => {
+            const opt = selPericia.selectedOptions[0];
+            chkPericia.checked = opt?.dataset?.possui === "true";
+          });
+        }
+      },
       buttons: [
         {
           action: "roll",
@@ -508,7 +552,9 @@ export async function promptSolo10RollDialog({
 
             return executeSolo10Roll({
               actor,
-              titulo,
+              titulo: selPericia
+                ? `Teste de ${SOLO10.ATRIBUTOS[selAttr]?.label || selAttr} (${selPericia})`
+                : `Teste de ${SOLO10.ATRIBUTOS[selAttr]?.label || selAttr}`,
               atributo: selAttr,
               pericia: selPericia,
               usarPericia: selUsarPericia,

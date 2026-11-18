@@ -53,8 +53,10 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     const actor = game.actors?.get(this.selectedActorId) ?? null;
     const rollTables = (game.tables ?? []).map((t) => ({ id: t.id, name: t.name }));
+    const theme = game.settings?.get("solo10", "theme") || "system";
 
     return {
+      theme,
       activeTab: this.activeTab,
       personagens: personagens.map((p) => ({
         id: p.id,
@@ -204,8 +206,8 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
       actor,
       titulo: `Oráculo: Interação com ${this.nomeAlvo}`,
       atributo: "espirito",
-      pericia: "manipulacao",
-      usarPericia: Boolean(actor.system.pericias?.manipulacao?.treinada),
+      pericia: "Manipulação",
+      usarPericia: actor.hasPericia("manipulacao"),
       modoDados,
       perigoBase: this.perigoAlvo,
       modificadorExtra: bonusHonrado,
