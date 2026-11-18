@@ -8,15 +8,16 @@ Implementação completa do sistema **Solo 10 (Licença Aberta 2.0)** para **Fou
 
 ## Funcionalidades Incluídas
 
-- **Ficha de Personagem Completa (`ApplicationV2`):**
+- **Ficha de Personagem Modular e Minimalista (`ApplicationV2`):**
+  - **Temas Visuais:** Escolha entre **Claro (Minimalista)**, **Escuro (Minimalista)** ou **Padrão do Sistema** (direto no cabeçalho da ficha ou nas configurações do Foundry VTT).
   - **Atributos (`Corpo`, `Espírito`, `Mente`)** com cálculo automático das reservas:
-    - `Saúde = 5 + Corpo` (+4 se possuir *Vigoroso*)
-    - `Postura = 5 + Espírito` (+4 se possuir *Aristocrata*)
-    - `Vontade = 5 + Mente` (+4 se possuir *Perseverante*)
-  - **Perícias (+2):** Todas as perícias da Licença Aberta 2.0, podendo ser roladas em conjunto com qualquer um dos 3 Atributos.
-  - **Catálogo das 38 Qualidades:** Todas as 38 Qualidades oficiais integradas com automação de bônus passivos, sugestões de Vantagem e rolagens para Qualidades ativas (*Abastado*, *Armadilheiro*, *Ataque em Arco*, *Ataque Selvagem*, *Camaleão*, *Curandeiro*, *Desarme*, *Falsificador*).
+    - `Saúde = 5 + Corpo` (+ bônus de Qualidades como *Vigoroso*)
+    - `Postura = 5 + Espírito` (+ bônus de Qualidades como *Aristocrata*)
+    - `Vontade = 5 + Mente` (+ bônus de Qualidades como *Perseverante*)
+  - **Perícias como Itens Modulares (`+2`):** Livres de Atributo (o Atributo é definido na hora do teste). Vêm em um **Compêndio de Perícias** próprio do sistema e permitem criar novas perícias para qualquer cenário Solo 10.
+  - **Qualidades como Itens Modulares:** Todas as 38 Qualidades oficiais disponíveis no **Compêndio de Qualidades** do sistema, com campos modulares de bônus (`+ Saúde`, `+ Postura`, `+ Vontade`, `+ RD`, `+ Bônus em Teste`, `Vantagem`) para fácil adaptação e criação de novas Qualidades.
   - **Combate, Armas, Armaduras, Danos Diversos e Ofícios:**
-    - Tabelas oficiais de Armas e Armaduras/Escudos integradas.
+    - **Compêndio de Armas e Armaduras** integrado.
     - Cálculo automático de **Resistência a Dano (RD)**.
     - Calculadora de Danos Diversos (*Queda*, *Fogo e Ácido*, *Veneno*) e testes de *Ofícios*.
   - **Ações de Setor, Evolução (XP), Acontecimento Importante, Metas e Campanha.**
