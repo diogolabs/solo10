@@ -15,14 +15,7 @@
       "vontade": "Vontade"
     },
     "Oraculo": "Oráculo Solo 10",
-    "CombateMassa": "Combate em Massa",
-    "Settings": {
-      "ThemeName": "Tema Visual da Ficha",
-      "ThemeHint": "Escolha entre o tema Claro, Escuro ou seguir o Padrão do Sistema Foundry VTT.",
-      "ThemeSystem": "Padrão do Sistema",
-      "ThemeLight": "Claro (Minimalista)",
-      "ThemeDark": "Escuro (Minimalista)"
-    }
+    "CombateMassa": "Combate em Massa"
   },
   "TYPES": {
     "Actor": {
@@ -33,8 +26,8 @@
       "pericia": "Perícia",
       "qualidade": "Qualidade",
       "arma": "Arma",
-      "armadura": "Armadura / Escudo",
-      "equipamento": "Equipamento / Ofício",
+      "armadura": "Armadura",
+      "equipamento": "Equipamento",
       "armadilha": "Armadilha",
       "meta": "Meta / Campanha"
     }

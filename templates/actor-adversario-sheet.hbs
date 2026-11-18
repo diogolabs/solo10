@@ -1,4 +1,4 @@
-<div class="solo10-sheet-container solo10-adversario-sheet solo10-theme-{{theme}}">
+<div class="solo10-sheet-container solo10-adversario-sheet solo10-theme-light">
   <header class="solo10-sheet-header">
     <div class="solo10-header-left">
       <img class="solo10-profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img" />
@@ -6,11 +6,6 @@
     <div class="solo10-header-main">
       <div class="solo10-title-row">
         <input type="text" class="solo10-charname" name="name" value="{{actor.name}}" placeholder="Nome do Adversário" />
-        <div class="solo10-theme-Segment" title="Tema da Ficha">
-          <button type="button" class="solo10-theme-opt {{#if (eq theme 'light')}}active{{/if}}" data-action="setTheme" data-theme="light">Claro</button>
-          <button type="button" class="solo10-theme-opt {{#if (eq theme 'dark')}}active{{/if}}" data-action="setTheme" data-theme="dark">Escuro</button>
-          <button type="button" class="solo10-theme-opt {{#if (eq theme 'system')}}active{{/if}}" data-action="setTheme" data-theme="system">Sistema</button>
-        </div>
         <div class="solo10-meta-field" style="width: 90px;">
           <label>Perigo (Máx 15)</label>
           <input type="number" name="system.perigo" value="{{system.perigo}}" min="0" max="15" />

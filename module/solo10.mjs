@@ -19,35 +19,11 @@ import { executeSolo10Roll, promptSolo10RollDialog } from "./dice/rolls.mjs";
 import { ensureSystemCompendiumsPopulated, abrirCompendioSistema } from "./compendiums.mjs";
 
 /**
- * Resolve qual tema efetivo ("light" ou "dark") deve ser aplicado na janela
- * com base na configuração ("light", "dark" ou "system").
+ * Garante que todas as janelas de Ficha (Personagem, Adversário, Itens: Qualidades, Perícias, Armas, Armaduras, etc.)
+ * e do Oráculo utilizem sempre o tema Claro Minimalista.
  */
-export function resolveEffectiveTheme(themePref = null) {
-  const pref = themePref || game.settings?.get("solo10", "theme") || "system";
-  if (pref === "light" || pref === "dark") return pref;
-
-  // Modo "system": verifica a configuração de esquema de cores do Foundry VTT v13/v14
-  try {
-    const uiConfig = game.settings?.get("core", "uiConfig");
-    const appScheme = uiConfig?.colorScheme?.applications || uiConfig?.colorScheme?.interface;
-    if (appScheme === "light" || appScheme === "dark") return appScheme;
-  } catch (e) {
-    // fallback
-  }
-  if (document.body.classList.contains("theme-light")) return "light";
-  if (document.body.classList.contains("theme-dark")) return "dark";
-  return window.matchMedia?.("(prefers-color-scheme: light)")?.matches ? "light" : "dark";
-}
-
-/**
- * Aplica as classes de tema (tanto as nativas do Foundry v13/v14 quanto as do Solo 10)
- * diretamente no elemento raiz da janela ApplicationV2 e no container interno.
- */
-export function applyThemeToElement(element, themePref = null) {
+export function applyLightThemeToElement(element) {
   if (!element) return;
-  const pref = themePref || game.settings?.get("solo10", "theme") || "system";
-  const effective = resolveEffectiveTheme(pref);
-
   const targets = [
     element,
     element.querySelector?.(".window-content"),
@@ -56,60 +32,15 @@ export function applyThemeToElement(element, themePref = null) {
   ].filter(Boolean);
 
   for (const el of targets) {
-    el.classList.remove(
-      "theme-light",
-      "theme-dark",
-      "solo10-theme-light",
-      "solo10-theme-dark",
-      "solo10-theme-system"
-    );
-    el.classList.add(`theme-${effective}`, `solo10-theme-${effective}`);
-    el.dataset.solo10ThemePref = pref;
-    el.dataset.solo10Theme = effective;
+    el.classList.remove("theme-dark", "solo10-theme-dark", "solo10-theme-system");
+    el.classList.add("theme-light", "solo10-theme-light");
   }
-
-  // Atualizar estado ativo dos botões de tema na janela, se existirem
-  element.querySelectorAll?.('[data-action="setTheme"]').forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.theme === pref);
-  });
-}
-
-export function refreshAllSolo10Themes() {
-  const pref = game.settings?.get("solo10", "theme") || "system";
-  if (foundry.applications?.instances) {
-    for (const app of foundry.applications.instances.values()) {
-      if (app?.element && app?.options?.classes?.includes("solo10")) {
-        applyThemeToElement(app.element, pref);
-      }
-    }
-  }
-  document.querySelectorAll(".application.solo10, .solo10-oracle-window").forEach((el) => {
-    applyThemeToElement(el, pref);
-  });
 }
 
 Hooks.once("init", () => {
   console.log("SOLO 10 | Inicializando o Sistema Solo 10 - Licença Aberta 2.0 (v13/v14)");
 
   CONFIG.SOLO10 = SOLO10;
-
-  // Configuração de Tema Visual (Claro, Escuro ou Padrão do Sistema)
-  game.settings.register("solo10", "theme", {
-    name: "SOLO10.Settings.ThemeName",
-    hint: "SOLO10.Settings.ThemeHint",
-    scope: "client",
-    config: true,
-    type: String,
-    choices: {
-      system: "SOLO10.Settings.ThemeSystem",
-      light: "SOLO10.Settings.ThemeLight",
-      dark: "SOLO10.Settings.ThemeDark"
-    },
-    default: "system",
-    onChange: () => {
-      refreshAllSolo10Themes();
-    }
-  });
 
   // Rótulo customizável para Setor (Setor, Bairro, Distrito, Zona, Região, Hexágono)
   game.settings.register("solo10", "setorLabel", {
@@ -204,8 +135,7 @@ Hooks.once("init", () => {
     executeSolo10Roll,
     promptSolo10RollDialog,
     abrirCompendioSistema,
-    applyThemeToElement,
-    refreshAllSolo10Themes,
+    applyLightThemeToElement,
     openOracle: (options = {}) => new Solo10OracleApp(options).render(true)
   };
 });

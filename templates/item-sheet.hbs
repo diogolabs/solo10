@@ -1,12 +1,9 @@
-<div class="solo10-sheet-container solo10-item-sheet solo10-theme-{{theme}}">
+<div class="solo10-sheet-container solo10-item-sheet solo10-theme-light">
   <header class="solo10-sheet-header">
+    <img class="solo10-item-img" src="{{item.img}}" alt="{{item.name}}" data-action="editImage" data-edit="img" title="Alterar ícone do item" />
     <div class="solo10-title-row" style="width:100%;">
-      <input type="text" class="solo10-charname" name="name" value="{{item.name}}" placeholder="Nome" />
-      <div class="solo10-theme-Segment" title="Tema da Ficha">
-        <button type="button" class="solo10-theme-opt {{#if (eq theme 'light')}}active{{/if}}" data-action="setTheme" data-theme="light">Claro</button>
-        <button type="button" class="solo10-theme-opt {{#if (eq theme 'dark')}}active{{/if}}" data-action="setTheme" data-theme="dark">Escuro</button>
-        <button type="button" class="solo10-theme-opt {{#if (eq theme 'system')}}active{{/if}}" data-action="setTheme" data-theme="system">Sistema</button>
-      </div>
+      <input type="text" class="solo10-charname" name="name" value="{{item.name}}" placeholder="Nome do Item" />
+      <span class="solo10-badge">{{typeLabel}}</span>
       <button type="button" class="solo10-btn solo10-btn-sm" data-action="postToChat">
         <i class="fas fa-comment"></i> Chat
       </button>

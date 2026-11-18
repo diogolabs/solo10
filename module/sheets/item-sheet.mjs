@@ -3,12 +3,22 @@ import { SOLO10 } from "../constants.mjs";
 const { ItemSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
+const ITEM_TYPE_LABELS = {
+  pericia: "Perícia",
+  qualidade: "Qualidade",
+  arma: "Arma",
+  armadura: "Armadura",
+  equipamento: "Equipamento",
+  armadilha: "Armadilha",
+  meta: "Meta / Campanha"
+};
+
 export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: ["solo10", "sheet", "item"],
+    classes: ["solo10", "theme-light", "solo10-theme-light", "sheet", "item"],
     position: {
-      width: 500,
-      height: 480
+      width: 520,
+      height: 500
     },
     window: {
       resizable: true
@@ -18,8 +28,7 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       closeOnSubmit: false
     },
     actions: {
-      setTheme: Solo10ItemSheet.#onSetTheme,
-      cycleTheme: Solo10ItemSheet.#onCycleTheme,
+      editImage: Solo10ItemSheet.#onEditImage,
       postToChat: Solo10ItemSheet.#onPostToChat
     }
   };
@@ -33,35 +42,32 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    const theme = game.settings?.get("solo10", "theme") || "system";
-    const themeLabels = { system: "Sistema", light: "Claro", dark: "Escuro" };
     return {
       ...context,
-      theme,
-      themeLabel: themeLabels[theme] || "Sistema",
       item: this.document,
       system: this.document.system,
+      typeLabel: ITEM_TYPE_LABELS[this.document.type] || this.document.type,
       efeitosArmadilha: SOLO10.EFEITOS_ARMADILHA
     };
   }
 
   _onRender(context, options) {
     super._onRender(context, options);
-    game.solo10?.applyThemeToElement?.(this.element);
+    game.solo10?.applyLightThemeToElement?.(this.element);
   }
 
-  static async #onSetTheme(event, target) {
-    const novo = target.dataset.theme || "system";
-    game.solo10?.applyThemeToElement?.(this.element, novo);
-    await game.settings?.set("solo10", "theme", novo);
-  }
-
-  static async #onCycleTheme(event, target) {
-    const ordem = ["system", "light", "dark"];
-    const atual = game.settings?.get("solo10", "theme") || "system";
-    const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
-    game.solo10?.applyThemeToElement?.(this.element, proximo);
-    await game.settings?.set("solo10", "theme", proximo);
+  static async #onEditImage(event, target) {
+    const attr = target.dataset.edit || "img";
+    const current = foundry.utils.getProperty(this.document, attr);
+    const FilePickerCls = foundry.applications?.apps?.FilePicker?.implementation ?? FilePicker;
+    const fp = new FilePickerCls({
+      type: "image",
+      current,
+      callback: (path) => {
+        this.document.update({ [attr]: path });
+      }
+    });
+    return fp.browse();
   }
 
   static async #onPostToChat(event, target) {

@@ -1,5 +1,5 @@
-<div class="solo10-sheet-container solo10-theme-{{theme}}">
-  <!-- CABEÇALHO MINIMALISTA -->
+<div class="solo10-sheet-container solo10-theme-light">
+  <!-- CABEÇALHO MINIMALISTA CLARO -->
   <header class="solo10-sheet-header">
     <div class="solo10-header-left">
       <img class="solo10-profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img" title="Alterar imagem" />
@@ -8,11 +8,6 @@
     <div class="solo10-header-main">
       <div class="solo10-title-row">
         <input type="text" class="solo10-charname" name="name" value="{{actor.name}}" placeholder="Nome da Personagem" />
-        <div class="solo10-theme-Segment" title="Tema da Ficha">
-          <button type="button" class="solo10-theme-opt {{#if (eq theme 'light')}}active{{/if}}" data-action="setTheme" data-theme="light">Claro</button>
-          <button type="button" class="solo10-theme-opt {{#if (eq theme 'dark')}}active{{/if}}" data-action="setTheme" data-theme="dark">Escuro</button>
-          <button type="button" class="solo10-theme-opt {{#if (eq theme 'system')}}active{{/if}}" data-action="setTheme" data-theme="system">Sistema</button>
-        </div>
         <button type="button" class="solo10-btn" data-action="abrirOraculo" data-tab="cenario">
           <i class="fas fa-eye"></i> Oráculo
         </button>
@@ -407,8 +402,8 @@
         <div class="solo10-panel-header">
           <h3>Armas</h3>
           <div class="solo10-header-tools">
-            <button type="button" class="solo10-btn solo10-btn-sm" data-action="abrirCompendio" data-pack="equipamentos">
-              <i class="fas fa-book-open"></i> Compêndio
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="abrirCompendio" data-pack="armas" title="Abrir Compêndio de Armas">
+              <i class="fas fa-book-open"></i> Compêndio de Armas
             </button>
             <button type="button" class="solo10-btn solo10-btn-sm solo10-btn-primary" data-action="createItem" data-type="arma">
               <i class="fas fa-plus"></i> Nova Arma
@@ -464,8 +459,8 @@
         <div class="solo10-panel-header">
           <h3>Armaduras & Escudos</h3>
           <div class="solo10-header-tools">
-            <button type="button" class="solo10-btn solo10-btn-sm" data-action="abrirCompendio" data-pack="equipamentos">
-              <i class="fas fa-book-open"></i> Compêndio
+            <button type="button" class="solo10-btn solo10-btn-sm" data-action="abrirCompendio" data-pack="armaduras" title="Abrir Compêndio de Armaduras">
+              <i class="fas fa-book-open"></i> Compêndio de Armaduras
             </button>
             <button type="button" class="solo10-btn solo10-btn-sm solo10-btn-primary" data-action="createItem" data-type="armadura">
               <i class="fas fa-plus"></i> Nova Armadura

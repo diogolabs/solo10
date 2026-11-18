@@ -1,8 +1,8 @@
 import { SOLO10 } from "./constants.mjs";
 
 /**
- * Popula automaticamente os Compêndios do sistema (Perícias, Qualidades, Armas e Armaduras)
- * na primeira inicialização do mundo no Foundry VTT v13/v14 caso estejam vazios.
+ * Popula automaticamente os Compêndios do sistema (Perícias, Qualidades, Armas e Armaduras separados)
+ * na inicialização do mundo no Foundry VTT v13/v14 caso estejam vazios.
  */
 export async function ensureSystemCompendiumsPopulated() {
   if (!game.user?.isGM) return;
@@ -61,13 +61,13 @@ export async function ensureSystemCompendiumsPopulated() {
       }
     }
 
-    // 3. Compêndio de Armas e Armaduras
-    const packEquip = game.packs?.get("solo10.equipamentos");
-    if (packEquip) {
-      await packEquip.getIndex();
-      if (packEquip.index.size === 0) {
-        const wasLocked = packEquip.locked;
-        if (wasLocked) await packEquip.configure({ locked: false });
+    // 3. Compêndio de Armas (Separado)
+    const packArmas = game.packs?.get("solo10.armas");
+    if (packArmas) {
+      await packArmas.getIndex();
+      if (packArmas.index.size === 0) {
+        const wasLocked = packArmas.locked;
+        if (wasLocked) await packArmas.configure({ locked: false });
 
         const armasData = SOLO10.ARMAS_PADRAO.map((a) => ({
           name: a.nome,
@@ -86,6 +86,20 @@ export async function ensureSystemCompendiumsPopulated() {
           }
         }));
 
+        await Item.createDocuments(armasData, { pack: "solo10.armas" });
+        if (wasLocked) await packArmas.configure({ locked: true });
+        console.log("SOLO 10 | Compêndio de Armas populado com sucesso.");
+      }
+    }
+
+    // 4. Compêndio de Armaduras (Separado)
+    const packArmaduras = game.packs?.get("solo10.armaduras");
+    if (packArmaduras) {
+      await packArmaduras.getIndex();
+      if (packArmaduras.index.size === 0) {
+        const wasLocked = packArmaduras.locked;
+        if (wasLocked) await packArmaduras.configure({ locked: false });
+
         const armadurasData = SOLO10.ARMADURAS_PADRAO.map((arm) => ({
           name: arm.nome,
           type: "armadura",
@@ -100,9 +114,9 @@ export async function ensureSystemCompendiumsPopulated() {
           }
         }));
 
-        await Item.createDocuments([...armasData, ...armadurasData], { pack: "solo10.equipamentos" });
-        if (wasLocked) await packEquip.configure({ locked: true });
-        console.log("SOLO 10 | Compêndio de Armas e Armaduras populado com sucesso.");
+        await Item.createDocuments(armadurasData, { pack: "solo10.armaduras" });
+        if (wasLocked) await packArmaduras.configure({ locked: true });
+        console.log("SOLO 10 | Compêndio de Armaduras populado com sucesso.");
       }
     }
   } catch (err) {

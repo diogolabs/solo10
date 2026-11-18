@@ -13,7 +13,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
   }
 
   static DEFAULT_OPTIONS = {
-    classes: ["solo10", "sheet", "actor", "personagem"],
+    classes: ["solo10", "theme-light", "solo10-theme-light", "sheet", "actor", "personagem"],
     position: {
       width: 820,
       height: 780
@@ -27,8 +27,6 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     },
     actions: {
       changeTab: Solo10PersonagemSheet.#onChangeTab,
-      setTheme: Solo10PersonagemSheet.#onSetTheme,
-      cycleTheme: Solo10PersonagemSheet.#onCycleTheme,
       editImage: Solo10PersonagemSheet.#onEditImage,
       rollAtributo: Solo10PersonagemSheet.#onRollAtributo,
       rollPericia: Solo10PersonagemSheet.#onRollPericia,
@@ -70,7 +68,6 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const context = await super._prepareContext(options);
     const actor = this.document;
     const sys = actor.system;
-    const theme = game.settings?.get("solo10", "theme") || "system";
     const setorLabel = game.settings?.get("solo10", "setorLabel") || "Setor";
     const customSetores = game.settings?.get("solo10", "customSetores");
     const setores = Array.isArray(customSetores) && customSetores.length ? customSetores : SOLO10.SETORES;
@@ -85,18 +82,10 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
 
     const maxPericiasIniciais = actor.hasQualidade("perito", "Perito") ? 4 : 3;
 
-    const themeLabels = {
-      system: "Sistema",
-      light: "Claro",
-      dark: "Escuro"
-    };
-
     return {
       ...context,
       actor,
       system: sys,
-      theme,
-      themeLabel: themeLabels[theme] || "Sistema",
       setorLabel,
       activeTab: this.activeTab,
       atributosConfig: SOLO10.ATRIBUTOS,
@@ -115,7 +104,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
 
   _onRender(context, options) {
     super._onRender(context, options);
-    game.solo10?.applyThemeToElement?.(this.element);
+    game.solo10?.applyLightThemeToElement?.(this.element);
   }
 
   static #onChangeTab(event, target) {
@@ -124,20 +113,6 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       this.activeTab = tab;
       this.render();
     }
-  }
-
-  static async #onSetTheme(event, target) {
-    const novo = target.dataset.theme || "system";
-    game.solo10?.applyThemeToElement?.(this.element, novo);
-    await game.settings?.set("solo10", "theme", novo);
-  }
-
-  static async #onCycleTheme(event, target) {
-    const ordem = ["system", "light", "dark"];
-    const atual = game.settings?.get("solo10", "theme") || "system";
-    const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
-    game.solo10?.applyThemeToElement?.(this.element, proximo);
-    await game.settings?.set("solo10", "theme", proximo);
   }
 
   static async #onEditImage(event, target) {
@@ -540,7 +515,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
 
 export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: ["solo10", "sheet", "actor", "adversario"],
+    classes: ["solo10", "theme-light", "solo10-theme-light", "sheet", "actor", "adversario"],
     position: {
       width: 580,
       height: 540
@@ -553,8 +528,6 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
       closeOnSubmit: false
     },
     actions: {
-      setTheme: Solo10AdversarioSheet.#onSetTheme,
-      cycleTheme: Solo10AdversarioSheet.#onCycleTheme,
       editImage: Solo10AdversarioSheet.#onEditImage,
       dispararReacao: Solo10AdversarioSheet.#onDispararReacao
     }
@@ -569,12 +542,8 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    const theme = game.settings?.get("solo10", "theme") || "system";
-    const themeLabels = { system: "Sistema", light: "Claro", dark: "Escuro" };
     return {
       ...context,
-      theme,
-      themeLabel: themeLabels[theme] || "Sistema",
       actor: this.document,
       system: this.document.system
     };
@@ -582,21 +551,7 @@ export class Solo10AdversarioSheet extends HandlebarsApplicationMixin(ActorSheet
 
   _onRender(context, options) {
     super._onRender(context, options);
-    game.solo10?.applyThemeToElement?.(this.element);
-  }
-
-  static async #onSetTheme(event, target) {
-    const novo = target.dataset.theme || "system";
-    game.solo10?.applyThemeToElement?.(this.element, novo);
-    await game.settings?.set("solo10", "theme", novo);
-  }
-
-  static async #onCycleTheme(event, target) {
-    const ordem = ["system", "light", "dark"];
-    const atual = game.settings?.get("solo10", "theme") || "system";
-    const proximo = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
-    game.solo10?.applyThemeToElement?.(this.element, proximo);
-    await game.settings?.set("solo10", "theme", proximo);
+    game.solo10?.applyLightThemeToElement?.(this.element);
   }
 
   static async #onEditImage(event, target) {

@@ -15,7 +15,7 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static DEFAULT_OPTIONS = {
     id: "solo10-oracle-app",
-    classes: ["solo10", "solo10-oracle-window"],
+    classes: ["solo10", "theme-light", "solo10-theme-light", "solo10-oracle-window"],
     tag: "div",
     window: {
       title: "Oráculo & Ferramentas — Solo 10",
@@ -57,13 +57,11 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     const actor = game.actors?.get(this.selectedActorId) ?? null;
     const rollTables = (game.tables ?? []).map((t) => ({ id: t.id, name: t.name }));
-    const theme = game.settings?.get("solo10", "theme") || "system";
     const setorLabel = game.settings?.get("solo10", "setorLabel") || "Setor";
     const customSetores = game.settings?.get("solo10", "customSetores");
     const setores = Array.isArray(customSetores) && customSetores.length ? customSetores : SOLO10.SETORES;
 
     return {
-      theme,
       setorLabel,
       isGM: Boolean(game.user?.isGM),
       activeTab: this.activeTab,
@@ -86,7 +84,7 @@ export class Solo10OracleApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   _onRender(context, options) {
     super._onRender(context, options);
-    game.solo10?.applyThemeToElement?.(this.element);
+    game.solo10?.applyLightThemeToElement?.(this.element);
     const actorSelect = this.element.querySelector('[name="selectedActorId"]');
     if (actorSelect) {
       actorSelect.addEventListener("change", (ev) => {
