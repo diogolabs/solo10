@@ -20,7 +20,7 @@ Implementação completa do sistema **Solo 10 (Licença Aberta 2.0)** para **Fou
     - `Vontade = 5 + Mente` (+ bônus de Qualidades como *Perseverante*)
   - **Perícias como Itens Modulares (`+2`):** Livres de Atributo (o Atributo é definido na hora do teste). Vêm em um **Compêndio de Perícias** próprio do sistema e permitem criar novas perícias para qualquer cenário Solo 10.
   - **Qualidades como Itens Modulares:** Todas as 38 Qualidades oficiais disponíveis no **Compêndio de Qualidades** do sistema, com campos modulares de bônus (`+ Saúde`, `+ Postura`, `+ Vontade`, `+ RD`, `+ Bônus em Teste`, `Vantagem`) para fácil adaptação e criação de novas Qualidades.
-  - **Compêndios de Armas e Armaduras** integrados.
+  - **Compêndios de Armas, Armaduras e Equipamentos** integrados — incluindo **63 itens** no Compêndio de Equipamentos organizados em pastas nas categorias **Equipamento** (39), **Vestuário** (16) e **Alimentação** (8).
 - **Ficha de Adversário:**
   - Bloco de estatísticas fiel ao documento oficial (`Saúde`, `Postura`, `Vontade`, `Perigo`, `Ataque (Reação)` e `Outras Características`), com disparo de reação para o Chat e botão para o jogador rolar Defesa.
 - **Sistema de Rolagens (`1D10`):**

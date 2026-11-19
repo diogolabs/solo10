@@ -1,8 +1,8 @@
 {
   "id": "solo10",
   "title": "Solo 10 - Licença Aberta 2.0",
-  "description": "Sistema de RPG Solo 10 (Licença Aberta 2.0 - 101 Games) modular com ficha clara minimalista responsiva em 4 abas, suporte a Magias, compêndios de Perícias, Qualidades, Armas e Armaduras, rolagens e Oráculo integrado.",
-  "version": "2.3.0",
+  "description": "Sistema de RPG Solo 10 (Licença Aberta 2.0 - 101 Games) modular com ficha clara minimalista responsiva em 4 abas, suporte a Magias, compêndios de Perícias, Qualidades, Armas, Armaduras e Equipamentos (Equipamento, Vestuário e Alimentação), rolagens e Oráculo integrado.",
+  "version": "2.4.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14",
@@ -112,6 +112,17 @@
       "label": "Armaduras (Solo 10)",
       "system": "solo10",
       "path": "packs/armaduras",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "equipamentos",
+      "label": "Equipamentos (Solo 10)",
+      "system": "solo10",
+      "path": "packs/equipamentos",
       "type": "Item",
       "ownership": {
         "PLAYER": "OBSERVER",

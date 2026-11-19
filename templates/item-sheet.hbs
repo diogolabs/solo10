@@ -132,7 +132,15 @@
 
     {{#if (eq item.type 'equipamento')}}
       <div class="solo10-panel">
-        <div class="solo10-grid-2">
+        <div class="solo10-form-group">
+          <label>Categoria</label>
+          <select name="system.categoria">
+            {{#each categoriasEquipamento}}
+              <option value="{{@key}}" {{#if (eq ../system.categoria @key)}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="solo10-grid-2" style="margin-top: 8px;">
           <div class="solo10-form-group">
             <label>Quantidade</label>
             <input type="number" name="system.quantidade" value="{{system.quantidade}}" min="0" />

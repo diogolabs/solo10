@@ -153,6 +153,7 @@ export class ArmaduraDataModel extends TypeDataModel {
 export class EquipamentoDataModel extends TypeDataModel {
   static defineSchema() {
     return {
+      categoria: new fields.StringField({ initial: "equipamento" }),
       quantidade: new fields.NumberField({ required: true, integer: true, initial: 1, min: 0 }),
       custo: new fields.NumberField({ required: true, initial: 0 }),
       descricao: new fields.HTMLField({ initial: "" })

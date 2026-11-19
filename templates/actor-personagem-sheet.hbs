@@ -876,10 +876,17 @@
       <!-- EQUIPAMENTOS & PERTENCES -->
       <div class="solo10-panel">
         <div class="solo10-panel-header">
-          <h3>Equipamentos &amp; Pertences ({{equipamentos.length}})</h3>
-          <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-primary" data-action="createItem" data-type="equipamento">
-            <i class="fas fa-plus"></i> Novo Item
-          </button>
+          <div class="solo10-panel-title">
+            <h3>Equipamentos &amp; Pertences ({{equipamentos.length}})</h3>
+          </div>
+          <div class="solo10-header-tools">
+            <button type="button" class="solo10-btn solo10-btn-xs" data-action="abrirCompendio" data-pack="equipamentos" title="Abrir Compêndio de Equipamentos, Vestuário e Alimentação">
+              <i class="fas fa-book-open"></i> Compêndio
+            </button>
+            <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-primary" data-action="createItem" data-type="equipamento">
+              <i class="fas fa-plus"></i> Novo Item
+            </button>
+          </div>
         </div>
 
         <div class="solo10-table-wrap">
@@ -896,7 +903,12 @@
               {{#each equipamentos}}
                 <tr>
                   <td class="cell-name">
-                    <strong>{{this.name}}</strong>
+                    <div class="item-title-line">
+                      <strong>{{this.name}}</strong>
+                      <span class="solo10-mini-tag">
+                        {{#if (eq this.system.categoria 'vestuario')}}Vestuário{{else}}{{#if (eq this.system.categoria 'alimentacao')}}Alimentação{{else}}{{#if (eq this.system.categoria 'outro')}}Outro{{else}}Equipamento{{/if}}{{/if}}{{/if}}
+                      </span>
+                    </div>
                     {{#if this.system.descricao}}
                       <div class="item-sub">{{{this.system.descricao}}}</div>
                     {{/if}}
@@ -912,7 +924,7 @@
                   </td>
                 </tr>
               {{else}}
-                <tr><td colspan="4" class="solo10-empty">Nenhum equipamento ou pertence registrado.</td></tr>
+                <tr><td colspan="4" class="solo10-empty">Nenhum equipamento ou pertence registrado. Arraste do <strong>Compêndio</strong> ou clique em <strong>+ Novo Item</strong>.</td></tr>
               {{/each}}
             </tbody>
           </table>

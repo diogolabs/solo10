@@ -48,7 +48,8 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       item: this.document,
       system: this.document.system,
       typeLabel: ITEM_TYPE_LABELS[this.document.type] || this.document.type,
-      efeitosArmadilha: SOLO10.EFEITOS_ARMADILHA
+      efeitosArmadilha: SOLO10.EFEITOS_ARMADILHA,
+      categoriasEquipamento: SOLO10.CATEGORIAS_EQUIPAMENTO
     };
   }
 

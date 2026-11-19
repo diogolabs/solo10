@@ -83,6 +83,7 @@
       "descricao": ""
     },
     "equipamento": {
+      "categoria": "equipamento",
       "quantidade": 1,
       "custo": 0,
       "descricao": ""

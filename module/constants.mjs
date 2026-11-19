@@ -698,6 +698,425 @@ export const SOLO10 = {
     }
   ],
 
+  CATEGORIAS_EQUIPAMENTO: {
+    equipamento: {
+      label: "Equipamento",
+      color: "#4a5568",
+      icon: "icons/svg/item-bag.svg",
+      sort: 100
+    },
+    vestuario: {
+      label: "Vestuário",
+      color: "#5b6c5d",
+      icon: "icons/svg/cowled.svg",
+      sort: 200
+    },
+    alimentacao: {
+      label: "Alimentação",
+      color: "#8c5a3c",
+      icon: "icons/svg/tankard.svg",
+      sort: 300
+    },
+    outro: {
+      label: "Outro",
+      color: "#718096",
+      icon: "icons/svg/chest.svg",
+      sort: 400
+    }
+  },
+
+  EQUIPAMENTOS_PADRAO: [
+    // =========================================================================
+    // EQUIPAMENTO (39 itens — Tabela 10, Heróis & Hordas / Solo 10)
+    // =========================================================================
+    {
+      nome: "Alforje para Animal",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Permite carregar até 10 outros itens (cada unidade de recurso conta como um item) na montaria."
+    },
+    {
+      nome: "Algemas",
+      categoria: "equipamento",
+      custo: 50,
+      descricao: "Deixa um Adversário preso até conseguir se libertar."
+    },
+    {
+      nome: "Algibeira",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Permite carregar até 5 outros itens (cada unidade de recurso conta como um item) sem ocupar as mãos."
+    },
+    {
+      nome: "Aljava",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Permite carregar até 5 unidades de munição."
+    },
+    {
+      nome: "Ampulheta",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Permite o registro de tempo de forma precisa."
+    },
+    {
+      nome: "Apito",
+      categoria: "equipamento",
+      custo: 5,
+      descricao: "Serve para alertar ou emitir chamados a longas distâncias."
+    },
+    {
+      nome: "Barraca",
+      categoria: "equipamento",
+      custo: 50,
+      descricao: "Permite abrigar até 4 personagens dos efeitos do clima."
+    },
+    {
+      nome: "Baú",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Permite carregar até 10 outros itens (cada unidade de recurso conta como um item) trancados, sendo necessária a chave ou um teste de Corpo (Subterfúgio) para arrombar."
+    },
+    {
+      nome: "Caneca",
+      categoria: "equipamento",
+      custo: 3,
+      descricao: "Uma boa e resistente caneca de madeira reforçada com metal, perfeita para viagem."
+    },
+    {
+      nome: "Cantil",
+      categoria: "equipamento",
+      custo: 10,
+      descricao: "Permite carregar uma unidade de Alimento (água ou outra bebida)."
+    },
+    {
+      nome: "Componentes Mágicos",
+      categoria: "equipamento",
+      custo: 10,
+      descricao: "O recurso componente mágico serve genericamente para qualquer usuário de magia. Cada unidade concede 10 pontos de Vontade que podem ser utilizados na conjuração das mais diversas magias no lugar dos pontos de Vontade do usuário."
+    },
+    {
+      nome: "Corda com Gancho",
+      categoria: "equipamento",
+      custo: 25,
+      descricao: "Este pedaço de corda possui uma série de utilidades, desde amarrar alguém (semelhante às Algemas) como auxiliar na escalada, concedendo Vantagem nos testes de Corpo (Atletismo)."
+    },
+    {
+      nome: "Equipamento de Pesca",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Este kit com ferramentas básicas de pesca concede Vantagem nos testes de Corpo (Sobrevivência) para pescar."
+    },
+    {
+      nome: "Espelho de Metal Pequeno",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Um espelho feito com cobre ou prata barata, bastante polido, com uma boa capacidade reflexiva caso esteja limpo."
+    },
+    {
+      nome: "Ferramentas",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Este conjunto de ferramentas profissionais concede Vantagem em todos os testes de Ofícios da referida área."
+    },
+    {
+      nome: "Instrumento Musical",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Concede Vantagem em testes de Espírito (Artes) ao ser tocado."
+    },
+    {
+      nome: "Isqueiro e Pederneira",
+      categoria: "equipamento",
+      custo: 5,
+      descricao: "Permite acender fogueiras e outros materiais combustíveis."
+    },
+    {
+      nome: "Kit de Arrombamento",
+      categoria: "equipamento",
+      custo: 50,
+      descricao: "Kit profissional: conjunto de ferramentas que concede Vantagem em todos os testes de arrombamento."
+    },
+    {
+      nome: "Kit de Costura",
+      categoria: "equipamento",
+      custo: 15,
+      descricao: "Ferramentas básicas de costura para criar, ajustar ou reparar roupas e outros itens de tecido."
+    },
+    {
+      nome: "Kit de Estudos",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Kit profissional: conjunto de ferramentas que concede Vantagem em todos os testes de estudos (também usado para preparar poções, venenos e itens mágicos)."
+    },
+    {
+      nome: "Kit de Medicina",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Kit profissional: conjunto de ferramentas que concede Vantagem em todos os testes de medicina (também usado para criar unguentos)."
+    },
+    {
+      nome: "Kit de Sobrevivência",
+      categoria: "equipamento",
+      custo: 50,
+      descricao: "Kit profissional: conjunto de ferramentas que concede Vantagem em todos os testes de sobrevivência."
+    },
+    {
+      nome: "Lanterna",
+      categoria: "equipamento",
+      custo: 25,
+      descricao: "Esta lanterna a óleo permite iluminar ambientes escuros. Sem ela, qualquer teste que envolva a visão em ambientes escuros será feito com Desvantagem."
+    },
+    {
+      nome: "Luneta",
+      categoria: "equipamento",
+      custo: 200,
+      descricao: "Permite que você veja com perfeição qualquer elemento dentro do raio de 1 km."
+    },
+    {
+      nome: "Mapa",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Permite se orientar em terrenos desconhecidos. Sem ele, todos os testes de Mente (Sobrevivência) para encontrar um lugar específico são feitos com Desvantagem."
+    },
+    {
+      nome: "Mochila",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Permite que o personagem carregue até 10 outros itens (cada unidade de recurso conta como um item) sem ocupar suas mãos."
+    },
+    {
+      nome: "Munição",
+      categoria: "equipamento",
+      custo: 5,
+      descricao: "O recurso munição serve genericamente para qualquer arma de ataque à distância utilizada. Cada unidade permite que o jogador realize 10 ataques com a arma, quando então ela se esgota e precisa ser renovada."
+    },
+    {
+      nome: "Óleo para Lanterna",
+      categoria: "equipamento",
+      custo: 10,
+      descricao: "Material combustível utilizado em Lanternas."
+    },
+    {
+      nome: "Pá",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Ferramenta utilizada para cavar buracos, valas e trincheiras."
+    },
+    {
+      nome: "Panelas",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Ferramentas utilizadas para cozinhar."
+    },
+    {
+      nome: "Pé-de-Cabra",
+      categoria: "equipamento",
+      custo: 25,
+      descricao: "Permite arrombar e alavancar elementos fechados, concedendo Vantagem nos testes de Corpo (Subterfúgio)."
+    },
+    {
+      nome: "Pedra de Amolar",
+      categoria: "equipamento",
+      custo: 10,
+      descricao: "Ferramenta utilizada para amolar armas."
+    },
+    {
+      nome: "Pergaminho",
+      categoria: "equipamento",
+      custo: 10,
+      descricao: "Um rolo de pergaminho em branco."
+    },
+    {
+      nome: "Picareta",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Ferramenta utilizada para quebrar pedras e superfícies duras."
+    },
+    {
+      nome: "Saco de Dormir",
+      categoria: "equipamento",
+      custo: 30,
+      descricao: "Permite dormir ao relento de forma confortável (auxilia contra efeitos do clima)."
+    },
+    {
+      nome: "Sela e Arreios",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Serve para montar com conforto uma montaria. Sem eles, os testes de Corpo (Condução) são feitos em Desvantagem."
+    },
+    {
+      nome: "Saco",
+      categoria: "equipamento",
+      custo: 5,
+      descricao: "Permite carregar até 5 outros itens (cada unidade de recurso conta como um item)."
+    },
+    {
+      nome: "Tocha",
+      categoria: "equipamento",
+      custo: 2,
+      descricao: "Permite iluminar ambientes escuros. Sem ela, qualquer teste que envolva a visão em ambientes escuros será feito com Desvantagem."
+    },
+    {
+      nome: "Tomo",
+      categoria: "equipamento",
+      custo: 100,
+      descricao: "Livro em branco para registro de diversas informações."
+    },
+
+    // =========================================================================
+    // VESTUÁRIO (16 itens — Tabela 10, Heróis & Hordas / Solo 10)
+    // =========================================================================
+    {
+      nome: "Botas",
+      categoria: "vestuario",
+      custo: 20,
+      descricao: "Peça de vestuário para os pés. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Calça",
+      categoria: "vestuario",
+      custo: 15,
+      descricao: "Peça de vestuário básica. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Camisa",
+      categoria: "vestuario",
+      custo: 15,
+      descricao: "Peça de vestuário básica. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Capa",
+      categoria: "vestuario",
+      custo: 15,
+      descricao: "Peça de vestuário básica. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Capa com Capuz",
+      categoria: "vestuario",
+      custo: 20,
+      descricao: "Capa com capuz. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Chapéu",
+      categoria: "vestuario",
+      custo: 20,
+      descricao: "Peça de vestuário para a cabeça. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Luvas",
+      categoria: "vestuario",
+      custo: 15,
+      descricao: "Peça de vestuário para as mãos. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Manto",
+      categoria: "vestuario",
+      custo: 20,
+      descricao: "Manto de vestuário/viagem. Pode ser adquirido nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Casaca",
+      categoria: "vestuario",
+      custo: 30,
+      descricao: "Peça de vestuário comprida. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Vestido",
+      categoria: "vestuario",
+      custo: 30,
+      descricao: "Peça de vestuário. Pode ser adquirida nos modelos de Frio (Valor x 2), Qualidade (Valor x 2), Trabalho (Valor x 2) ou Luxuosas (Valor x 4)."
+    },
+    {
+      nome: "Óculos",
+      categoria: "vestuario",
+      custo: 50,
+      descricao: "Acessório óptico de vestuário."
+    },
+    {
+      nome: "Roupas de Frio (Valor x 2)",
+      categoria: "vestuario",
+      custo: 0,
+      descricao: "Modificador de vestuário (Valor x 2 sobre o preço base da peça): a peça auxilia em climas frios."
+    },
+    {
+      nome: "Roupas de Qualidade (Valor x 2)",
+      categoria: "vestuario",
+      custo: 0,
+      descricao: "Modificador de vestuário (Valor x 2 sobre o preço base da peça): a peça é adequada para eventos."
+    },
+    {
+      nome: "Roupas Luxuosas (Valor x 4)",
+      categoria: "vestuario",
+      custo: 0,
+      descricao: "Modificador de vestuário (Valor x 4 sobre o preço base da peça): a peça é adequada para eventos na presença de nobres."
+    },
+    {
+      nome: "Roupas de Trabalho (Valor x 2)",
+      categoria: "vestuario",
+      custo: 0,
+      descricao: "Modificador de vestuário (Valor x 2 sobre o preço base da peça): a peça é resistente e adequada para todo tipo de trabalho."
+    },
+    {
+      nome: "Cobertor de Inverno",
+      categoria: "vestuario",
+      custo: 30,
+      descricao: "A peça auxilia em climas frios."
+    },
+
+    // =========================================================================
+    // ALIMENTAÇÃO (8 itens — Tabela 10, Heróis & Hordas / Solo 10)
+    // =========================================================================
+    {
+      nome: "Ração para Viagem",
+      categoria: "alimentacao",
+      custo: 5,
+      descricao: "Cada unidade permite alimentar um personagem por um dia ou retirar um marcador de Fome."
+    },
+    {
+      nome: "Refeição Simples",
+      categoria: "alimentacao",
+      custo: 5,
+      descricao: "Refeição básica. Cada unidade permite alimentar um personagem por um dia ou retirar um marcador de Fome."
+    },
+    {
+      nome: "Refeição Padrão",
+      categoria: "alimentacao",
+      custo: 8,
+      descricao: "Refeição comum. Cada unidade permite alimentar um personagem por um dia ou retirar um marcador de Fome."
+    },
+    {
+      nome: "Refeição Suntuosa",
+      categoria: "alimentacao",
+      custo: 10,
+      descricao: "Refeição farta e refinada. Cada unidade permite alimentar um personagem por um dia ou retirar um marcador de Fome."
+    },
+    {
+      nome: "Água",
+      categoria: "alimentacao",
+      custo: 1,
+      descricao: "Unidade de água potável (pode ser carregada em Cantil)."
+    },
+    {
+      nome: "Cerveja ou Vinho",
+      categoria: "alimentacao",
+      custo: 3,
+      descricao: "Bebida alcoólica. Sempre que consumir bebidas alcoólicas em quantidade de doses maior do que seu Atributo Corpo, faça um teste de Corpo (Sobrevivência); em caso de falha, seus testes serão feitos com Desvantagem até que você se cure da bebedeira."
+    },
+    {
+      nome: "Aguardente ou outra bebida forte",
+      categoria: "alimentacao",
+      custo: 5,
+      descricao: "Bebida alcoólica forte. Sempre que consumir bebidas alcoólicas em quantidade de doses maior do que seu Atributo Corpo, faça um teste de Corpo (Sobrevivência); em caso de falha, seus testes serão feitos com Desvantagem até que você se cure da bebedeira."
+    },
+    {
+      nome: "Ração para Animais",
+      categoria: "alimentacao",
+      custo: 3,
+      descricao: "Cada unidade permite alimentar um animal por um dia ou retirar um marcador de Fome."
+    }
+  ],
+
   SETORES: [
     {
       nome: "Cidade Nova",

@@ -1,7 +1,7 @@
 import { SOLO10 } from "./constants.mjs";
 
 /**
- * Popula automaticamente os Compêndios do sistema (Perícias, Qualidades, Armas e Armaduras separados)
+ * Popula automaticamente os Compêndios do sistema (Perícias, Qualidades, Armas, Armaduras e Equipamentos)
  * na inicialização do mundo no Foundry VTT v13/v14 caso estejam vazios.
  */
 export async function ensureSystemCompendiumsPopulated() {
@@ -117,6 +117,70 @@ export async function ensureSystemCompendiumsPopulated() {
         await Item.createDocuments(armadurasData, { pack: "solo10.armaduras" });
         if (wasLocked) await packArmaduras.configure({ locked: true });
         console.log("SOLO 10 | Compêndio de Armaduras populado com sucesso.");
+      }
+    }
+
+    // 5. Compêndio de Equipamentos (Equipamento, Vestuário e Alimentação)
+    const packEquipamentos = game.packs?.get("solo10.equipamentos");
+    if (packEquipamentos) {
+      await packEquipamentos.getIndex();
+      if (packEquipamentos.index.size === 0) {
+        const wasLocked = packEquipamentos.locked;
+        if (wasLocked) await packEquipamentos.configure({ locked: false });
+
+        const categoriasCompendio = ["equipamento", "vestuario", "alimentacao"];
+        const existingFolders = Array.from(packEquipamentos.folders ?? []);
+        const folderIds = {};
+        const foldersToCreate = [];
+
+        for (const catKey of categoriasCompendio) {
+          const cat = SOLO10.CATEGORIAS_EQUIPAMENTO[catKey];
+          if (!cat) continue;
+          const existing = existingFolders.find((f) => f.name === cat.label);
+          if (existing) {
+            folderIds[catKey] = existing.id;
+          } else {
+            foldersToCreate.push({
+              name: cat.label,
+              type: "Item",
+              color: cat.color,
+              sorting: "a",
+              sort: cat.sort ?? 0
+            });
+          }
+        }
+
+        if (foldersToCreate.length > 0) {
+          const createdFolders = await Folder.createDocuments(foldersToCreate, {
+            pack: "solo10.equipamentos"
+          });
+          for (const folder of createdFolders) {
+            const matchedKey = categoriasCompendio.find(
+              (k) => SOLO10.CATEGORIAS_EQUIPAMENTO[k]?.label === folder.name
+            );
+            if (matchedKey) folderIds[matchedKey] = folder.id;
+          }
+        }
+
+        const equipamentosData = SOLO10.EQUIPAMENTOS_PADRAO.map((eq) => {
+          const cat = SOLO10.CATEGORIAS_EQUIPAMENTO[eq.categoria];
+          return {
+            name: eq.nome,
+            type: "equipamento",
+            img: cat?.icon || "icons/svg/item-bag.svg",
+            folder: folderIds[eq.categoria] ?? null,
+            system: {
+              categoria: eq.categoria || "equipamento",
+              quantidade: 1,
+              custo: eq.custo ?? 0,
+              descricao: eq.descricao || ""
+            }
+          };
+        });
+
+        await Item.createDocuments(equipamentosData, { pack: "solo10.equipamentos" });
+        if (wasLocked) await packEquipamentos.configure({ locked: true });
+        console.log("SOLO 10 | Compêndio de Equipamentos (Equipamento, Vestuário e Alimentação) populado com sucesso.");
       }
     }
   } catch (err) {

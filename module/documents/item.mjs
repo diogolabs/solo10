@@ -23,6 +23,15 @@ export class Solo10Item extends Item {
       detalhes = `<p><strong>Tipo:</strong> Qualidade ${sys.tipo === "ativa" ? "Ativa" : "Passiva"}${mods.length ? ` (${mods.join(", ")})` : ""}</p>`;
     } else if (this.type === "armadilha") {
       detalhes = `<p><strong>Efeito:</strong> ${sys.efeito} (Bônus de Poder: +${sys.bonusPoder})</p>`;
+    } else if (this.type === "equipamento") {
+      const cats = {
+        equipamento: "Equipamento",
+        vestuario: "Vestuário",
+        alimentacao: "Alimentação",
+        outro: "Outro"
+      };
+      const catLabel = cats[sys.categoria] || "Equipamento";
+      detalhes = `<p><strong>Categoria:</strong> ${catLabel} | <strong>Qtd:</strong> ${sys.quantidade ?? 1} | <strong>Custo:</strong> $ ${sys.custo ?? 0}</p>`;
     } else if (this.type === "magia") {
       const attrs = { corpo: "Corpo", espirito: "Espírito", mente: "Mente" };
       const parts = [];
