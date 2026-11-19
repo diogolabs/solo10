@@ -15,7 +15,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
   static DEFAULT_OPTIONS = {
     classes: ["solo10", "theme-light", "solo10-theme-light", "sheet", "actor", "personagem"],
     position: {
-      width: 820,
+      width: 860,
       height: 780
     },
     window: {
@@ -28,9 +28,11 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     actions: {
       changeTab: Solo10PersonagemSheet.#onChangeTab,
       editImage: Solo10PersonagemSheet.#onEditImage,
+      adjustReserva: Solo10PersonagemSheet.#onAdjustReserva,
       rollAtributo: Solo10PersonagemSheet.#onRollAtributo,
       rollPericia: Solo10PersonagemSheet.#onRollPericia,
       rollLivre: Solo10PersonagemSheet.#onRollLivre,
+      conjurarMagia: Solo10PersonagemSheet.#onConjurarMagia,
       abrirOraculo: Solo10PersonagemSheet.#onAbrirOraculo,
       abrirCompendio: Solo10PersonagemSheet.#onAbrirCompendio,
       descansar: Solo10PersonagemSheet.#onDescansar,
@@ -79,8 +81,13 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const equipamentos = actor.items.filter((i) => i.type === "equipamento");
     const armadilhas = actor.items.filter((i) => i.type === "armadilha");
     const metas = actor.items.filter((i) => i.type === "meta");
+    const magias = actor.items.filter((i) => i.type === "magia");
 
     const maxPericiasIniciais = actor.hasQualidade("perito", "Perito") ? 4 : 3;
+    const calcPct = (val, max) => {
+      const m = Math.max(1, Number(max || 0));
+      return Math.max(0, Math.min(100, Math.round((Number(val || 0) / m) * 100)));
+    };
 
     return {
       ...context,
@@ -98,7 +105,11 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       armaduras,
       equipamentos,
       armadilhas,
-      metas
+      metas,
+      magias,
+      saudePct: calcPct(sys.saude?.value, sys.saude?.max),
+      posturaPct: calcPct(sys.postura?.value, sys.postura?.max),
+      vontadePct: calcPct(sys.vontade?.value, sys.vontade?.max)
     };
   }
 
@@ -157,6 +168,31 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       actor: this.document,
       titulo: "Teste Solo 10",
       atributo: "corpo"
+    });
+  }
+
+  static async #onAdjustReserva(event, target) {
+    const reserva = target.dataset.reserva;
+    const delta = Number(target.dataset.delta || 0);
+    if (!["saude", "postura", "vontade"].includes(reserva) || !delta) return;
+    const atual = Number(this.document.system?.[reserva]?.value ?? 0);
+    const novo = Math.max(0, atual + delta);
+    await this.document.update({ [`system.${reserva}.value`]: novo });
+  }
+
+  static async #onConjurarMagia(event, target) {
+    const itemId = target.dataset.itemId;
+    const magia = this.document.items.get(itemId);
+    if (!magia) return;
+    const atributo = ["corpo", "espirito", "mente"].includes(magia.system?.atributo)
+      ? magia.system.atributo
+      : "mente";
+    return promptSolo10RollDialog({
+      actor: this.document,
+      titulo: `Magia: ${magia.name}`,
+      atributo,
+      tipoTeste: "magia",
+      modificadorExtraInicial: Number(magia.system?.bonusTeste || 0)
     });
   }
 
@@ -287,7 +323,8 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
       armadura: "Nova Armadura",
       equipamento: "Novo Equipamento",
       armadilha: "Nova Armadilha",
-      meta: "Nova Meta"
+      meta: "Nova Meta",
+      magia: "Nova Magia"
     };
     const item = await Item.create(
       {

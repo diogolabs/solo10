@@ -164,6 +164,43 @@
       </div>
     {{/if}}
 
+    {{#if (eq item.type 'magia')}}
+      <div class="solo10-panel">
+        <div class="solo10-grid-2">
+          <div class="solo10-form-group">
+            <label>Escola / Círculo / Tradição</label>
+            <input type="text" name="system.escola" value="{{system.escola}}" placeholder="Ex: 1º Círculo, Elemental, Ritual..." />
+          </div>
+          <div class="solo10-form-group">
+            <label>Atributo Base de Conjuração</label>
+            <select name="system.atributo">
+              <option value="mente" {{#if (eq system.atributo 'mente')}}selected{{/if}}>Mente</option>
+              <option value="espirito" {{#if (eq system.atributo 'espirito')}}selected{{/if}}>Espírito</option>
+              <option value="corpo" {{#if (eq system.atributo 'corpo')}}selected{{/if}}>Corpo</option>
+            </select>
+          </div>
+        </div>
+        <div class="solo10-grid-3" style="margin-top: 8px;">
+          <div class="solo10-form-group">
+            <label>Custo</label>
+            <input type="text" name="system.custo" value="{{system.custo}}" placeholder="Ex: 1 Vontade" />
+          </div>
+          <div class="solo10-form-group">
+            <label>Alcance</label>
+            <input type="text" name="system.alcance" value="{{system.alcance}}" placeholder="Ex: 1 Setor" />
+          </div>
+          <div class="solo10-form-group">
+            <label>Duração</label>
+            <input type="text" name="system.duracao" value="{{system.duracao}}" placeholder="Ex: Instantânea" />
+          </div>
+        </div>
+        <div class="solo10-form-group" style="margin-top: 8px;">
+          <label>Bônus no Teste de Conjuração</label>
+          <input type="number" name="system.bonusTeste" value="{{system.bonusTeste}}" />
+        </div>
+      </div>
+    {{/if}}
+
     <div class="solo10-panel">
       <div class="solo10-form-group">
         <label>Descrição</label>

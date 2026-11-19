@@ -10,7 +10,8 @@ const ITEM_TYPE_LABELS = {
   armadura: "Armadura",
   equipamento: "Equipamento",
   armadilha: "Armadilha",
-  meta: "Meta / Campanha"
+  meta: "Meta / Campanha",
+  magia: "Magia"
 };
 
 export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {

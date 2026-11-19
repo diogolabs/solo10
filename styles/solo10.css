@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SOLO 10 - LICENÇA ABERTA 2.0 — DESIGN MINIMALISTA CLARO
+   SOLO 10 - LICENÇA ABERTA 2.0 — DESIGN CLARO MINIMALISTA (FOUNDRY v13/v14)
    ========================================================================== */
 
 .solo10,
@@ -8,48 +8,93 @@
 .solo10-oracle-container,
 .solo10-item-sheet,
 .solo10-adversario-sheet {
-  --s10-bg: #f8fafc;
+  --s10-bg: #f4f6f9;
   --s10-surface: #ffffff;
-  --s10-surface-alt: #f1f5f9;
-  --s10-border: #cbd5e1;
+  --s10-surface-alt: #f8fafc;
+  --s10-surface-tint: #f1f5f9;
+  --s10-border: #d8e0ea;
+  --s10-border-strong: #b8c4d4;
   --s10-text: #0f172a;
-  --s10-muted: #475569;
+  --s10-muted: #526071;
   --s10-accent: #1e293b;
   --s10-accent-fg: #ffffff;
   --s10-primary: #991b1b;
+  --s10-primary-hover: #7f1d1d;
+  --s10-primary-soft: #fef2f2;
   --s10-primary-fg: #ffffff;
-  --s10-tag-bg: #e2e8f0;
-  --s10-tag-fg: #1e293b;
+  --s10-tag-bg: #eef2f6;
+  --s10-tag-fg: #334155;
   --s10-danger: #b91c1c;
   --s10-success: #15803d;
-  color: #0f172a !important;
-  background-color: #f8fafc !important;
+  --s10-saude: #dc2626;
+  --s10-postura: #d97706;
+  --s10-vontade: #4338ca;
+  --s10-radius: 8px;
+  --s10-radius-sm: 5px;
+  --s10-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  color: var(--s10-text) !important;
+  background-color: var(--s10-bg) !important;
 }
 
+/* Box-sizing universal escopado para evitar estouro de divs */
+.solo10-sheet-container,
+.solo10-sheet-container *,
+.solo10-sheet-container *::before,
+.solo10-sheet-container *::after,
+.solo10-oracle-container,
+.solo10-oracle-container *,
+.solo10-oracle-container *::before,
+.solo10-oracle-container *::after,
+.solo10-roll-dialog,
+.solo10-roll-dialog * {
+  box-sizing: border-box;
+}
+
+/* Fluxo de altura e scroll seguro na ApplicationV2 (Foundry v13/v14) */
 .application.solo10 .window-content {
   padding: 0 !important;
-  background: #f8fafc !important;
+  background: #f4f6f9 !important;
   color: #0f172a !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.application.solo10 .window-content > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 .solo10-sheet-container,
 .solo10-oracle-container {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   height: 100%;
+  width: 100%;
   gap: 10px;
   color: var(--s10-text) !important;
   background: var(--s10-bg) !important;
   padding: 12px;
-  box-sizing: border-box;
+  overflow: hidden;
+  container-type: inline-size;
+  container-name: solo10sheet;
   font-family: "Inter", "Signika", system-ui, -apple-system, sans-serif;
 }
 
 .solo10-sheet-body,
 .solo10-oracle-content,
 .solo10-item-body {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -58,28 +103,181 @@
 
 .solo10-muted {
   color: var(--s10-muted) !important;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
+  font-weight: 400;
 }
 
-/* CABEÇALHO MINIMALISTA CLARO */
+/* ==========================================================================
+   CONTROLES DE FORMULÁRIO CONTIDOS (NUNCA EXTRAPOLAM A DIV)
+   ========================================================================== */
+
+.solo10-sheet-container input[type="text"],
+.solo10-sheet-container input[type="number"],
+.solo10-sheet-container select,
+.solo10-sheet-container textarea,
+.solo10-oracle-container input[type="text"],
+.solo10-oracle-container input[type="number"],
+.solo10-oracle-container select,
+.solo10-oracle-container textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid var(--s10-border) !important;
+  border-radius: var(--s10-radius-sm);
+  padding: 4px 8px;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  height: 30px;
+  margin: 0;
+  transition: border-color 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.solo10-sheet-container textarea,
+.solo10-oracle-container textarea {
+  height: auto;
+  min-height: 76px;
+  resize: vertical;
+  padding: 7px 9px;
+  font-family: inherit;
+}
+
+.solo10-sheet-container select,
+.solo10-oracle-container select {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.solo10-sheet-container input[type="text"]:focus,
+.solo10-sheet-container input[type="number"]:focus,
+.solo10-sheet-container select:focus,
+.solo10-sheet-container textarea:focus,
+.solo10-oracle-container input[type="text"]:focus,
+.solo10-oracle-container input[type="number"]:focus,
+.solo10-oracle-container select:focus,
+.solo10-oracle-container textarea:focus {
+  background: #ffffff !important;
+  border-color: var(--s10-primary) !important;
+  box-shadow: 0 0 0 2px rgba(153, 27, 27, 0.12) !important;
+  outline: none !important;
+}
+
+.solo10-sheet-container select option,
+.solo10-oracle-container select option {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.solo10-sheet-container input[type="checkbox"],
+.solo10-oracle-container input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--s10-primary);
+  cursor: pointer;
+}
+
+/* Remove setinhas nativas nos inputs numéricos compactos */
+.solo10-pillar input[type="number"]::-webkit-inner-spin-button,
+.solo10-pillar input[type="number"]::-webkit-outer-spin-button,
+.solo10-kpi-box input[type="number"]::-webkit-inner-spin-button,
+.solo10-kpi-box input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.solo10-pillar input[type="number"],
+.solo10-kpi-box input[type="number"] {
+  -moz-appearance: textfield;
+  font-variant-numeric: tabular-nums;
+}
+
+.solo10-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  width: 100%;
+}
+
+.solo10-form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.solo10-meta-field label,
+.solo10-form-group label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--s10-muted) !important;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.solo10-inline-input {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
+
+.solo10-inline-input > input,
+.solo10-inline-input > select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.solo10-num-sm {
+  flex: 0 0 58px !important;
+  width: 58px !important;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   CABEÇALHO MINIMALISTA CLARO
+   ========================================================================== */
+
 .solo10-sheet-header {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   background: var(--s10-surface) !important;
   border: 1px solid var(--s10-border);
-  border-radius: 8px;
-  padding: 12px;
-  align-items: flex-start;
+  border-radius: var(--s10-radius);
+  padding: 10px 12px;
+  align-items: center;
+  box-shadow: var(--s10-shadow);
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.solo10-header-left {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
 }
 
 .solo10-profile-img {
-  width: 84px;
-  height: 84px;
+  width: 78px;
+  height: 78px;
   object-fit: cover;
   border: 1px solid var(--s10-border);
-  border-radius: 6px;
+  border-radius: 7px;
   cursor: pointer;
-  background: var(--s10-surface-alt);
+  background: var(--s10-surface-tint);
+  display: block;
+  transition: border-color 0.15s ease;
+}
+
+.solo10-profile-img:hover {
+  border-color: var(--s10-primary);
 }
 
 .solo10-item-img {
@@ -91,10 +289,12 @@
   cursor: pointer;
   background: var(--s10-surface-alt);
   padding: 4px;
+  flex-shrink: 0;
 }
 
 .solo10-header-main {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -102,97 +302,1131 @@
 
 .solo10-title-row {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .solo10-charname {
-  flex: 1;
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
+  flex: 1 1 200px !important;
+  min-width: 0 !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
   background: #ffffff !important;
   color: #0f172a !important;
   border: 1px solid var(--s10-border) !important;
-  border-radius: 5px !important;
-  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
   height: 34px !important;
 }
 
-.solo10-charname:focus {
-  border-color: var(--s10-primary) !important;
-  outline: none;
+.solo10-title-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.solo10-stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--s10-surface-tint);
+  color: var(--s10-text);
+  border: 1px solid var(--s10-border);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.solo10-stat-chip i {
+  color: var(--s10-muted);
+  font-size: 0.7rem;
 }
 
 .solo10-meta-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+  min-width: 0;
 }
 
 .solo10-meta-field {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
-.solo10-meta-field label,
-.solo10-form-group label {
-  font-size: 0.7rem;
+/* ==========================================================================
+   NAVEGAÇÃO POR ABAS (4 ABAS ORGANIZADAS)
+   ========================================================================== */
+
+.solo10-tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--s10-surface);
+  border: 1px solid var(--s10-border);
+  border-radius: var(--s10-radius);
+  padding: 4px;
+  flex-shrink: 0;
+  min-width: 0;
+  box-shadow: var(--s10-shadow);
+}
+
+.solo10-tab-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  background: transparent !important;
+  color: var(--s10-muted) !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  padding: 6px 8px !important;
+  font-size: 0.76rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  cursor: pointer;
+  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  white-space: normal;
+  min-height: 34px;
+  height: auto !important;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+/* Proporção harmônica para os títulos das 4 abas da ficha de personagem */
+.solo10-personagem-sheet .solo10-tab-btn:nth-child(1) { flex: 1.45 1 0; }
+.solo10-personagem-sheet .solo10-tab-btn:nth-child(2) { flex: 1.25 1 0; }
+.solo10-personagem-sheet .solo10-tab-btn:nth-child(3) { flex: 0.95 1 0; }
+.solo10-personagem-sheet .solo10-tab-btn:nth-child(4) { flex: 0.55 1 0; }
+
+.solo10-tab-btn .tab-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--s10-surface-tint);
+  color: var(--s10-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.solo10-tab-btn .tab-label {
+  min-width: 0;
+}
+
+.solo10-tab-btn:hover {
+  color: var(--s10-text) !important;
+  background: var(--s10-surface-alt) !important;
+}
+
+.solo10-tab-btn.active {
+  color: var(--s10-primary) !important;
+  background: var(--s10-primary-soft) !important;
+  border-color: rgba(153, 27, 27, 0.25) !important;
+}
+
+.solo10-tab-btn.active .tab-index {
+  background: var(--s10-primary);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   FAIXA RESUMO DE RESERVAS (ABAS 2, 3 E 4)
+   ========================================================================== */
+
+.solo10-status-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: var(--s10-surface);
+  border: 1px solid var(--s10-border);
+  border-radius: var(--s10-radius);
+  padding: 5px 10px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.solo10-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--s10-surface-alt) !important;
+  color: var(--s10-text) !important;
+  border: 1px solid var(--s10-border) !important;
+  border-radius: 999px !important;
+  padding: 2px 9px !important;
+  font-size: 0.75rem !important;
+  font-weight: 500;
+  cursor: pointer;
+  height: auto !important;
+  min-height: 24px;
+  box-shadow: none !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.solo10-status-pill:hover {
+  border-color: var(--s10-border-strong) !important;
+  background: var(--s10-surface-tint) !important;
+}
+
+.solo10-status-pill.is-alert {
+  border-color: var(--s10-danger) !important;
+  background: #fef2f2 !important;
+  color: var(--s10-danger) !important;
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.dot-saude { background: var(--s10-saude); }
+.dot-postura { background: var(--s10-postura); }
+.dot-vontade { background: var(--s10-vontade); }
+
+.solo10-status-strip-spacer {
+  flex: 1 1 auto;
+}
+
+.solo10-mini-summary {
+  font-size: 0.74rem;
+  color: var(--s10-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.solo10-mini-summary strong {
+  color: var(--s10-text);
+}
+
+/* ==========================================================================
+   PAINÉIS & ESTRUTURA PRINCIPAL (ABA 1 SPLIT + GRIDS)
+   ========================================================================== */
+
+.solo10-main-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.solo10-col-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.solo10-panel {
+  background: var(--s10-surface) !important;
+  color: var(--s10-text) !important;
+  border: 1px solid var(--s10-border);
+  border-radius: var(--s10-radius);
+  padding: 11px 12px;
+  box-shadow: var(--s10-shadow);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.solo10-panel-stretch {
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.solo10-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  border-bottom: 1px solid var(--s10-border);
+  padding-bottom: 7px;
+  margin-bottom: 10px;
+  min-width: 0;
+}
+
+.solo10-panel-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
+}
+
+.solo10-panel h3,
+.solo10-panel h4 {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  color: var(--s10-text) !important;
+}
+
+.solo10-subhead {
+  margin: 10px 0 6px !important;
+  font-size: 0.7rem !important;
   color: var(--s10-muted) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.solo10-header-tools {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.solo10-hint {
+  font-size: 0.78rem;
+  color: var(--s10-muted) !important;
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   PILARES ACOPLADOS: ATRIBUTO -> RESERVA (CORPO/SAÚDE, ESPÍRITO/POSTURA, MENTE/VONTADE)
+   ========================================================================== */
+
+.solo10-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.solo10-pillar {
+  background: var(--s10-surface-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.solo10-pillar.pillar-alert {
+  border-color: var(--s10-danger);
+  background: #fef2f2;
+}
+
+.pillar-attr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 8px 8px;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pillar-roll-head {
+  width: calc(100% + 16px) !important;
+  margin: 0 -8px !important;
+  background: var(--s10-surface-tint) !important;
+  color: var(--s10-text) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--s10-border) !important;
+  border-radius: 0 !important;
+  padding: 6px 8px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  cursor: pointer;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  height: auto !important;
+  box-shadow: none !important;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.pillar-roll-head:hover {
+  background: var(--s10-primary) !important;
+  color: #ffffff !important;
+}
+
+.pillar-roll-head i {
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
+
+.pillar-total {
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--s10-text);
+  background: #ffffff;
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+  width: 48px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.pillar-subinputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+
+.pillar-mini-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pillar-mini-field span {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--s10-muted);
+}
+
+.pillar-mini-field input {
+  height: 24px !important;
+  padding: 2px 4px !important;
+  text-align: center;
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  background: #ffffff !important;
+}
+
+/* Sub-bloco da Reserva acoplada ao Atributo */
+.pillar-reserve {
+  border-top: 1px dashed var(--s10-border-strong);
+  background: #ffffff;
+  padding: 7px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.solo10-pillar.pillar-alert .pillar-reserve {
+  background: #fff5f5;
+}
+
+.pillar-reserve-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pillar-reserve-head span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--s10-text);
+}
+
+.pillar-reserve-head small {
+  font-size: 0.62rem;
+  color: var(--s10-muted);
+  white-space: nowrap;
+}
+
+.pillar-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+}
+
+.stepper-btn {
+  flex: 0 0 22px;
+  width: 22px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--s10-border) !important;
+  background: var(--s10-surface-tint) !important;
+  color: var(--s10-text) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+.stepper-btn:hover {
+  background: #e2e8f0 !important;
+  border-color: var(--s10-border-strong) !important;
+}
+
+.pillar-stepper input {
+  flex: 1 1 32px;
+  min-width: 28px !important;
+  max-width: 46px !important;
+  height: 24px !important;
+  padding: 1px 3px !important;
+  text-align: center;
+  font-size: 0.88rem !important;
+  font-weight: 700;
+  background: #f8fafc !important;
+}
+
+.stepper-max {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--s10-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.pillar-bar {
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pillar-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.fill-saude { background: var(--s10-saude); }
+.fill-postura { background: var(--s10-postura); }
+.fill-vontade { background: var(--s10-vontade); }
+
+.pillar-bonus-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 1px;
+  min-width: 0;
+}
+
+.pillar-bonus-row span {
+  font-size: 0.64rem;
+  color: var(--s10-muted);
+  white-space: nowrap;
+}
+
+.pillar-bonus-row input {
+  flex: 0 0 42px;
+  width: 42px !important;
+  height: 21px !important;
+  padding: 1px 3px !important;
+  text-align: center;
+  font-size: 0.74rem !important;
   font-weight: 600;
 }
 
-.solo10-sheet-container input[type="text"],
-.solo10-sheet-container input[type="number"],
-.solo10-sheet-container select,
-.solo10-sheet-container textarea,
-.solo10-oracle-container input[type="text"],
-.solo10-oracle-container input[type="number"],
-.solo10-oracle-container select,
-.solo10-oracle-container textarea {
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-  border-radius: 5px;
-  padding: 4px 8px;
-  font-size: 0.86rem;
-}
-
-.solo10-sheet-container select option,
-.solo10-oracle-container select option {
-  background: #ffffff !important;
-  color: #0f172a !important;
-}
-
-.solo10-inline-input {
+.solo10-recovery-bar {
   display: flex;
-  gap: 4px;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid var(--s10-border);
+  justify-content: flex-end;
 }
 
-/* RESERVAS */
+.estado-tag {
+  display: inline-block;
+  width: 100%;
+  margin-top: 2px;
+  background: var(--s10-danger);
+  color: #ffffff;
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* ==========================================================================
+   AUXILIARES ABA 1: BÔNUS MENTAL, PERÍCIAS, DANOS DIVERSOS
+   ========================================================================== */
+
+.solo10-inline-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid var(--s10-border);
+  min-width: 0;
+}
+
+.solo10-inline-metric-row label {
+  font-size: 0.76rem;
+  color: var(--s10-muted);
+  font-weight: 500;
+  min-width: 0;
+}
+
+.solo10-inline-metric-row input {
+  flex: 0 0 68px;
+  width: 68px !important;
+  text-align: center;
+  font-weight: 700;
+  height: 26px !important;
+}
+
+.solo10-scroll-list {
+  flex: 1 1 auto;
+  min-height: 160px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.solo10-panel-footer-field {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--s10-border);
+}
+
+.solo10-diverse-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.solo10-diverse-card {
+  background: var(--s10-surface-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+  padding: 7px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.solo10-diverse-card label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--s10-text);
+}
+
+.solo10-diverse-card label small {
+  color: var(--s10-muted);
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   LISTAS MODULARES (PERÍCIAS, QUALIDADES, ARMADILHAS, MAGIAS)
+   ========================================================================== */
+
+.solo10-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.solo10-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 9px;
+  background: var(--s10-surface-alt) !important;
+  color: var(--s10-text) !important;
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.solo10-skill-row {
+  align-items: center;
+  padding: 6px 8px;
+}
+
+.item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.item-title-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.item-title {
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--s10-text) !important;
+}
+
+.item-sub {
+  margin: 3px 0 0;
+  font-size: 0.75rem;
+  color: var(--s10-muted) !important;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.item-sub p {
+  margin: 0;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   ABA 2 & 3: ARMADILHAS, KPI DE EVOLUÇÃO, ORÁCULOS, RECURSOS
+   ========================================================================== */
+
+.solo10-trap-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.solo10-trap-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.solo10-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+  min-width: 0;
+}
+
+.solo10-kpi-box {
+  background: var(--s10-surface-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.solo10-kpi-box span {
+  font-size: 0.64rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--s10-muted);
+  text-align: center;
+}
+
+.solo10-kpi-box input {
+  height: 26px !important;
+  text-align: center;
+  font-weight: 700;
+  background: #ffffff !important;
+}
+
+.solo10-btn-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.solo10-xp-spend-grid,
+.solo10-oracle-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.solo10-resource-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: var(--s10-surface-alt);
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+  padding: 6px 9px;
+}
+
+/* ==========================================================================
+   BOTÕES MINIMALISTAS CLAROS
+   ========================================================================== */
+
+.solo10-btn {
+  background: var(--s10-surface-tint) !important;
+  color: var(--s10-text) !important;
+  border: 1px solid var(--s10-border) !important;
+  border-radius: var(--s10-radius-sm);
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: auto !important;
+  min-height: 28px;
+  max-width: 100%;
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  box-shadow: none !important;
+}
+
+.solo10-btn:hover {
+  background: #e2e8f0 !important;
+  border-color: var(--s10-border-strong) !important;
+}
+
+.solo10-btn-primary {
+  background: var(--s10-primary) !important;
+  border-color: var(--s10-primary) !important;
+  color: #ffffff !important;
+}
+
+.solo10-btn-primary:hover {
+  background: var(--s10-primary-hover) !important;
+  border-color: var(--s10-primary-hover) !important;
+}
+
+.solo10-btn-danger {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+}
+
+.solo10-btn-danger:hover {
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+}
+
+.solo10-btn-sm {
+  padding: 4px 8px;
+  font-size: 0.76rem;
+  min-height: 26px;
+}
+
+.solo10-btn-xs {
+  padding: 3px 7px;
+  font-size: 0.72rem;
+  min-height: 24px;
+}
+
+.solo10-icon-btn {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--s10-muted) !important;
+  cursor: pointer;
+  padding: 3px 5px !important;
+  min-width: 24px;
+  height: 26px !important;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: none !important;
+}
+
+.solo10-icon-btn:hover {
+  color: var(--s10-text) !important;
+  background: #e2e8f0 !important;
+  border-color: var(--s10-border) !important;
+}
+
+/* ==========================================================================
+   TABELAS RESPONSIVAS & TAGS
+   ========================================================================== */
+
+.solo10-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--s10-border);
+  border-radius: 6px;
+}
+
+.solo10-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  background: #ffffff !important;
+  color: var(--s10-text) !important;
+  margin: 0;
+}
+
+.solo10-table th,
+.solo10-table td {
+  border-bottom: 1px solid var(--s10-border);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+  color: var(--s10-text) !important;
+  background: transparent !important;
+}
+
+.solo10-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.solo10-table th {
+  color: var(--s10-muted) !important;
+  background: var(--s10-surface-alt) !important;
+  font-weight: 700;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.solo10-table .cell-name {
+  overflow-wrap: anywhere;
+}
+
+.solo10-table .col-check {
+  width: 38px;
+  text-align: center;
+}
+
+.solo10-table .col-compact {
+  white-space: nowrap;
+  width: 1%;
+}
+
+.solo10-table .col-actions {
+  white-space: nowrap;
+  width: 1%;
+  text-align: right;
+}
+
+.solo10-table .col-actions-sm {
+  white-space: nowrap;
+  width: 1%;
+  text-align: right;
+}
+
+.solo10-table-actions {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.solo10-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.solo10-mini-tag {
+  background: var(--s10-tag-bg);
+  color: var(--s10-tag-fg);
+  font-size: 0.67rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.solo10-mini-tag.tag-accent {
+  background: var(--s10-primary-soft);
+  color: var(--s10-primary);
+}
+
+.solo10-mini-tag.warn {
+  background: #fee2e2;
+  color: var(--s10-danger);
+}
+
+.solo10-badge {
+  background: var(--s10-surface-tint);
+  color: var(--s10-text);
+  border: 1px solid var(--s10-border);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.solo10-empty {
+  color: var(--s10-muted) !important;
+  font-size: 0.78rem;
+  text-align: center;
+  padding: 14px 10px;
+  background: var(--s10-surface-alt);
+  border-radius: 6px;
+  border: 1px dashed var(--s10-border);
+}
+
+.solo10-table .solo10-empty {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* ==========================================================================
+   GRIDS GENÉRICOS & COMPONENTES COMPARTILHADOS
+   ========================================================================== */
+
+.solo10-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.solo10-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.solo10-combat-quickbar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.solo10-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.solo10-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--s10-text) !important;
+}
+
+.solo10-metas-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.solo10-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--s10-surface-alt);
+  border: 1px solid var(--s10-border);
+  color: var(--s10-text);
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  min-width: 0;
+}
+
+.solo10-meta-item.concluida .meta-name {
+  text-decoration: line-through;
+  color: var(--s10-muted);
+}
+
+.solo10-meta-item .meta-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.meta-btns {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   RESERVAS (COMPATIBILIDADE COM FICHA DE ADVERSÁRIO)
+   ========================================================================== */
+
 .solo10-reservas-bar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr) auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   align-items: stretch;
-}
-
-.solo10-adversario-sheet .solo10-reservas-bar {
-  grid-template-columns: repeat(3, 1fr);
+  min-width: 0;
 }
 
 .solo10-reserva-box {
   background: var(--s10-surface-alt) !important;
   border: 1px solid var(--s10-border);
   border-radius: 6px;
-  padding: 6px 10px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 4px;
   color: var(--s10-text) !important;
+  min-width: 0;
 }
 
 .solo10-reserva-box.alerta-zero {
@@ -205,454 +1439,30 @@
   justify-content: space-between;
   align-items: baseline;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--s10-text) !important;
-}
-
-.reserva-title small {
-  font-size: 0.68rem;
-  color: var(--s10-muted) !important;
-  font-weight: 400;
 }
 
 .reserva-inputs {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-top: 2px;
+  min-width: 0;
 }
 
 .reserva-inputs input {
-  width: 48px;
+  width: 48px !important;
+  flex: 1 1 40px;
   text-align: center;
-  font-weight: 600;
-  font-size: 0.95rem;
-  background: #ffffff !important;
-}
-
-.reserva-inputs .max {
   font-weight: 600;
   font-size: 0.9rem;
-  color: var(--s10-muted) !important;
-}
-
-.estado-tag {
-  display: inline-block;
-  margin-top: 3px;
-  background: var(--s10-danger);
-  color: #fff;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-align: center;
-  border-radius: 3px;
-  padding: 1px 4px;
-}
-
-.solo10-reserva-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  justify-content: center;
-}
-
-/* ABAS MINIMALISTAS */
-.solo10-tabs {
-  display: flex;
-  gap: 4px;
-  border-bottom: 1px solid var(--s10-border);
-  padding-bottom: 0;
-}
-
-.solo10-tab-btn {
-  flex: 1;
-  background: transparent !important;
-  color: var(--s10-muted) !important;
-  border: none !important;
-  border-bottom: 2px solid transparent !important;
-  border-radius: 0 !important;
-  padding: 7px 10px;
-  font-size: 0.84rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: none !important;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.solo10-tab-btn:hover {
-  color: var(--s10-text) !important;
-}
-
-.solo10-tab-btn.active {
-  color: var(--s10-primary) !important;
-  border-bottom-color: var(--s10-primary) !important;
-}
-
-/* PAINÉIS */
-.solo10-panel {
-  background: var(--s10-surface) !important;
-  color: var(--s10-text) !important;
-  border: 1px solid var(--s10-border);
-  border-radius: 8px;
-  padding: 12px;
-}
-
-.solo10-panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--s10-border);
-  padding-bottom: 6px;
-  margin-bottom: 10px;
-}
-
-.solo10-panel h3,
-.solo10-panel h4 {
-  margin: 0;
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--s10-text) !important;
-  letter-spacing: 0.02em;
-}
-
-.solo10-subhead {
-  margin: 10px 0 6px !important;
-  font-size: 0.76rem !important;
-  color: var(--s10-muted) !important;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.solo10-header-tools {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.solo10-hint {
-  font-size: 0.8rem;
-  color: var(--s10-muted) !important;
-  margin: 0 0 8px;
-}
-
-/* ATRIBUTOS */
-.solo10-atributos-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.solo10-atributo-card {
-  background: var(--s10-surface-alt) !important;
-  color: var(--s10-text) !important;
-  border: 1px solid var(--s10-border);
-  border-radius: 6px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.attr-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.attr-header h4 {
-  margin: 0;
-  font-size: 0.98rem;
-  font-weight: 600;
-  color: var(--s10-text) !important;
-}
-
-.attr-total {
-  background: #ffffff;
-  color: var(--s10-primary);
-  border: 1px solid var(--s10-border);
-  font-size: 1.05rem;
-  font-weight: 700;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.attr-desc {
-  font-size: 0.74rem;
-  color: var(--s10-muted) !important;
-  margin: 0;
-}
-
-.attr-fields {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  text-align: center;
-}
-
-.attr-fields label {
-  font-size: 0.66rem;
-  color: var(--s10-muted) !important;
-  display: block;
-}
-
-.attr-fields input {
-  width: 100%;
-  text-align: center;
-  font-weight: 600;
   background: #ffffff !important;
 }
 
-/* LISTA MODULAR DE ITENS (PERÍCIAS, QUALIDADES, ARMADILHAS) */
-.solo10-item-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+/* ==========================================================================
+   ORÁCULO & COMBATE EM MASSA
+   ========================================================================== */
 
-.solo10-item-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 10px;
-  background: var(--s10-surface-alt) !important;
-  color: var(--s10-text) !important;
-  border: 1px solid var(--s10-border);
-  border-radius: 6px;
-}
-
-.item-main {
-  flex: 1;
-}
-
-.item-title-line {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.item-title {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--s10-text) !important;
-}
-
-.item-sub {
-  margin: 3px 0 0;
-  font-size: 0.78rem;
-  color: var(--s10-muted) !important;
-  line-height: 1.35;
-}
-
-.item-controls {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* BOTÕES MINIMALISTAS CLAROS */
-.solo10-btn {
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-  border-radius: 5px;
-  padding: 5px 10px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  transition: background 0.12s ease, border-color 0.12s ease;
-  box-shadow: none !important;
-}
-
-.solo10-btn:hover {
-  background: #e2e8f0 !important;
-  border-color: #94a3b8 !important;
-}
-
-.solo10-btn-primary {
-  background: #991b1b !important;
-  border-color: #991b1b !important;
-  color: #ffffff !important;
-}
-
-.solo10-btn-primary:hover {
-  background: #7f1d1d !important;
-}
-
-.solo10-btn-sm {
-  padding: 4px 8px;
-  font-size: 0.78rem;
-}
-
-.solo10-btn-xs {
-  padding: 2px 7px;
-  font-size: 0.72rem;
-}
-
-.solo10-icon-btn {
-  background: transparent !important;
-  border: 1px solid transparent !important;
-  color: #475569 !important;
-  cursor: pointer;
-  padding: 3px 5px;
-  border-radius: 4px;
-  box-shadow: none !important;
-}
-
-.solo10-icon-btn:hover {
-  color: #0f172a !important;
-  background: #e2e8f0 !important;
-  border-color: #cbd5e1 !important;
-}
-
-/* TABELAS CLARAS */
-.solo10-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.82rem;
-  background: #ffffff !important;
-  color: #0f172a !important;
-}
-
-.solo10-table th,
-.solo10-table td {
-  border-bottom: 1px solid var(--s10-border);
-  padding: 6px 8px;
-  text-align: left;
-  color: #0f172a !important;
-  background: transparent !important;
-}
-
-.solo10-table th {
-  color: var(--s10-muted) !important;
-  background: #f8fafc !important;
-  font-weight: 600;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-}
-
-.solo10-table-actions {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.solo10-mini-tag {
-  background: var(--s10-tag-bg);
-  color: var(--s10-tag-fg);
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 4px;
-}
-
-.solo10-mini-tag.warn {
-  background: #fee2e2;
-  color: var(--s10-danger);
-}
-
-.solo10-badge {
-  background: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #cbd5e1;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-
-.solo10-empty {
-  color: var(--s10-muted) !important;
-  font-size: 0.8rem;
-  text-align: center;
-  padding: 12px;
-}
-
-/* GRIDS & FORMULÁRIOS */
-.solo10-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.solo10-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.solo10-combat-quickbar,
-.solo10-actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 6px;
-}
-
-.solo10-diverse-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 0;
-  border-bottom: 1px solid var(--s10-border);
-  font-size: 0.8rem;
-  color: var(--s10-text) !important;
-}
-
-.solo10-trap-builder {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.solo10-checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  color: var(--s10-text) !important;
-}
-
-.solo10-metas-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.solo10-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--s10-surface-alt);
-  color: var(--s10-text);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.82rem;
-}
-
-.solo10-meta-item.concluida .meta-name {
-  text-decoration: line-through;
-  color: var(--s10-muted);
-}
-
-.solo10-meta-item .meta-name {
-  flex: 1;
-}
-
-/* ORÁCULO & COMBATE EM MASSA */
 .solo10-oracle-top {
   display: flex;
   align-items: center;
@@ -662,10 +1472,18 @@
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid var(--s10-border);
+  min-width: 0;
+}
+
+.solo10-oracle-top label {
+  white-space: nowrap;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .solo10-oracle-top select {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .solo10-army-col {
@@ -677,6 +1495,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .solo10-units-list {
@@ -691,17 +1510,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 6px;
   font-size: 0.78rem;
   color: var(--s10-text);
+  min-width: 0;
 }
 
 .solo10-unit-row input {
-  width: 52px;
+  flex: 0 0 54px;
+  width: 54px !important;
   text-align: center;
   background: #ffffff !important;
 }
 
-/* CARDS DE CHAT CLAROS */
+/* ==========================================================================
+   CARDS DE CHAT CLAROS
+   ========================================================================== */
+
 .solo10-chat-card {
   background: #ffffff;
   color: #0f172a;
@@ -719,11 +1544,12 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 4px;
 }
 
 .solo10-card-header h3 {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #0f172a;
 }
@@ -740,6 +1566,8 @@
 .solo10-breakdown-row {
   display: flex;
   justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .solo10-dice-strip {
@@ -861,7 +1689,10 @@
   flex-wrap: wrap;
 }
 
-/* DIÁLOGO DE ROLAGEM */
+/* ==========================================================================
+   DIÁLOGO DE ROLAGEM
+   ========================================================================== */
+
 .solo10-roll-dialog {
   display: flex;
   flex-direction: column;
@@ -872,11 +1703,12 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
+  min-width: 0;
 }
 
 .solo10-dialog-grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -890,4 +1722,58 @@
 .solo10-dialog-notes ul {
   margin: 4px 0 0 16px;
   padding: 0;
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE POR CONTAINER (EVITA ESTOURO AO REDIMENSIONAR NO FOUNDRY)
+   ========================================================================== */
+
+@container solo10sheet (max-width: 740px) {
+  .solo10-main-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .solo10-meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .solo10-scroll-list {
+    max-height: none;
+  }
+
+  .solo10-tabs {
+    flex-wrap: wrap;
+  }
+
+  .solo10-personagem-sheet .solo10-tab-btn {
+    flex: 1 1 calc(50% - 4px) !important;
+  }
+}
+
+@container solo10sheet (max-width: 580px) {
+  .solo10-sheet-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .solo10-header-left {
+    justify-content: center;
+  }
+
+  .solo10-grid-2,
+  .solo10-diverse-grid,
+  .solo10-trap-row,
+  .solo10-xp-spend-grid,
+  .solo10-oracle-shortcuts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@container solo10sheet (max-width: 480px) {
+  .solo10-pillars-grid,
+  .solo10-combat-quickbar,
+  .solo10-actions-grid,
+  .solo10-btn-stack-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

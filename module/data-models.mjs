@@ -56,7 +56,8 @@ export class PersonagemDataModel extends TypeDataModel {
         notas: new fields.StringField({ initial: "" })
       }),
       biografia: new fields.HTMLField({ initial: "" }),
-      notas: new fields.HTMLField({ initial: "" })
+      notas: new fields.HTMLField({ initial: "" }),
+      grimorio: new fields.HTMLField({ initial: "" })
     };
   }
 }
@@ -175,6 +176,20 @@ export class MetaDataModel extends TypeDataModel {
     return {
       tipo: new fields.StringField({ initial: "meta" }),
       concluida: new fields.BooleanField({ initial: false }),
+      descricao: new fields.HTMLField({ initial: "" })
+    };
+  }
+}
+
+export class MagiaDataModel extends TypeDataModel {
+  static defineSchema() {
+    return {
+      escola: new fields.StringField({ initial: "" }),
+      atributo: new fields.StringField({ initial: "mente" }),
+      custo: new fields.StringField({ initial: "" }),
+      alcance: new fields.StringField({ initial: "" }),
+      duracao: new fields.StringField({ initial: "" }),
+      bonusTeste: new fields.NumberField({ required: true, integer: true, initial: 0 }),
       descricao: new fields.HTMLField({ initial: "" })
     };
   }

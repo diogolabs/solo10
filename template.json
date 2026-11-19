@@ -30,7 +30,8 @@
         "notas": ""
       },
       "biografia": "",
-      "notas": ""
+      "notas": "",
+      "grimorio": ""
     },
     "adversario": {
       "saude": { "value": 10, "max": 10 },
@@ -44,7 +45,7 @@
     }
   },
   "Item": {
-    "types": ["pericia", "qualidade", "arma", "armadura", "equipamento", "armadilha", "meta"],
+    "types": ["pericia", "qualidade", "arma", "armadura", "equipamento", "armadilha", "meta", "magia"],
     "pericia": {
       "slug": "",
       "descricao": ""
@@ -95,6 +96,15 @@
     "meta": {
       "tipo": "meta",
       "concluida": false,
+      "descricao": ""
+    },
+    "magia": {
+      "escola": "",
+      "atributo": "mente",
+      "custo": "",
+      "alcance": "",
+      "duracao": "",
+      "bonusTeste": 0,
       "descricao": ""
     }
   }

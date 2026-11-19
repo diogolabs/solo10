@@ -23,6 +23,16 @@ export class Solo10Item extends Item {
       detalhes = `<p><strong>Tipo:</strong> Qualidade ${sys.tipo === "ativa" ? "Ativa" : "Passiva"}${mods.length ? ` (${mods.join(", ")})` : ""}</p>`;
     } else if (this.type === "armadilha") {
       detalhes = `<p><strong>Efeito:</strong> ${sys.efeito} (Bônus de Poder: +${sys.bonusPoder})</p>`;
+    } else if (this.type === "magia") {
+      const attrs = { corpo: "Corpo", espirito: "Espírito", mente: "Mente" };
+      const parts = [];
+      if (sys.escola) parts.push(`<strong>Escola / Círculo:</strong> ${sys.escola}`);
+      parts.push(`<strong>Atributo:</strong> ${attrs[sys.atributo] || sys.atributo || "Mente"}`);
+      if (sys.custo) parts.push(`<strong>Custo:</strong> ${sys.custo}`);
+      if (sys.alcance) parts.push(`<strong>Alcance:</strong> ${sys.alcance}`);
+      if (sys.duracao) parts.push(`<strong>Duração:</strong> ${sys.duracao}`);
+      if (sys.bonusTeste) parts.push(`<strong>Bônus:</strong> +${sys.bonusTeste}`);
+      detalhes = `<p>${parts.join(" | ")}</p>`;
     }
 
     const content = `

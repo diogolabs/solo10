@@ -376,7 +376,8 @@ export async function promptSolo10RollDialog({
   tipoTeste = "padrao",
   arma = null,
   perigoInicial = 10,
-  danoReacaoInimigo = 0
+  danoReacaoInimigo = 0,
+  modificadorExtraInicial = 0
 } = {}) {
   const periciaEncontrada = pericia && actor?.type === "personagem"
     ? actor.findPericiaItem(pericia)
@@ -505,7 +506,7 @@ export async function promptSolo10RollDialog({
       </div>` : ""}
       <div class="solo10-dialog-row">
         <label>Modificador Extra (Bônus Mental Futuro, Qualidades, etc.)</label>
-        <input type="number" name="modificadorExtra" value="${atributo === "mente" ? Number(actor?.system?.bonusMentalFuturo || 0) : 0}" />
+        <input type="number" name="modificadorExtra" value="${(atributo === "mente" ? Number(actor?.system?.bonusMentalFuturo || 0) : 0) + Number(modificadorExtraInicial || 0)}" />
       </div>
       ${combateExtrasHtml}
       ${defesaExtrasHtml}
@@ -552,9 +553,11 @@ export async function promptSolo10RollDialog({
 
             return executeSolo10Roll({
               actor,
-              titulo: selPericia
-                ? `Teste de ${SOLO10.ATRIBUTOS[selAttr]?.label || selAttr} (${selPericia})`
-                : `Teste de ${SOLO10.ATRIBUTOS[selAttr]?.label || selAttr}`,
+              titulo: tipoTeste === "magia"
+                ? titulo
+                : selPericia
+                  ? `Teste de ${SOLO10.ATRIBUTOS[selAttr]?.label || selAttr} (${selPericia})`
+                  : `Teste de ${SOLO10.ATRIBUTOS[selAttr]?.label || selAttr}`,
               atributo: selAttr,
               pericia: selPericia,
               usarPericia: selUsarPericia,

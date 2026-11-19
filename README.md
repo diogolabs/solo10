@@ -8,19 +8,19 @@ Implementação completa do sistema **Solo 10 (Licença Aberta 2.0)** para **Fou
 
 ## Funcionalidades Incluídas
 
-- **Ficha de Personagem Modular e Minimalista (`ApplicationV2`):**
-  - **Temas Visuais:** Escolha entre **Claro (Minimalista)**, **Escuro (Minimalista)** ou **Padrão do Sistema** (direto no cabeçalho da ficha ou nas configurações do Foundry VTT).
-  - **Atributos (`Corpo`, `Espírito`, `Mente`)** com cálculo automático das reservas:
+- **Ficha de Personagem Clara/Minimalista e Responsiva (`ApplicationV2`):**
+  - **Organizada em 4 Abas:**
+    1. **Atributos, Perícias, Rolagens e Combate:** Pilares acoplados (`Corpo → Saúde`, `Espírito → Postura`, `Mente → Vontade`) com barras visuais e ajuste rápido `−`/`+`, Perícias (`+2`), ações rápidas de combate, Armas e calculadora de Danos Diversos.
+    2. **Qualidades, Evolução e Oráculos:** Qualidades modulares, Armadilhas, controle de XP/Dias Vividos, atalhos do Oráculo e Ações de Setor, Metas Pessoais, Acontecimento/Campanha e Notas & Diário.
+    3. **Equipamento e Recursos:** Armaduras & Escudos (com cálculo automático de **RD**), Equipamentos & Pertences, Recursos Financeiros/Renda por hora e Ofícios.
+    4. **Magia:** Itens modulares do tipo **Magia** (Escola/Círculo, Atributo base, Custo, Alcance, Duração, Bônus de teste e botão **Conjurar** integrado às rolagens `1D10`) + **Grimório & Notas Arcanas**.
+  - **Cálculo automático das reservas:**
     - `Saúde = 5 + Corpo` (+ bônus de Qualidades como *Vigoroso*)
     - `Postura = 5 + Espírito` (+ bônus de Qualidades como *Aristocrata*)
     - `Vontade = 5 + Mente` (+ bônus de Qualidades como *Perseverante*)
   - **Perícias como Itens Modulares (`+2`):** Livres de Atributo (o Atributo é definido na hora do teste). Vêm em um **Compêndio de Perícias** próprio do sistema e permitem criar novas perícias para qualquer cenário Solo 10.
   - **Qualidades como Itens Modulares:** Todas as 38 Qualidades oficiais disponíveis no **Compêndio de Qualidades** do sistema, com campos modulares de bônus (`+ Saúde`, `+ Postura`, `+ Vontade`, `+ RD`, `+ Bônus em Teste`, `Vantagem`) para fácil adaptação e criação de novas Qualidades.
-  - **Combate, Armas, Armaduras, Danos Diversos e Ofícios:**
-    - **Compêndio de Armas e Armaduras** integrado.
-    - Cálculo automático de **Resistência a Dano (RD)**.
-    - Calculadora de Danos Diversos (*Queda*, *Fogo e Ácido*, *Veneno*) e testes de *Ofícios*.
-  - **Ações de Setor, Evolução (XP), Acontecimento Importante, Metas e Campanha.**
+  - **Compêndios de Armas e Armaduras** integrados.
 - **Ficha de Adversário:**
   - Bloco de estatísticas fiel ao documento oficial (`Saúde`, `Postura`, `Vontade`, `Perigo`, `Ataque (Reação)` e `Outras Características`), com disparo de reação para o Chat e botão para o jogador rolar Defesa.
 - **Sistema de Rolagens (`1D10`):**

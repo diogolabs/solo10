@@ -8,7 +8,8 @@ import {
   ArmaduraDataModel,
   EquipamentoDataModel,
   ArmadilhaDataModel,
-  MetaDataModel
+  MetaDataModel,
+  MagiaDataModel
 } from "./data-models.mjs";
 import { Solo10Actor } from "./documents/actor.mjs";
 import { Solo10Item } from "./documents/item.mjs";
@@ -92,7 +93,8 @@ Hooks.once("init", () => {
     armadura: ArmaduraDataModel,
     equipamento: EquipamentoDataModel,
     armadilha: ArmadilhaDataModel,
-    meta: MetaDataModel
+    meta: MetaDataModel,
+    magia: MagiaDataModel
   };
 
   // Helpers Handlebars
@@ -123,7 +125,7 @@ Hooks.once("init", () => {
   });
 
   ItemsCollection.registerSheet("solo10", Solo10ItemSheet, {
-    types: ["pericia", "qualidade", "arma", "armadura", "equipamento", "armadilha", "meta"],
+    types: ["pericia", "qualidade", "arma", "armadura", "equipamento", "armadilha", "meta", "magia"],
     makeDefault: true,
     label: "SOLO10.SheetItem"
   });
