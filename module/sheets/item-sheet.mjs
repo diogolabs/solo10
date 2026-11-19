@@ -30,7 +30,8 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     },
     actions: {
       editImage: Solo10ItemSheet.#onEditImage,
-      postToChat: Solo10ItemSheet.#onPostToChat
+      postToChat: Solo10ItemSheet.#onPostToChat,
+      conjurarMagia: Solo10ItemSheet.#onConjurarMagia
     }
   };
 
@@ -74,5 +75,9 @@ export class Solo10ItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   static async #onPostToChat(event, target) {
     return this.document.postToChat();
+  }
+
+  static async #onConjurarMagia(event, target) {
+    return this.document.conjurar();
   }
 }

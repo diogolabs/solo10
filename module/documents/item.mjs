@@ -1,4 +1,14 @@
+import { conjurarMagiaItem } from "../dice/rolls.mjs";
+
 export class Solo10Item extends Item {
+  /**
+   * Realiza o Teste de Conjuração para itens do tipo Magia (regras págs. 96–97).
+   */
+  async conjurar(actorOverride = null) {
+    if (this.type !== "magia") return;
+    return conjurarMagiaItem(this, actorOverride);
+  }
+
   /**
    * Envia a descrição do Item para o Chat.
    */
@@ -44,8 +54,24 @@ export class Solo10Item extends Item {
       detalhes = `<p>${parts.join(" | ")}</p>`;
     }
 
+    const magiaFooter =
+      this.type === "magia"
+        ? `
+        <footer class="solo10-card-actions">
+          <button
+            type="button"
+            class="solo10-chat-btn"
+            data-action="conjurarMagiaChat"
+            data-item-uuid="${this.uuid}"
+            data-item-id="${this.id}"
+          >
+            <i class="fas fa-hat-wizard"></i> Teste de Conjuração
+          </button>
+        </footer>`
+        : "";
+
     const content = `
-      <div class="solo10-chat-card">
+      <div class="solo10-chat-card" data-actor-id="${this.actor?.id || ""}">
         <header class="solo10-card-header">
           <h3>${this.name}</h3>
         </header>
@@ -53,6 +79,7 @@ export class Solo10Item extends Item {
           ${detalhes}
           <div>${sys.descricao || ""}</div>
         </div>
+        ${magiaFooter}
       </div>
     `;
 

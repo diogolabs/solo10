@@ -88,6 +88,11 @@ export const SOLO10 = {
       key: "tecnologia",
       label: "Tecnologia",
       descricao: "Perícia em informática utilizada em testes como Mente (Tecnologia) (capítulo JOGANDO - EXEMPLO DE AÇÕES)."
+    },
+    magia: {
+      key: "magia",
+      label: "Magia",
+      descricao: "Perícia arcana utilizada em testes de conjuração de magias (Atributo da Magia + Perícia Magia +2 + 1D10 >= 10 ou Perigo)."
     }
   },
 
@@ -1114,6 +1119,589 @@ export const SOLO10 = {
       categoria: "alimentacao",
       custo: 3,
       descricao: "Cada unidade permite alimentar um animal por um dia ou retirar um marcador de Fome."
+    }
+  ],
+
+  CATEGORIAS_MAGIA: {
+    corpo: {
+      label: "Magias de Corpo",
+      color: "#8c3b3b",
+      icon: "icons/svg/regen.svg",
+      sort: 100
+    },
+    espirito: {
+      label: "Magias de Espírito",
+      color: "#3b6b8c",
+      icon: "icons/svg/aura.svg",
+      sort: 200
+    },
+    mente: {
+      label: "Magias de Mente",
+      color: "#5d4a8c",
+      icon: "icons/svg/daze.svg",
+      sort: 300
+    }
+  },
+
+  // 62 magias oficiais do capítulo MAGIAS (Heróis & Hordas / Solo 10, págs. 96–103)
+  MAGIAS_PADRAO: [
+    {
+      nome: "Afastar Entidade",
+      atributo: "mente",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "Área",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Esta poderosa magia consegue repelir Diabos, Demônios, Fantasmas e Elementais de uma área durante (1 + Bônus de Poder) rodadas. Humanos e animais comuns não são afetados."
+    },
+    {
+      nome: "Aprisionar Corpo",
+      atributo: "mente",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 alvo",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Este feitiço permite que você aprisione um alvo corpóreo por (1 + Bônus de Poder) rodadas. Entidades poderosas conseguirão facilmente se livrar deste feitiço."
+    },
+    {
+      nome: "Aprisionar Entidade",
+      atributo: "mente",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 entidade / item",
+      duracao: "Permanente (até libertação)",
+      descricao: "Este feitiço aprisiona em um item Diabos, Demônios, Fantasmas e Elementais, impedindo que eles sejam controlados ou, no caso dos Fantasmas, que o corpo seja reanimado. Além disto, ele é capaz de aprisionar alguém sob efeito da Magia Projeção Astral. Entidades poderosas conseguirão facilmente se livrar deste feitiço."
+    },
+    {
+      nome: "Aumentar/Reduzir",
+      atributo: "corpo",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "1 alvo",
+      duracao: "Cena / Variável",
+      descricao: "Ao utilizar a magia Aumentar, o alvo dobra o seu tamanho, recebendo +2 no Atributo Corpo (para fins de força, resistência e Saúde). No entanto, ele fica mais lento, recebendo -1 no Atributo Corpo (para fins de destreza e agilidade) até o mínimo de Corpo 1. Já no uso da magia Reduzir, o alvo reduz pela metade o seu tamanho, recebendo +2 no Atributo Corpo (para fins de destreza e agilidade). No entanto, a personagem fica mais fraca, recebendo -1 no Atributo Corpo (para fins de força e resistência) até o mínimo de Corpo 1."
+    },
+    {
+      nome: "Aura de Cura",
+      atributo: "corpo",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "Até 3 metros",
+      duracao: "Instantânea",
+      descricao: "Você consegue emanar uma poderosa aura curativa a até 3 metros de onde está, curando (1 + Bônus de Poder) pontos de Saúde de todos os alvos escolhidos que estejam até esta distância."
+    },
+    {
+      nome: "Cajado em Serpente",
+      atributo: "mente",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "Toque (cajado)",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue transformar um cajado em uma serpente mágica, que o servirá cegamente por (1 + Bônus de Poder) minutos (utilize o Animal Médio do capítulo HORDAS, pág. 180)."
+    },
+    {
+      nome: "Cegueira/Surdez",
+      atributo: "espirito",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 alvo",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue deixar um alvo cego ou surdo de forma instantânea por (1 + Bônus de Poder) rodadas. Depois deste tempo, o sentido afetado voltará a funcionar normalmente."
+    },
+    {
+      nome: "Coma",
+      atributo: "espirito",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "1 alvo",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue influenciar a mente de seu alvo e deitá-lo em um torpor pesado e instantâneo por (1 + Bônus de Poder) rodadas. Seu corpo não reagirá a nenhum estímulo."
+    },
+    {
+      nome: "Comandar Entidade",
+      atributo: "espirito",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 entidade",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue dobrar a vontade de um Diabo, Demônio, Fantasma e Elemental por (1 + Bônus de Poder) minutos. Ele fará tudo que for ordenado, com exceção de causar sua própria destruição."
+    },
+    {
+      nome: "Comandar Zumbis",
+      atributo: "espirito",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "1 Zumbi Menor",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue dobrar a vontade de um Zumbi Menor por (1 + Bônus de Poder) minutos. Ele fará tudo que for ordenado, incluindo causar sua própria destruição."
+    },
+    {
+      nome: "Compreender/Detectar Magia",
+      atributo: "mente",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "Área / Pessoas / Itens",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue sentir a presença de criaturas, efeitos e feitiços em pessoas, itens e áreas durante (1 + Bônus de Poder) rodadas. Caso você concentre este poder em um determinado efeito por 5 rodadas, saberá que tipo de feitiço ou efeito mágico foi conjurado."
+    },
+    {
+      nome: "Contramagia",
+      atributo: "mente",
+      custo: "Custo da Magia lançada +1",
+      custoVontade: 1,
+      alcance: "1 magia",
+      duracao: "Instantânea",
+      descricao: "Você consegue desfazer uma magia que foi ou está sendo conjurada por um alvo. O custo em Vontade é igual ao custo da magia a ser anulada +1."
+    },
+    {
+      nome: "Controlar Enxame",
+      atributo: "espirito",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "1 enxame",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue dobrar a vontade de um enxame (veja suas estatísticas no capítulo HORDAS, pág. 180) por (1 + Bônus de Poder) minutos, podendo ditar ordens que serão cumpridas, mesmo que venha a matar todos os seres."
+    },
+    {
+      nome: "Corpo de Energia",
+      atributo: "corpo",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue cobrir seu corpo com pura energia arcana por (1 + Bônus de Poder) minutos. Isto concede +2 de dano em ataques corporais e Armadura 2."
+    },
+    {
+      nome: "Corpo Etéreo",
+      atributo: "corpo",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue deixar seu corpo insubstancial por (1 + Bônus de Poder) minutos. Isto permite que você voe e atravesse livremente objetos sólidos."
+    },
+    {
+      nome: "Criar Runa/Pergaminho Arcano",
+      atributo: "mente",
+      custo: "Custo da Magia armazenada +2",
+      custoVontade: 2,
+      alcance: "Toque (item/pergaminho)",
+      duracao: "Até ser ativada",
+      descricao: "Você consegue gravar poderosas magias cunhadas em pequenas moedas de argila ou pedaços de madeira para poderem ser facilmente quebrados ou escrevê-las em pergaminhos que se desfazem ao serem lidos. Assim que isto é feito, a magia é liberada sem o gasto de nenhum ponto de Vontade."
+    },
+    {
+      nome: "Criar/Destruir Golem",
+      atributo: "mente",
+      custo: "5/7/9 (4/6/8 para destruir)",
+      custoVontade: 5,
+      alcance: "1 estrutura humanoide / Golem",
+      duracao: "Até ser destruído",
+      descricao: "Você consegue animar uma estrutura Humanoide, que se erguerá como um Golem (utilize as estatísticas do capítulo HORDAS, pág. 180). O custo aumentará com o tipo do Golem criado (5 para Golem de Carne, 7 para Golem de Ferro e 9 para Golem de Pedra). Ele obedecerá a você fielmente até ser destruído. Este feitiço também pode ser usado de forma reversa, desfazendo a magia que criou um Golem ao custo de 4/6/8 pontos de Vontade (o custo aumenta com o tipo de Golem)."
+    },
+    {
+      nome: "Criar/Destruir Zumbi",
+      atributo: "mente",
+      custo: "7/6 Vontade",
+      custoVontade: 7,
+      alcance: "1 corpo morto / Zumbi Menor",
+      duracao: "Até ser destruído",
+      descricao: "Você consegue reanimar um corpo morto ao custo de 7 pontos de Vontade, que se levantará como um Zumbi Menor (utilize as estatísticas do capítulo HORDAS, pág. 180). Ele obedecerá a você fielmente até ser destruído. Este feitiço também pode ser usado de forma reversa, desfazendo a magia que criou um Zumbi Menor ao custo de 6 pontos de Vontade."
+    },
+    {
+      nome: "Criar/Purificar Alimento",
+      atributo: "corpo",
+      custo: "4/2 Vontade",
+      custoVontade: 4,
+      alcance: "Próximo",
+      duracao: "Instantânea",
+      descricao: "Você consegue criar uma quantidade de unidades de alimento igual a (1 + Bônus de Poder) ao custo de 4 pontos de Vontade. Da mesma forma, você consegue purificar (1 + Bônus de Poder) unidades de alimento ao custo de 2 pontos de Vontade."
+    },
+    {
+      nome: "Curar Doença",
+      atributo: "corpo",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 alvo",
+      duracao: "Instantânea",
+      descricao: "Você consegue imbuir um alvo com parte da sua essência vital e, com isto, eliminar uma doença natural ou mágica."
+    },
+    {
+      nome: "Curar Ferimento",
+      atributo: "corpo",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "1 alvo",
+      duracao: "Instantânea",
+      descricao: "Você consegue imbuir um alvo com parte da sua essência vital e, com isto, curar (1 + Bônus de Poder) pontos de Saúde dele."
+    },
+    {
+      nome: "Debilitar Postura",
+      atributo: "espirito",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 inimigo",
+      duracao: "Até descanso de 8 horas",
+      descricao: "Você consegue reduzir em um valor igual a Mente + Bônus de Poder o total de pontos de Postura de um inimigo. Esta redução não poderá ser curada até que o alvo descanse por 8 horas."
+    },
+    {
+      nome: "Debilitar Saúde",
+      atributo: "corpo",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "1 inimigo",
+      duracao: "Até descanso de 8 horas",
+      descricao: "Você consegue reduzir em um valor igual a Mente + Bônus de Poder o total de pontos de Saúde de um inimigo. Esta redução não poderá ser curada até que o alvo descanse por 8 horas."
+    },
+    {
+      nome: "Debilitar Vontade",
+      atributo: "espirito",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 inimigo",
+      duracao: "Até descanso de 8 horas",
+      descricao: "Você consegue reduzir em um valor igual a Mente + Bônus de Poder o total de pontos de Vontade de um inimigo. Esta redução não poderá ser curada até que o alvo descanse por 8 horas."
+    },
+    {
+      nome: "Destroçar Barreiras",
+      atributo: "mente",
+      custo: "3/4/5 Vontade",
+      custoVontade: 3,
+      alcance: "1 porta/barreira",
+      duracao: "Instantânea",
+      descricao: "Com este feitiço você consegue destroçar uma porta de madeira (3), pedra (4) ou metal (5) — o custo aumentará com o tipo de material."
+    },
+    {
+      nome: "Doença",
+      atributo: "corpo",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "1 alvo",
+      duracao: "(1 + Bônus de Poder) horas",
+      descricao: "Você consegue imbuir um alvo com um mal sombrio, que fará que todos os testes realizados contra ele nas próximas (1 + Bônus de Poder) horas sejam feitos com Vantagem."
+    },
+    {
+      nome: "Dominar Animais/Pessoas",
+      atributo: "espirito",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "Pessoas ou animais",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue dobrar a vontade de pessoas ou animais por (1 + Bônus de Poder) minutos, podendo ditar ordens que serão cumpridas. Se sua ordem o colocar em risco, a magia acaba."
+    },
+    {
+      nome: "Enlouquecer",
+      atributo: "espirito",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "Alvos",
+      duracao: "(1 + Bônus de Poder) horas",
+      descricao: "Você causa em outros alvos uma poderosa loucura que os enfraquecerá. Isto faz com que todos os testes realizados contra eles nas próximas (1 + Bônus de Poder) horas sejam feitos com Vantagem."
+    },
+    {
+      nome: "Escudo Arcano",
+      atributo: "mente",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você cria um sólido escudo de energia mística em torno de si, que reduz 5 de dano por (1 + Bônus de Poder) rodadas."
+    },
+    {
+      nome: "Explosão de Energia",
+      atributo: "mente",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "À distância (Área)",
+      duracao: "Instantânea",
+      descricao: "Você gera uma explosão arcana centrada em si próprio ou em um ponto a sua escolha, fazendo um ataque à distância contra todos na área (incluindo aliados) e causando dano igual à Mente + Bônus de Poder a todos em seu interior."
+    },
+    {
+      nome: "Ferir",
+      atributo: "mente",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "À distância",
+      duracao: "Instantânea",
+      descricao: "Você consegue manipular energias arcanas e fazer um ataque à distância, causando dano igual à Mente + Bônus de Poder."
+    },
+    {
+      nome: "Fortalecer Arma/Armadura",
+      atributo: "corpo",
+      custo: "2 Vontade (por +1)",
+      custoVontade: 2,
+      alcance: "Toque (arma ou armadura)",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue imbuir sua arma ou armadura com poder arcano, aumentando em +1 o dano ou a redução de dano, respectivamente, por (1 + Bônus de Poder) rodadas. Mesmo fortalecida, esta arma não é considerada mágica. É possível aumentar em valores maiores, bastando multiplicar o bônus pretendido pelo custo da magia (4 pontos de Vontade para +2, 6 pontos de Vontade para +3, etc)."
+    },
+    {
+      nome: "Fortalecer Atributo",
+      atributo: "corpo",
+      custo: "3 Vontade (por +1)",
+      custoVontade: 3,
+      alcance: "Pessoal ou 1 alvo",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue aumentar um Atributo seu ou de um alvo em +1 por (1 + Bônus de Poder) rodadas. É possível aumentar em valores maiores, bastando multiplicar o bônus pretendido pelo custo da magia (6 pontos de Vontade para +2, 9 pontos de Vontade para +3, etc)."
+    },
+    {
+      nome: "Ilusão",
+      atributo: "mente",
+      custo: "4/6 Vontade",
+      custoVontade: 4,
+      alcance: "Área",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue criar ilusões que enganam a visão dos que estiverem ao redor por (1 + Bônus de Poder) minutos. Caso a ilusão em questão seja algo absurdo (como um imenso Tarrasque acordando), o custo da Magia se eleva para 6 pontos de Vontade."
+    },
+    {
+      nome: "Invisibilidade",
+      atributo: "mente",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue manipular mentes fracas e fazer com que eles não consigam percebê-lo, ficando invisível por (1 + Bônus de Poder) rodadas."
+    },
+    {
+      nome: "Invocar Animal",
+      atributo: "espirito",
+      custo: "4/5/6 Vontade",
+      custoVontade: 4,
+      alcance: "Próximo",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue convocar um animal pequeno (4), médio (5) ou grande (6) — o custo aumentará com o tamanho do animal —, que o servirá por (1 + Bônus de Poder) minutos (utilize as estatísticas do capítulo HORDAS, pág. 180). Se sua ordem o colocar em risco, a magia acaba."
+    },
+    {
+      nome: "Invocar Elementos",
+      atributo: "mente",
+      custo: "6/10 Vontade",
+      custoVontade: 6,
+      alcance: "Área",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue invocar o poder dos elementos, fazendo chover, nevar, ventar ou criar uma poderosa névoa em toda a área por (1 + Bônus de Poder) minutos. Caso o elemento seja incomum para a região (como chuvas em um deserto), o custo da Magia se eleva para 10 pontos de Vontade."
+    },
+    {
+      nome: "Invocar Entidade",
+      atributo: "espirito",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "Próximo",
+      duracao: "(1 + Bônus de Poder) minutos ou até ser destruído",
+      descricao: "Você consegue invocar um Diabo, Demônio, Fantasma ou Elemental, que o servirá por (1 + Bônus de Poder) minutos (utilize as estatísticas do capítulo HORDAS, pág. 180) ou até ser destruído."
+    },
+    {
+      nome: "Ler a Mente",
+      atributo: "mente",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "1 alvo",
+      duracao: "Instantânea",
+      descricao: "Você consegue entrar na mente de um alvo e retirar informações que ele guarda. Utilizar este poder em criaturas de poder imenso pode estraçalhar sua mente tamanha complexidade de seus pensamentos."
+    },
+    {
+      nome: "Línguas",
+      atributo: "mente",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue compreender e falar qualquer idioma por (1 + Bônus de Poder) minutos. Até mesmo idiomas esquecidos são contemplados por esta magia."
+    },
+    {
+      nome: "Luz/Escuridão",
+      atributo: "mente",
+      custo: "2 Vontade",
+      custoVontade: 2,
+      alcance: "Área",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue deixar uma área clara como o meio-dia ou escura como a meia-noite por (1 + Bônus de Poder) minutos."
+    },
+    {
+      nome: "Medo",
+      atributo: "espirito",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 alvo",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue imbuir seus inimigos com terror, fazendo com que o alvo desta magia fuja desesperadamente de você por (1 + Bônus de Poder) rodadas."
+    },
+    {
+      nome: "Mensagem",
+      atributo: "mente",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "Até 100 + (10 x Bônus de Poder) km",
+      duracao: "Instantânea",
+      descricao: "Você consegue encaminhar uma mensagem pequena e receber uma resposta de um alvo que esteja a até 100 + (10 x Bônus de Poder) quilômetros de distância."
+    },
+    {
+      nome: "Mudar a Aparência",
+      atributo: "mente",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue manipular completamente sua aparência de forma a enganar mentes fracas por (1 + Bônus de Poder) rodadas."
+    },
+    {
+      nome: "Múltiplas Imagens",
+      atributo: "mente",
+      custo: "3 Vontade",
+      custoVontade: 3,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você cria diversas imagens falsas suas, que duram (1 + Bônus de Poder) rodadas. Todas as reações contra você têm 50% de chance de errar (role 1D10 após cada reação: um resultado 1-5 representa que uma imagem foi atacada)."
+    },
+    {
+      nome: "Muralha de Energia",
+      atributo: "mente",
+      custo: "6/10 Vontade",
+      custoVontade: 6,
+      alcance: "3m altura x (10 + Bônus de Poder)m",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue criar uma muralha de elementos por (1 + Bônus de Poder) minutos. Caso o elemento seja incomum para a região (como água em um deserto), o custo da magia se eleva para 10 pontos de Vontade. A muralha possui 3 metros de altura e (10 + Bônus de Poder) metros de comprimento, podendo ser modelada pelo conjurador da forma que quiser. Além disto, ela poderá possuir uma das seguintes características: DEFENDER (esta muralha serve para proteger, possuindo Resistência a Dano 3 e 20 pontos de Saúde) ou ATACAR (esta muralha não impede sua travessia, mas causa Mente + Bônus de Poder de dano a todos que tentarem atravessá-la)."
+    },
+    {
+      nome: "Passos nas Nuvens",
+      atributo: "mente",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Seu corpo é envolto por um redemoinho de fumaça vermelha que o conduz voando a grandes velocidades em voos curtos que duram (1 + Bônus de Poder) rodadas."
+    },
+    {
+      nome: "Projeção Astral",
+      atributo: "espirito",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "Pessoal (Ilimitado em projeção)",
+      duracao: "Enquanto meditar",
+      descricao: "Deixando seu corpo completamente relaxado e em profunda meditação, você consegue projetar seu espírito do seu corpo. Esta projeção é intangível, invisível e consegue viajar a uma grande velocidade, alcançando qualquer lugar em segundos. Você consegue ainda ver e ouvir tudo o que presenciar. Nesta forma você consegue vagar livremente, mas a magia Ver a Verdade permitirá que você seja visto e a magia Aprisionar Entidade permitirá que o conjurador te aprisione."
+    },
+    {
+      nome: "Rajada de Energia",
+      atributo: "mente",
+      custo: "6 Vontade",
+      custoVontade: 6,
+      alcance: "Linha até (10 + Bônus de Poder) metros",
+      duracao: "Instantânea",
+      descricao: "Similar à magia Ferir, mas você consegue manipular energias arcanas e fazer um ataque à distância na forma de uma rajada, causando dano igual à Mente + Bônus de Poder a todos os alvos que estejam enfileirados a até (10 + Bônus de Poder) metros."
+    },
+    {
+      nome: "Ressurreição",
+      atributo: "corpo",
+      custo: "8 Vontade",
+      custoVontade: 8,
+      alcance: "1 corpo (morto há até 1 ano)",
+      duracao: "Instantânea",
+      descricao: "Você consegue reanimar o corpo de uma pessoa morta há até um ano. Trazer uma pessoa de volta à vida é uma experiência traumática, fazendo com que ela receba um marcador de Loucura M (caso esta regra esteja sendo utilizada) que não é recuperado. Desta forma, a cada vez que o Espírito é trazido de volta, a mente da pessoa se abala um pouco mais, até enlouquecê-la para sempre!"
+    },
+    {
+      nome: "Santidade",
+      atributo: "espirito",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "Aura pessoal",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Esta magia cria uma aura de paz por (1 + Bônus de Poder) minutos. Com isto, os Adversários com Postura menor ou igual à do conjurador não conseguirão atacá-lo."
+    },
+    {
+      nome: "Sentidos Extraordinários",
+      atributo: "mente",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue ampliar todos os seus sentidos por (1 + Bônus de Poder) rodadas. Com isto, você é capaz de enxergar no escuro e realizará todos os testes que envolvam sua percepção com Vantagem."
+    },
+    {
+      nome: "Som Fantasmagórico",
+      atributo: "mente",
+      custo: "4/6 Vontade",
+      custoVontade: 4,
+      alcance: "Área",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você consegue criar ilusões que enganam a audição dos que estiverem ao redor por (1 + Bônus de Poder) minutos. Caso o som em questão seja algo absurdo, o custo da magia se eleva para 6 pontos de Vontade."
+    },
+    {
+      nome: "Sonho/Pesadelo",
+      atributo: "espirito",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "1 pessoa dormindo",
+      duracao: "Durante o descanso",
+      descricao: "Você consegue projetar imagens na mente de uma pessoa que esteja dormindo. Caso estas imagens sejam sonhos bons, a pessoa irá recuperar (1 + Bônus de Poder) pontos de Postura e Vontade com o descanso. Caso sejam pesadelos, ele irá perder (1 + Bônus de Poder) pontos de Postura e Vontade. Esta magia pode ser utilizada por conjuradores que estejam sob efeito de Projeção Astral."
+    },
+    {
+      nome: "Sugar Espírito",
+      atributo: "espirito",
+      custo: "8 Vontade",
+      custoVontade: 8,
+      alcance: "1 alvo / recipiente transparente",
+      duracao: "Permanente",
+      descricao: "Esta magia aprisiona em um item transparente (como uma garrafa) o Espírito de um alvo, arrancando-o de seu corpo. Este Espírito pode ser utilizado posteriormente por meio da magia Comandar Entidade."
+    },
+    {
+      nome: "Telecinésia",
+      atributo: "mente",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "Objetos à vista",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Você consegue mover objetos com o poder da sua mente, levitando-os por (1 + Bônus de Poder) rodadas. Este poder não pode ser utilizado para atacar."
+    },
+    {
+      nome: "Teleporte",
+      atributo: "mente",
+      custo: "6 +1 por alvo extra",
+      custoVontade: 6,
+      alcance: "Até (10 + Bônus de Poder) hexágonos",
+      duracao: "Instantânea",
+      descricao: "Esta poderosa magia permite a um conjurador teleportar a si mesmo e a outros alvos a até 10 + Bônus de Poder hexágonos de distância. Caso um dos alvos esteja sendo teleportado contra sua vontade, a dificuldade do teste será igual ao Perigo deste alvo."
+    },
+    {
+      nome: "Transformação Animal",
+      atributo: "espirito",
+      custo: "4/5/6 Vontade",
+      custoVontade: 4,
+      alcance: "Pessoal",
+      duracao: "(1 + Bônus de Poder) minutos",
+      descricao: "Você molda seu corpo em um animal pequeno (4), médio (5) ou grande (6) — o custo aumentará com o tamanho do animal —, por (1 + Bônus de Poder) minutos."
+    },
+    {
+      nome: "Velocidade/Lentidão",
+      atributo: "corpo",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 alvo",
+      duracao: "Cena / Variável",
+      descricao: "Ao utilizar a magia Velocidade, o alvo dobra seu deslocamento, permitindo a ele que se coloque próximo o suficiente de um atacante à distância para efetuar um ataque corporal ou se distancie o suficiente para evitar ataques corporais sem gastar uma rodada para isto. Já no uso da magia Lentidão, o alvo tem seu deslocamento diminuído à metade, fazendo com que a mudança de combate corporal para combate à distância (ou vice-versa) gaste duas rodadas."
+    },
+    {
+      nome: "Ver a Verdade",
+      atributo: "mente",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "Pessoal (visão)",
+      duracao: "Ativa",
+      descricao: "Você consegue ver criaturas ou objetos que estejam ocultos por meio de invisibilidade e ilusões de todo o tipo, além de contornos de passagens secretas e objetos escondidos."
+    },
+    {
+      nome: "Ver o Passado/Futuro",
+      atributo: "mente",
+      custo: "5 Vontade",
+      custoVontade: 5,
+      alcance: "Toque",
+      duracao: "(1 + Bônus de Poder) dias",
+      descricao: "Tocando um alvo, você consegue ver seu passado ou o futuro em um período igual a (1 + Bônus de Poder) dias. Estas visões sempre serão nebulosas, mas poderão responder dúvidas pertinentes através da consulta ao ORÁCULO (pág. 173)."
+    },
+    {
+      nome: "Voo",
+      atributo: "corpo",
+      custo: "4 Vontade",
+      custoVontade: 4,
+      alcance: "1 alvo",
+      duracao: "(1 + Bônus de Poder) rodadas",
+      descricao: "Esta magia permite ao alvo voar livremente pela duração de (1 + Bônus de Poder) rodadas. Assim que o efeito acaba, o alvo começa a cair lentamente sobre o local onde terminou seu voo."
     }
   ],
 

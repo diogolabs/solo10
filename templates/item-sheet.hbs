@@ -174,13 +174,26 @@
 
     {{#if (eq item.type 'magia')}}
       <div class="solo10-panel">
+        <div class="solo10-panel-header" style="margin-bottom: 8px;">
+          <div class="solo10-panel-title">
+            <h4 class="solo10-subhead" style="margin: 0;">Conjuração (Atributo + Perícia Magia + 1D10 ≥ 10 ou Perigo)</h4>
+          </div>
+          <button
+            type="button"
+            class="solo10-btn solo10-btn-sm solo10-btn-primary"
+            data-action="conjurarMagia"
+            title="Realizar Teste de Conjuração conforme as regras de Magias (consome Vontade mesmo em falha)"
+          >
+            <i class="fas fa-hat-wizard"></i> Teste de Conjuração
+          </button>
+        </div>
         <div class="solo10-grid-2">
           <div class="solo10-form-group">
-            <label>Escola / Círculo / Tradição</label>
-            <input type="text" name="system.escola" value="{{system.escola}}" placeholder="Ex: 1º Círculo, Elemental, Ritual..." />
+            <label>Categoria / Caminho</label>
+            <input type="text" name="system.escola" value="{{system.escola}}" placeholder="Ex: Magias de Mente, Arcana, Ritual..." />
           </div>
           <div class="solo10-form-group">
-            <label>Atributo Base de Conjuração</label>
+            <label>Atributo de Conjuração</label>
             <select name="system.atributo">
               <option value="mente" {{#if (eq system.atributo 'mente')}}selected{{/if}}>Mente</option>
               <option value="espirito" {{#if (eq system.atributo 'espirito')}}selected{{/if}}>Espírito</option>
@@ -188,23 +201,29 @@
             </select>
           </div>
         </div>
-        <div class="solo10-grid-3" style="margin-top: 8px;">
+        <div class="solo10-grid-2" style="margin-top: 8px;">
           <div class="solo10-form-group">
-            <label>Custo</label>
-            <input type="text" name="system.custo" value="{{system.custo}}" placeholder="Ex: 1 Vontade" />
+            <label>Custo (Texto do Livro)</label>
+            <input type="text" name="system.custo" value="{{system.custo}}" placeholder="Ex: 4 Vontade, 4/6 Vontade..." />
           </div>
           <div class="solo10-form-group">
+            <label>Custo Base em Vontade (Numérico)</label>
+            <input type="number" name="system.custoVontade" value="{{system.custoVontade}}" min="0" />
+          </div>
+        </div>
+        <div class="solo10-grid-3" style="margin-top: 8px;">
+          <div class="solo10-form-group">
             <label>Alcance</label>
-            <input type="text" name="system.alcance" value="{{system.alcance}}" placeholder="Ex: 1 Setor" />
+            <input type="text" name="system.alcance" value="{{system.alcance}}" placeholder="Ex: À distância, Toque..." />
           </div>
           <div class="solo10-form-group">
             <label>Duração</label>
-            <input type="text" name="system.duracao" value="{{system.duracao}}" placeholder="Ex: Instantânea" />
+            <input type="text" name="system.duracao" value="{{system.duracao}}" placeholder="Ex: (1 + Bônus de Poder) rodadas" />
           </div>
-        </div>
-        <div class="solo10-form-group" style="margin-top: 8px;">
-          <label>Bônus no Teste de Conjuração</label>
-          <input type="number" name="system.bonusTeste" value="{{system.bonusTeste}}" />
+          <div class="solo10-form-group">
+            <label>Bônus Extra no Teste</label>
+            <input type="number" name="system.bonusTeste" value="{{system.bonusTeste}}" />
+          </div>
         </div>
       </div>
     {{/if}}

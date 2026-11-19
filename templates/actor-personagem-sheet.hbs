@@ -996,10 +996,13 @@
         <div class="solo10-panel-header">
           <div class="solo10-panel-title">
             <h3>Magias &amp; Feitiços ({{magias.length}})</h3>
-            <small class="solo10-muted">Conjure diretamente usando o atributo base configurado em cada magia</small>
+            <small class="solo10-muted">Magias iniciais = Mente ({{system.atributos.mente.total}}) · Teste: Atributo + Perícia Magia (+2) + 1D10 ≥ 10 ou Perigo</small>
           </div>
           <div class="solo10-header-tools">
             <span class="solo10-badge">Vontade: {{system.vontade.value}}/{{system.vontade.max}}</span>
+            <button type="button" class="solo10-btn solo10-btn-xs" data-action="abrirCompendio" data-pack="magias" title="Abrir Compêndio de Magias">
+              <i class="fas fa-book-open"></i> Compêndio
+            </button>
             <button type="button" class="solo10-btn solo10-btn-xs solo10-btn-primary" data-action="createItem" data-type="magia">
               <i class="fas fa-plus"></i> Nova Magia
             </button>
@@ -1031,9 +1034,9 @@
                   class="solo10-btn solo10-btn-xs solo10-btn-primary"
                   data-action="conjurarMagia"
                   data-item-id="{{this.id}}"
-                  title="Rolar teste para conjurar {{this.name}}"
+                  title="Teste de Conjuração: Atributo + Perícia Magia (+2) + 1D10 (consome Vontade mesmo em falha)"
                 >
-                  <i class="fas fa-hat-wizard"></i> Conjurar
+                  <i class="fas fa-hat-wizard"></i> Teste de Conjuração
                 </button>
                 <button type="button" class="solo10-icon-btn" data-action="postItem" data-item-id="{{this.id}}" title="Enviar ao Chat"><i class="fas fa-comment"></i></button>
                 <button type="button" class="solo10-icon-btn" data-action="editItem" data-item-id="{{this.id}}" title="Editar Magia"><i class="fas fa-edit"></i></button>
@@ -1042,7 +1045,7 @@
             </div>
           {{else}}
             <div class="solo10-empty">
-              Nenhuma magia cadastrada. Clique em <strong>+ Nova Magia</strong> para adicionar feitiços, rituais ou poderes arcanos do seu cenário.
+              Nenhuma magia cadastrada. Arraste do <strong>Compêndio</strong> ou clique em <strong>+ Nova Magia</strong> para adicionar feitiços à ficha.
             </div>
           {{/each}}
         </div>

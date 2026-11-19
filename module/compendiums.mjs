@@ -1,7 +1,7 @@
 import { SOLO10 } from "./constants.mjs";
 
 /**
- * Popula automaticamente os Compêndios do sistema (Perícias, Qualidades, Armas, Armaduras e Equipamentos)
+ * Popula automaticamente os Compêndios do sistema (Perícias, Qualidades, Armas, Armaduras, Equipamentos e Magias)
  * na inicialização do mundo no Foundry VTT v13/v14 caso estejam vazios.
  */
 export async function ensureSystemCompendiumsPopulated() {
@@ -28,6 +28,31 @@ export async function ensureSystemCompendiumsPopulated() {
         await Item.createDocuments(docsData, { pack: "solo10.pericias" });
         if (wasLocked) await packPericias.configure({ locked: true });
         console.log("SOLO 10 | Compêndio de Perícias populado com sucesso.");
+      } else if (SOLO10.PERICIAS.magia) {
+        const hasMagia = Array.from(packPericias.index).some(
+          (e) => (e.name || "").trim().toLowerCase() === "magia"
+        );
+        if (!hasMagia) {
+          const wasLocked = packPericias.locked;
+          if (wasLocked) await packPericias.configure({ locked: false });
+          const p = SOLO10.PERICIAS.magia;
+          await Item.createDocuments(
+            [
+              {
+                name: p.label,
+                type: "pericia",
+                img: "icons/svg/book.svg",
+                system: {
+                  slug: p.key,
+                  descricao: p.descricao
+                }
+              }
+            ],
+            { pack: "solo10.pericias" }
+          );
+          if (wasLocked) await packPericias.configure({ locked: true });
+          console.log("SOLO 10 | Perícia Magia adicionada ao Compêndio de Perícias.");
+        }
       }
     }
 
@@ -181,6 +206,74 @@ export async function ensureSystemCompendiumsPopulated() {
         await Item.createDocuments(equipamentosData, { pack: "solo10.equipamentos" });
         if (wasLocked) await packEquipamentos.configure({ locked: true });
         console.log("SOLO 10 | Compêndio de Equipamentos (Equipamento, Vestuário e Alimentação) populado com sucesso.");
+      }
+    }
+
+    // 6. Compêndio de Magias (organizado por Atributo: Corpo, Espírito e Mente)
+    const packMagias = game.packs?.get("solo10.magias");
+    if (packMagias) {
+      await packMagias.getIndex();
+      if (packMagias.index.size === 0) {
+        const wasLocked = packMagias.locked;
+        if (wasLocked) await packMagias.configure({ locked: false });
+
+        const atributosMagia = ["corpo", "espirito", "mente"];
+        const existingFolders = Array.from(packMagias.folders ?? []);
+        const folderIds = {};
+        const foldersToCreate = [];
+
+        for (const attrKey of atributosMagia) {
+          const cat = SOLO10.CATEGORIAS_MAGIA[attrKey];
+          if (!cat) continue;
+          const existing = existingFolders.find((f) => f.name === cat.label);
+          if (existing) {
+            folderIds[attrKey] = existing.id;
+          } else {
+            foldersToCreate.push({
+              name: cat.label,
+              type: "Item",
+              color: cat.color,
+              sorting: "a",
+              sort: cat.sort ?? 0
+            });
+          }
+        }
+
+        if (foldersToCreate.length > 0) {
+          const createdFolders = await Folder.createDocuments(foldersToCreate, {
+            pack: "solo10.magias"
+          });
+          for (const folder of createdFolders) {
+            const matchedKey = atributosMagia.find(
+              (k) => SOLO10.CATEGORIAS_MAGIA[k]?.label === folder.name
+            );
+            if (matchedKey) folderIds[matchedKey] = folder.id;
+          }
+        }
+
+        const magiasData = SOLO10.MAGIAS_PADRAO.map((m) => {
+          const cat = SOLO10.CATEGORIAS_MAGIA[m.atributo] || SOLO10.CATEGORIAS_MAGIA.mente;
+          return {
+            name: m.nome,
+            type: "magia",
+            img: cat?.icon || "icons/svg/daze.svg",
+            folder: folderIds[m.atributo] ?? null,
+            system: {
+              escola: cat?.label || "Magia",
+              atributo: m.atributo || "mente",
+              custo: m.custo || "",
+              custoVontade: Number(m.custoVontade ?? 0),
+              alcance: m.alcance || "",
+              duracao: m.duracao || "",
+              bonusTeste: 0,
+              descricao: m.descricao || ""
+            }
+          };
+        });
+
+        await Item.createDocuments(magiasData, { pack: "solo10.magias" });
+        if (wasLocked) await packMagias.configure({ locked: true });
+        console.log("SOLO 10 | Compêndio de Magias (62 magias em Corpo, Espírito e Mente) populado com sucesso.");
       }
     }
   } catch (err) {

@@ -1777,3 +1777,42 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ==========================================================================
+   CONJURAÇÃO DE MAGIAS (DIÁLOGO & CARD DE CHAT)
+   ========================================================================== */
+
+.solo10-magic-dialog-box {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.solo10-magic-dialog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 12px;
+  font-size: 0.78rem;
+  color: #3b2f63;
+}
+
+.solo10-card-magic-summary {
+  background: #f8f7ff;
+  border: 1px solid #e2dcf9;
+  border-radius: 6px;
+  padding: 7px 9px;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: #1f2937;
+}
+
+.solo10-card-magic-desc {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed #d8cef5;
+  line-height: 1.4;
+  color: #374151;
+}

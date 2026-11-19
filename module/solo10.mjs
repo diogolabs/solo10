@@ -16,7 +16,7 @@ import { Solo10Item } from "./documents/item.mjs";
 import { Solo10PersonagemSheet, Solo10AdversarioSheet } from "./sheets/actor-sheet.mjs";
 import { Solo10ItemSheet } from "./sheets/item-sheet.mjs";
 import { Solo10OracleApp } from "./apps/oracle-dialog.mjs";
-import { executeSolo10Roll, promptSolo10RollDialog } from "./dice/rolls.mjs";
+import { executeSolo10Roll, promptSolo10RollDialog, conjurarMagiaItem } from "./dice/rolls.mjs";
 import { ensureSystemCompendiumsPopulated, abrirCompendioSistema } from "./compendiums.mjs";
 
 /**
@@ -136,6 +136,7 @@ Hooks.once("init", () => {
     Solo10OracleApp,
     executeSolo10Roll,
     promptSolo10RollDialog,
+    conjurarMagiaItem,
     abrirCompendioSistema,
     applyLightThemeToElement,
     openOracle: (options = {}) => new Solo10OracleApp(options).render(true)
@@ -208,6 +209,21 @@ function bindChatCardListeners(message, htmlElement) {
         if (!actor) return;
         const dano = Number(btn.dataset.dano || 0);
         await actor.sofrerDano(dano, false);
+      } else if (action === "conjurarMagiaChat") {
+        const uuid = btn.dataset.itemUuid;
+        const itemId = btn.dataset.itemId;
+        let magia = null;
+        if (uuid && typeof fromUuid === "function") {
+          magia = await fromUuid(uuid);
+        }
+        if (!magia && actor && itemId) {
+          magia = actor.items?.get(itemId) ?? null;
+        }
+        if (!magia) {
+          ui.notifications.warn("Magia não encontrada para o Teste de Conjuração.");
+          return;
+        }
+        await conjurarMagiaItem(magia, actor?.type === "personagem" ? actor : null);
       } else if (action === "defenderReacao") {
         const defensor = canvas?.tokens?.controlled?.[0]?.actor?.type === "personagem"
           ? canvas.tokens.controlled[0].actor

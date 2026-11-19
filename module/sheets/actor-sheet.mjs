@@ -1,5 +1,5 @@
 import { SOLO10 } from "../constants.mjs";
-import { executeSolo10Roll, promptSolo10RollDialog } from "../dice/rolls.mjs";
+import { executeSolo10Roll, promptSolo10RollDialog, conjurarMagiaItem } from "../dice/rolls.mjs";
 import { Solo10OracleApp } from "../apps/oracle-dialog.mjs";
 import { abrirCompendioSistema } from "../compendiums.mjs";
 
@@ -184,16 +184,7 @@ export class Solo10PersonagemSheet extends HandlebarsApplicationMixin(ActorSheet
     const itemId = target.dataset.itemId;
     const magia = this.document.items.get(itemId);
     if (!magia) return;
-    const atributo = ["corpo", "espirito", "mente"].includes(magia.system?.atributo)
-      ? magia.system.atributo
-      : "mente";
-    return promptSolo10RollDialog({
-      actor: this.document,
-      titulo: `Magia: ${magia.name}`,
-      atributo,
-      tipoTeste: "magia",
-      modificadorExtraInicial: Number(magia.system?.bonusTeste || 0)
-    });
+    return conjurarMagiaItem(magia, this.document);
   }
 
   static async #onAbrirOraculo(event, target) {

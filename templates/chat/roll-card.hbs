@@ -63,6 +63,33 @@
     </div>
   {{/if}}
 
+  {{#if magiaInfo}}
+    <div class="solo10-card-magic-summary">
+      <div class="solo10-breakdown-row">
+        <span><strong>Custo da Magia:</strong> {{magiaInfo.custoTexto}}</span>
+        {{#unless magiaInfo.jaPagoReroll}}
+          <span>
+            <strong>Vontade gasta:</strong> {{magiaInfo.gastoVontadePessoal}}{{#if magiaInfo.vontadeExterna}} (+{{magiaInfo.vontadeExterna}} Ritual/Comp.){{/if}}
+          </span>
+        {{/unless}}
+      </div>
+      {{#if magiaInfo.vontadeMax}}
+        <div class="solo10-breakdown-row">
+          <span><strong>Vontade Restante:</strong> {{magiaInfo.vontadeRestante}}/{{magiaInfo.vontadeMax}}</span>
+          {{#if magiaInfo.duracao}}<span><strong>Duração:</strong> {{magiaInfo.duracao}}</span>{{/if}}
+        </div>
+      {{/if}}
+      {{#if magiaInfo.alcance}}
+        <div class="solo10-breakdown-row">
+          <span><strong>Alcance:</strong> {{magiaInfo.alcance}}</span>
+        </div>
+      {{/if}}
+      {{#if magiaInfo.descricao}}
+        <div class="solo10-card-magic-desc">{{{magiaInfo.descricao}}}</div>
+      {{/if}}
+    </div>
+  {{/if}}
+
   {{#if notasModificadores.length}}
     <div class="solo10-card-notes">
       {{#each notasModificadores}}

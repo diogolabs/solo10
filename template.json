@@ -103,6 +103,7 @@
       "escola": "",
       "atributo": "mente",
       "custo": "",
+      "custoVontade": 0,
       "alcance": "",
       "duracao": "",
       "bonusTeste": 0,

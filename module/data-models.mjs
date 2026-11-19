@@ -188,6 +188,7 @@ export class MagiaDataModel extends TypeDataModel {
       escola: new fields.StringField({ initial: "" }),
       atributo: new fields.StringField({ initial: "mente" }),
       custo: new fields.StringField({ initial: "" }),
+      custoVontade: new fields.NumberField({ required: true, integer: true, initial: 0, min: 0 }),
       alcance: new fields.StringField({ initial: "" }),
       duracao: new fields.StringField({ initial: "" }),
       bonusTeste: new fields.NumberField({ required: true, integer: true, initial: 0 }),

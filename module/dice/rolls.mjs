@@ -12,6 +12,17 @@ function norm(str = "") {
 }
 
 /**
+ * Extrai o custo base numérico em pontos de Vontade de uma magia.
+ */
+export function parseCustoVontadeMagia(magia) {
+  const numCampo = Number(magia?.system?.custoVontade);
+  if (Number.isFinite(numCampo) && numCampo > 0) return Math.floor(numCampo);
+  const texto = String(magia?.system?.custo || "");
+  const match = texto.match(/\d+/);
+  return match ? Math.max(0, Number(match[0])) : 0;
+}
+
+/**
  * Calcula modificadores automáticos e sugestões de Vantagem/Desvantagem com base nas Qualidades e Equipamentos do Ator.
  */
 export function getActorRollModifiers(actor, { atributo = "corpo", pericia = "", tipoTeste = "padrao", arma = null } = {}) {
@@ -97,6 +108,31 @@ export function getActorRollModifiers(actor, { atributo = "corpo", pericia = "",
     notasModificadores.push("Defensor (+2 defesa física)");
   }
 
+  // Qualidades voltadas à conjuração (ex.: Conjurador Prodígio)
+  if (tipoTeste === "magia") {
+    for (const item of actor.items) {
+      if (item.type !== "qualidade") continue;
+      const qNorm = norm(`${item.system?.slug || ""} ${item.name || ""}`);
+      if (
+        qNorm.includes("conjurador") ||
+        qNorm.includes("magia") ||
+        qNorm.includes("arcan") ||
+        qNorm.includes("feitic") ||
+        qNorm.includes("ritualista")
+      ) {
+        const b = Number(item.system?.bonusTeste || 0);
+        if (b) {
+          bonusQualidades += b;
+          notasModificadores.push(`${item.name} (+${b} em Conjuração)`);
+        }
+        if (item.system?.concedeVantagem) {
+          sugereVantagem = true;
+          notasModificadores.push(`${item.name} (Vantagem em Conjuração)`);
+        }
+      }
+    }
+  }
+
   // Penalidade de Armadura Tática/Batalha* ou Escudo* em destreza/agilidade
   if (atributo === "corpo" && (pNorm.includes("atletismo") || pNorm.includes("subterfugio"))) {
     if (actor.temPenalidadeArmaduraAgilidade()) {
@@ -127,6 +163,10 @@ export async function executeSolo10Roll({
   desarme = false,
   tipoTeste = "padrao",
   armaData = null,
+  magiaData = null,
+  custoVontadeTotal = 0,
+  vontadeExterna = 0,
+  descontarVontade = true,
   danoReacaoInimigo = 0,
   isRerollVontade = false
 } = {}) {
@@ -241,6 +281,34 @@ export async function executeSolo10Roll({
         ? `Falha na defesa! Dano da Reação (${bruto}) - Resistência a Dano (${rd}) = ${danoSofridoDefesa} de dano à Saúde.`
         : "Falha na defesa! Aplique o efeito da Reação do Adversário.";
     }
+  } else if (tipoTeste === "magia") {
+    // Regra pág. 96: O consumo de pontos de Vontade ocorre mesmo se o teste falhar.
+    // Em rerolagem por Vontade, o custo da magia já foi pago na rolagem inicial.
+    const custoTotalNum = Math.max(0, Number(custoVontadeTotal || 0));
+    const externaNum = Math.max(0, Number(vontadeExterna || 0));
+    const gastoPessoal = !isRerollVontade && descontarVontade ? Math.max(0, custoTotalNum - externaNum) : 0;
+
+    if (!isRerollVontade && actor?.type === "personagem" && descontarVontade && gastoPessoal > 0) {
+      const vontadeAntes = Number(actor.system.vontade?.value ?? 0);
+      if (vontadeAntes < gastoPessoal) {
+        ui.notifications.warn(
+          `${actor.name} possui apenas ${vontadeAntes} de Vontade para um custo pessoal de ${gastoPessoal} (Vontade reduzida a 0).`
+        );
+        notasModificadores.push(
+          `Vontade insuficiente (${vontadeAntes}/${gastoPessoal} necessários) — reserva zerada.`
+        );
+      }
+      const vontadeNova = Math.max(0, vontadeAntes - gastoPessoal);
+      await actor.update({ "system.vontade.value": vontadeNova });
+    }
+
+    if (sucesso) {
+      efeitoTexto = `Conjuração bem-sucedida! Bônus de Poder: +${bonusPoder} | (1 + Bônus de Poder) = ${1 + bonusPoder} | (Mente + Bônus de Poder) = ${menteTotal + bonusPoder}.`;
+    } else {
+      efeitoTexto = !isRerollVontade && gastoPessoal > 0
+        ? `A conjuração falhou! Os ${gastoPessoal} ponto(s) de Vontade foram consumidos mesmo com a falha.`
+        : "A conjuração falhou!";
+    }
   } else if (tipoTeste === "social" || atributo === "espirito") {
     if (sucesso) {
       impactoPostura = espiritoTotal + bonusPoder;
@@ -284,6 +352,27 @@ export async function executeSolo10Roll({
     }
   }
 
+  const magiaInfo =
+    tipoTeste === "magia"
+      ? {
+          nome: magiaData?.name || titulo,
+          custoTexto: magiaData?.custo || `${Math.max(0, Number(custoVontadeTotal || 0))} Vontade`,
+          custoVontadeTotal: Math.max(0, Number(custoVontadeTotal || 0)),
+          vontadeExterna: Math.max(0, Number(vontadeExterna || 0)),
+          gastoVontadePessoal:
+            !isRerollVontade && descontarVontade
+              ? Math.max(0, Math.max(0, Number(custoVontadeTotal || 0)) - Math.max(0, Number(vontadeExterna || 0)))
+              : 0,
+          descontarVontade: Boolean(descontarVontade),
+          jaPagoReroll: Boolean(isRerollVontade),
+          vontadeRestante: actor?.type === "personagem" ? Number(actor.system.vontade?.value ?? 0) : null,
+          vontadeMax: actor?.type === "personagem" ? Number(actor.system.vontade?.max ?? 0) : null,
+          alcance: magiaData?.alcance || "",
+          duracao: magiaData?.duracao || "",
+          descricao: magiaData?.descricao || ""
+        }
+      : null;
+
   const podeGastarVontade = actor?.type === "personagem" && Number(actor.system.vontade?.value ?? 0) > 0;
 
   const rollConfig = {
@@ -302,6 +391,18 @@ export async function executeSolo10Roll({
     desarme,
     tipoTeste,
     armaData: armaData ? { name: armaData.name, system: armaData.system } : null,
+    magiaData: magiaData
+      ? {
+          name: magiaData.name,
+          custo: magiaData.custo,
+          alcance: magiaData.alcance,
+          duracao: magiaData.duracao,
+          descricao: magiaData.descricao
+        }
+      : null,
+    custoVontadeTotal: Math.max(0, Number(custoVontadeTotal || 0)),
+    vontadeExterna: Math.max(0, Number(vontadeExterna || 0)),
+    descontarVontade: Boolean(descontarVontade),
     danoReacaoInimigo
   };
 
@@ -328,6 +429,7 @@ export async function executeSolo10Roll({
     sucesso,
     bonusPoder,
     efeitoTexto,
+    magiaInfo,
     danoTotal,
     impactoPostura,
     bonusMentalGerado,
@@ -375,15 +477,17 @@ export async function promptSolo10RollDialog({
   usarPericia = null,
   tipoTeste = "padrao",
   arma = null,
+  magia = null,
   perigoInicial = 10,
   danoReacaoInimigo = 0,
   modificadorExtraInicial = 0
 } = {}) {
-  const periciaEncontrada = pericia && actor?.type === "personagem"
-    ? actor.findPericiaItem(pericia)
+  const periciaPadrao = !pericia && tipoTeste === "magia" ? "Magia" : pericia;
+  const periciaEncontrada = periciaPadrao && actor?.type === "personagem"
+    ? actor.findPericiaItem(periciaPadrao)
     : null;
   const checkPericia = usarPericia !== null ? usarPericia : Boolean(periciaEncontrada);
-  const nomePericiaAlvo = periciaEncontrada?.name || SOLO10.PERICIAS[pericia]?.label || pericia || "";
+  const nomePericiaAlvo = periciaEncontrada?.name || SOLO10.PERICIAS[periciaPadrao]?.label || periciaPadrao || "";
 
   const { notasModificadores, sugereVantagem, sugereDesvantagem } = getActorRollModifiers(actor, {
     atributo,
@@ -461,11 +565,46 @@ export async function promptSolo10RollDialog({
     `
       : "";
 
+  const custoBaseMagia = tipoTeste === "magia" ? parseCustoVontadeMagia(magia) : 0;
+  const vontadeAtual = Number(actor?.system?.vontade?.value ?? 0);
+  const vontadeMax = Number(actor?.system?.vontade?.max ?? 0);
+  const magiaExtrasHtml =
+    tipoTeste === "magia"
+      ? `
+      <div class="solo10-dialog-group solo10-magic-dialog-box">
+        <div class="solo10-magic-dialog-meta">
+          <span><strong>Custo (Livro):</strong> ${foundry.utils.escapeHTML(magia?.system?.custo || `${custoBaseMagia} Vontade`)}</span>
+          <span><strong>Sua Vontade:</strong> ${vontadeAtual}/${vontadeMax}</span>
+        </div>
+        ${magia?.system?.alcance || magia?.system?.duracao ? `
+        <div class="solo10-magic-dialog-meta">
+          ${magia?.system?.alcance ? `<span><strong>Alcance:</strong> ${foundry.utils.escapeHTML(magia.system.alcance)}</span>` : ""}
+          ${magia?.system?.duracao ? `<span><strong>Duração:</strong> ${foundry.utils.escapeHTML(magia.system.duracao)}</span>` : ""}
+        </div>` : ""}
+        <div class="solo10-dialog-grid-2" style="margin-top: 6px;">
+          <div class="solo10-dialog-row">
+            <label>Custo em Vontade da Magia</label>
+            <input type="number" name="custoVontadeTotal" value="${custoBaseMagia}" min="0" />
+          </div>
+          <div class="solo10-dialog-row">
+            <label>Vontade via Ritual / Componentes</label>
+            <input type="number" name="vontadeExterna" value="0" min="0" title="Ritual: 1/rodada + 1/participante extra; ou Componentes/Itens Mágicos" />
+          </div>
+        </div>
+        <label class="solo10-checkbox" style="margin-top: 4px;">
+          <input type="checkbox" name="descontarVontade" checked />
+          <span>Descontar <strong data-solo10-gasto-pessoal>${custoBaseMagia}</strong> ponto(s) de Vontade pessoal automaticamente <em>(consome mesmo em caso de falha)</em></span>
+        </label>
+      </div>
+    `
+      : "";
+
   const content = `
     <div class="solo10-roll-dialog">
       ${notasHtml}
+      ${magiaExtrasHtml}
       <div class="solo10-dialog-row">
-        <label>Atributo do Teste (Escolhido livremente para a situação)</label>
+        <label>Atributo do Teste ${tipoTeste === "magia" ? "(Conforme a descrição da Magia)" : "(Escolhido livremente para a situação)"}</label>
         <select name="atributo">${atributosOptions}</select>
       </div>
       <div class="solo10-dialog-row">
@@ -505,8 +644,8 @@ export async function promptSolo10RollDialog({
         </label>
       </div>` : ""}
       <div class="solo10-dialog-row">
-        <label>Modificador Extra (Bônus Mental Futuro, Qualidades, etc.)</label>
-        <input type="number" name="modificadorExtra" value="${(atributo === "mente" ? Number(actor?.system?.bonusMentalFuturo || 0) : 0) + Number(modificadorExtraInicial || 0)}" />
+        <label>Modificador Extra (Bônus Mental Futuro, Qualidades, Itens, etc.)</label>
+        <input type="number" name="modificadorExtra" value="${(atributo === "mente" && tipoTeste !== "magia" ? Number(actor?.system?.bonusMentalFuturo || 0) : 0) + Number(modificadorExtraInicial || 0)}" />
       </div>
       ${combateExtrasHtml}
       ${defesaExtrasHtml}
@@ -528,12 +667,25 @@ export async function promptSolo10RollDialog({
             chkPericia.checked = opt?.dataset?.possui === "true";
           });
         }
+
+        const inpCusto = el.querySelector('[name="custoVontadeTotal"]');
+        const inpExt = el.querySelector('[name="vontadeExterna"]');
+        const spanGasto = el.querySelector("[data-solo10-gasto-pessoal]");
+        if (inpCusto && inpExt && spanGasto) {
+          const syncGasto = () => {
+            const tot = Math.max(0, Number(inpCusto.value || 0));
+            const ext = Math.max(0, Number(inpExt.value || 0));
+            spanGasto.textContent = String(Math.max(0, tot - ext));
+          };
+          inpCusto.addEventListener("input", syncGasto);
+          inpExt.addEventListener("input", syncGasto);
+        }
       },
       buttons: [
         {
           action: "roll",
-          label: "Rolar 1D10",
-          icon: "fas fa-dice-d10",
+          label: tipoTeste === "magia" ? "Rolar Teste de Conjuração" : "Rolar 1D10",
+          icon: tipoTeste === "magia" ? "fas fa-hat-wizard" : "fas fa-dice-d10",
           default: true,
           callback: async (event, button, dialog) => {
             const form = button.form ?? dialog.element.querySelector("form") ?? dialog.element;
@@ -550,6 +702,9 @@ export async function promptSolo10RollDialog({
             const selArco = Boolean(getVal("ataqueEmArco")?.checked);
             const selDesarme = Boolean(getVal("desarme")?.checked);
             const selDanoReacao = Number(getVal("danoReacaoInimigo")?.value ?? danoReacaoInimigo);
+            const selCustoVontade = Number(getVal("custoVontadeTotal")?.value ?? custoBaseMagia);
+            const selVontadeExterna = Number(getVal("vontadeExterna")?.value ?? 0);
+            const selDescontarVontade = getVal("descontarVontade") ? Boolean(getVal("descontarVontade").checked) : true;
 
             return executeSolo10Roll({
               actor,
@@ -571,6 +726,18 @@ export async function promptSolo10RollDialog({
               desarme: selDesarme,
               tipoTeste,
               armaData: arma,
+              magiaData: magia
+                ? {
+                    name: magia.name,
+                    custo: magia.system?.custo || "",
+                    alcance: magia.system?.alcance || "",
+                    duracao: magia.system?.duracao || "",
+                    descricao: magia.system?.descricao || ""
+                  }
+                : null,
+              custoVontadeTotal: selCustoVontade,
+              vontadeExterna: selVontadeExterna,
+              descontarVontade: selDescontarVontade,
               danoReacaoInimigo: selDanoReacao
             });
           }
@@ -584,4 +751,38 @@ export async function promptSolo10RollDialog({
       rejectClose: false
     });
   }
+}
+
+/**
+ * Abre o Teste de Conjuração para um Item do tipo Magia, seguindo as regras do capítulo MAGIAS (págs. 96–97).
+ */
+export async function conjurarMagiaItem(magia, actorOverride = null) {
+  if (!magia || magia.type !== "magia") return;
+  const tokenActor = canvas?.tokens?.controlled?.[0]?.actor;
+  const actor =
+    actorOverride ||
+    (magia.actor?.type === "personagem" ? magia.actor : null) ||
+    (tokenActor?.type === "personagem" ? tokenActor : null) ||
+    (game.user?.character?.type === "personagem" ? game.user.character : null);
+
+  if (!actor) {
+    ui.notifications.warn(
+      "Selecione o token de um Personagem ou arraste esta magia para uma Ficha de Personagem para realizar o Teste de Conjuração."
+    );
+    return;
+  }
+
+  const atributo = ["corpo", "espirito", "mente"].includes(magia.system?.atributo)
+    ? magia.system.atributo
+    : "mente";
+
+  return promptSolo10RollDialog({
+    actor,
+    titulo: `Conjuração: ${magia.name}`,
+    atributo,
+    pericia: "Magia",
+    tipoTeste: "magia",
+    magia,
+    modificadorExtraInicial: Number(magia.system?.bonusTeste || 0)
+  });
 }
